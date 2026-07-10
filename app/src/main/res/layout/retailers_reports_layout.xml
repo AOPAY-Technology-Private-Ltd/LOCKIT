@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/_10ssp">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/_5sdp"
+        app:cardUseCompatPadding="true"
+        app:cardBackgroundColor="@color/bggrey"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/toplayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp">
+
+                    <TextView
+                        android:id="@+id/productDetails"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toStartOf="@+id/emiamounttitle"
+                        android:hint="Galaxy A15Samsung6GB+128GB (4G)"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="@dimen/_11ssp"
+                        android:textColor="@color/green"/>
+
+                    <TextView
+                        android:id="@+id/loanidtxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/productDetails"
+                        android:text="Loan Id : "
+                        android:textSize="@dimen/_12ssp"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/loanCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/loanidtxt"
+                        android:layout_alignBottom="@+id/loanidtxt"
+                        android:gravity="center"
+                        android:layout_below="@+id/productDetails"
+                        android:text="12345678"
+                        android:textSize="@dimen/_10ssp"
+                        android:fontFamily="@font/inter_regular"
+                        android:textColor="@color/grey"/>
+
+                    <TextView
+                        android:id="@+id/emiamounttitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="EMI Amount"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@color/darkgrey"
+                        android:textSize="@dimen/_10ssp"/>
+
+                    <TextView
+                        android:id="@+id/emiAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="₹ 79,000"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="@dimen/_15ssp"
+                        android:textColor="@color/purple"
+                        android:layout_below="@+id/emiamounttitle"/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:background="@color/grey" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_4sdp">
+
+                    <LinearLayout
+                        android:layout_weight=".3"
+                        android:layout_width="0dp"
+                        android:gravity="center"
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="wrap_content">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="@dimen/_70sdp"
+                            android:layout_height="@dimen/_70sdp"
+                            app:cardCornerRadius="@dimen/_140sdp"
+                            android:layout_gravity="center_vertical">
+
+                            <ImageView
+                                android:id="@+id/customer_Image"
+                                android:layout_width="@dimen/_80sdp"
+                                android:layout_height="@dimen/_80sdp"
+                                android:src="@drawable/userimagee"
+                                android:scaleType="centerCrop"
+                                android:layout_gravity="center"/>
+
+                        </androidx.cardview.widget.CardView>
+
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_weight=".5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="center_vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="@dimen/_5sdp"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:id="@+id/customername"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bos Center"
+                                android:layout_centerVertical="true"
+                                android:textSize="@dimen/_14ssp"
+                                android:layout_alignParentLeft="true"
+                                android:fontFamily="@font/inter_medium"
+                                android:textColor="@color/black"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:id="@+id/customermobtxt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:gravity="center"
+                                android:text="Mob : "
+                                android:textSize="@dimen/_12ssp"
+                                android:layout_centerVertical="true"
+                                android:fontFamily="@font/inter_medium"
+                                android:textColor="@color/black"/>
+
+                            <TextView
+                                android:id="@+id/custMob"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1234567890"
+                                android:layout_centerVertical="true"
+                                android:textSize="@dimen/_12ssp"
+                                android:layout_toRightOf="@+id/customermobtxt"
+                                android:fontFamily="@font/inter_regular"
+                                android:textColor="@color/black"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/customercodetxt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:gravity="center"
+                                android:text="Customer Code : "
+                                android:textSize="@dimen/_12ssp"
+                                android:layout_centerVertical="true"
+                                android:fontFamily="@font/inter_medium"
+                                android:textColor="@color/black"/>
+
+                            <TextView
+                                android:id="@+id/customercode"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/customercodetxt"
+                                android:text="542371645"
+                                android:textSize="@dimen/_12ssp"
+                                android:layout_centerVertical="true"
+                                android:fontFamily="@font/inter_regular"
+                                android:textColor="@color/black"/>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:visibility="gone"
+                    android:background="@color/lightgrey"
+                    android:layout_marginTop="@dimen/_4sdp"/>
+
+                <RelativeLayout
+                    android:id="@+id/duedatelayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/_5sdp">
+
+
+                    <TextView
+                        android:id="@+id/duedatetxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Due Date : "
+                        android:textSize="@dimen/_10ssp"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@color/red"/>
+
+                    <TextView
+                        android:id="@+id/duedate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/duedatetxt"
+                        android:layout_centerInParent="true"
+                        android:text="08-08-2025"
+                        android:gravity="center"
+                        android:textSize="@dimen/_10ssp"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/inter_regular"
+                        android:textColor="@color/grey"/>
+
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/_5sdp">
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:id="@+id/loanstartdate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Start Date : **/**/****"
+                        android:layout_centerVertical="true"
+                        android:textSize="@dimen/_10ssp"
+                        android:layout_alignParentLeft="true"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:id="@+id/loanenddate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:gravity="right"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_alignTop="@+id/loanstartdate"
+                        android:layout_alignBottom="@+id/loanstartdate"
+                        android:text="End Date : **/**/****"
+                        android:textSize="@dimen/_10ssp"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@color/black"/>
+
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/_5sdp">
+
+                    <TextView
+                        android:id="@+id/loanamount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="LoanAmount : 13500.00"
+                        android:layout_centerVertical="true"
+                        android:textSize="@dimen/_10ssp"
+                        android:layout_alignParentLeft="true"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/downpayment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignTop="@+id/loanamount"
+                        android:layout_alignBottom="@+id/loanamount"
+                        android:gravity="center"
+                        android:text="DownPayment : 1500.00 "
+                        android:textSize="@dimen/_10ssp"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@color/black"/>
+
+
+
+                </RelativeLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginBottom="@dimen/_4sdp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent">
+
+                        <TextView
+                            android:id="@+id/tenure"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tenure : 6"
+                            android:layout_centerVertical="true"
+                            android:textSize="@dimen/_10ssp"
+                            android:layout_alignParentLeft="true"
+                            android:fontFamily="@font/inter_medium"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:id="@+id/paidEmi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Paid emi : 3 "
+                            android:textSize="@dimen/_10ssp"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:fontFamily="@font/inter_medium"
+                            android:textColor="@color/black"/>
+
+
+                        <TextView
+                            android:id="@+id/duesEmi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Due emi : 3"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:textSize="@dimen/_10ssp"
+                            android:fontFamily="@font/inter_medium"
+                            android:textColor="@color/black"/>
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/viewdetailscard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_50sdp"
+                    android:paddingVertical="@dimen/_10sdp"
+                    app:cardCornerRadius="@dimen/_7sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/view_loan_details"
+                        android:paddingHorizontal="@dimen/_10sdp"
+                        android:paddingVertical="@dimen/_5sdp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_10ssp"
+                        android:fontFamily="@font/inter_medium"/>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/reportstatuslayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/statushape"
+                android:backgroundTint="@color/orange"
+                android:layout_gravity="right"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/toplayout"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    android:id="@+id/reportstatus"
+                    android:gravity="right"
+                    android:text="Disbursed Rejected"
+                    android:fontFamily="@font/inter_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/_4sdp"
+                    android:paddingHorizontal="@dimen/_10ssp"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

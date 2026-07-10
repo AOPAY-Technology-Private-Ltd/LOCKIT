@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/headlayout"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_100sdp"
+        android:background="@drawable/signuptopback"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:src="@drawable/back"
+            app:tint="@color/darkgrey"
+            android:layout_alignTop="@id/titlelayout"
+            android:layout_alignBottom="@id/titlelayout"
+            android:layout_marginLeft="@dimen/_10sdp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/titlelayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/imeinumber"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_18ssp"
+                android:fontFamily="@font/inter_bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <ImageView
+            android:id="@+id/home"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:src="@drawable/homeicon"
+            app:tint="@color/darkgrey"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/titlelayout"
+            android:layout_alignBottom="@id/titlelayout" />
+
+    </RelativeLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/detaillayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingBottom="@dimen/_20sdp"
+        app:layout_constraintBottom_toTopOf="@+id/footer"
+        app:layout_constraintTop_toBottomOf="@id/headlayout">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/bg_black_border">
+
+                    <EditText
+                        android:id="@+id/IMEINumber1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:hint="Enter 15-digit mobile IMEI 1 Number "
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:maxLength="15"
+                        android:importantForAutofill="no"
+                        android:padding="@dimen/_8sdp"
+                        android:textColor="@color/edt_color"
+                        android:textSize="@dimen/_14ssp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/bg_black_border">
+
+                    <EditText
+                        android:id="@+id/IMEInumber2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:hint="Enter 15-digit mobile IMEI 2 Number "
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:maxLength="15"
+                        android:importantForAutofill="no"
+                        android:padding="@dimen/_8sdp"
+                        android:textColor="@color/edt_color"
+                        android:textSize="@dimen/_14ssp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_black_border"
+                    app:layout_constraintTop_toBottomOf="@id/biomatriclayout"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/uploadIMEI1Photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/_12ssp"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/purple"
+                            android:padding="@dimen/_5sdp"
+                            android:text="Seal Phone Photo (Front)" />
+
+                        <ImageView
+                            android:id="@+id/imei1photo"
+                            android:layout_width="@dimen/_120sdp"
+                            android:layout_height="@dimen/_80sdp"
+                            android:src="@drawable/aadhar"
+                            android:scaleType="fitCenter"
+                            android:visibility="gone"
+                            android:layout_margin="@dimen/_5sdp"/>
+
+                        <ImageView
+                            android:id="@+id/imei1photoicon"
+                            android:layout_width="@dimen/_50sdp"
+                            android:layout_height="@dimen/_50sdp"
+                            android:src="@drawable/cameraicon"
+                            app:tint="@color/purple" />
+
+
+
+                            <TextView
+                                android:id="@+id/clicktosealphoto1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Click to upload"
+                                android:gravity="center"
+                                android:padding="@dimen/_4sdp"
+                                android:textSize="@dimen/_10ssp"
+                                android:layout_gravity="center"
+                                android:textColor="@color/purple"/>
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_black_border"
+                    app:layout_constraintTop_toBottomOf="@id/biomatriclayout"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/uploadIMEI2Photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/_12ssp"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/purple"
+                            android:padding="@dimen/_5sdp"
+                            android:text="Seal Phone Photo (Back)" />
+
+                        <ImageView
+                            android:id="@+id/imei2photo"
+                            android:layout_width="@dimen/_120sdp"
+                            android:layout_height="@dimen/_80sdp"
+                            android:src="@drawable/aadhar"
+                            android:scaleType="fitCenter"
+                            android:visibility="gone"
+                            android:layout_margin="@dimen/_5sdp"/>
+
+                        <ImageView
+                            android:id="@+id/imei2photoicon"
+                            android:layout_width="@dimen/_50sdp"
+                            android:layout_height="@dimen/_50sdp"
+                            android:src="@drawable/cameraicon"
+                            app:tint="@color/purple" />
+
+                        <TextView
+                            android:id="@+id/clicktosealphoto2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Click to upload"
+                            android:gravity="center"
+                            android:padding="@dimen/_4sdp"
+                            android:textSize="@dimen/_10ssp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/purple"/>
+
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/backcardlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_black_border"
+                    app:layout_constraintTop_toBottomOf="@id/biomatriclayout"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/uploadbuttonlayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/_12ssp"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/purple"
+                            android:padding="@dimen/_5sdp"
+                            android:text="Upload IMEI Number Photo" />
+
+                        <ImageView
+                            android:id="@+id/ImeiPhoto"
+                            android:layout_width="@dimen/_120sdp"
+                            android:layout_height="@dimen/_80sdp"
+                            android:src="@drawable/aadhar"
+                            android:scaleType="fitCenter"
+                            android:visibility="gone"
+                            android:layout_margin="@dimen/_5sdp"/>
+
+                        <ImageView
+                            android:id="@+id/imeiicon"
+                            android:layout_width="@dimen/_50sdp"
+                            android:layout_height="@dimen/_50sdp"
+                            android:src="@drawable/cameraicon"
+                            app:tint="@color/purple" />
+
+                        <TextView
+                            android:id="@+id/clicktoimeiphoto"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Click to upload"
+                            android:gravity="center"
+                            android:padding="@dimen/_4sdp"
+                            android:textSize="@dimen/_10ssp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/purple"/>
+
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/invoicelayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_black_border"
+                    app:layout_constraintTop_toBottomOf="@id/biomatriclayout"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/invoiceuploadbuttonlayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/_12ssp"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/purple"
+                            android:padding="@dimen/_5sdp"
+                            android:text="Upload Invoice" />
+
+                        <ImageView
+                            android:id="@+id/invoicePhoto"
+                            android:layout_width="@dimen/_120sdp"
+                            android:layout_height="@dimen/_80sdp"
+                            android:src="@drawable/aadhar"
+                            android:scaleType="fitCenter"
+                            android:visibility="gone"
+                            android:layout_margin="@dimen/_5sdp"/>
+
+                        <ImageView
+                            android:id="@+id/invoiceicon"
+                            android:layout_width="@dimen/_50sdp"
+                            android:layout_height="@dimen/_50sdp"
+                            android:src="@drawable/cameraicon"
+                            app:tint="@color/purple" />
+
+
+                        <TextView
+                            android:id="@+id/clicktoinvoice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Click to upload"
+                            android:gravity="center"
+                            android:padding="@dimen/_4sdp"
+                            android:textSize="@dimen/_10ssp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/purple"/>
+
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/nextlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_40sdp"
+                    android:background="@drawable/searchbutton"
+                    android:padding="@dimen/_10sdp"
+                    app:layout_constraintTop_toBottomOf="@+id/photolayout"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_14ssp"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/inter_bold"
+                        android:text="Next"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/imagea" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_4sdp"
+            android:fontFamily="@font/inter_bold"
+           android:text="@string/aopay_technology_ltd"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10ssp" />
+
+    </LinearLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

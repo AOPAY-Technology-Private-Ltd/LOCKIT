@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/_5sdp"
+        app:cardUseCompatPadding="true"
+        app:cardBackgroundColor="@color/bggrey"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/_5sdp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp">
+
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="Customer Status : "
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="@dimen/_12ssp" />
+
+                <TextView
+                    android:id="@+id/statustxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/status"
+                    android:layout_below="@+id/status"
+                    android:textSize="@dimen/_12ssp"
+                    android:text="Pending"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_alignParentTop="true"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/black"/>
+
+
+
+                <TextView
+                    android:id="@+id/emiamounttitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="Low Cibil Score"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/_10ssp"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp">
+
+                <LinearLayout
+                    android:layout_weight=".3"
+                    android:layout_width="0dp"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="@dimen/_70sdp"
+                        android:layout_height="@dimen/_70sdp"
+                        app:cardCornerRadius="@dimen/_140sdp"
+                        android:layout_gravity="center_vertical">
+
+                        <ImageView
+                            android:id="@+id/customer_Image"
+                            android:layout_width="@dimen/_80sdp"
+                            android:layout_height="@dimen/_80sdp"
+                            android:src="@drawable/userimagee"
+                            android:scaleType="centerCrop"
+                            android:layout_gravity="center"/>
+
+                    </androidx.cardview.widget.CardView>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight=".5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:layout_gravity="center">
+
+                        <TextView
+                            android:id="@+id/customername"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bos Center"
+                            android:layout_centerVertical="true"
+                            android:textSize="@dimen/_14ssp"
+                            android:layout_alignParentLeft="true"
+                            android:fontFamily="@font/inter_medium"
+                            android:textColor="@color/black"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center">
+
+                        <TextView
+                            android:id="@+id/customermobtxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:gravity="center"
+                            android:text="Mob : "
+                            android:textSize="@dimen/_12ssp"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/inter_medium"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:id="@+id/custMob"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="1234567890"
+                            android:layout_centerVertical="true"
+                            android:textSize="@dimen/_11ssp"
+                            android:layout_toRightOf="@+id/customermobtxt"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/black"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/mailid"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:gravity="center"
+                            android:text="Mail ID: "
+                            android:textSize="@dimen/_12ssp"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/inter_medium"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:id="@+id/mailidtxt"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/mailid"
+                            android:text="abcd@gmail.com"
+                            android:textSize="@dimen/_11ssp"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/black"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/address"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:gravity="center"
+                            android:text="Address: "
+                            android:textSize="@dimen/_12ssp"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/inter_medium"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:id="@+id/addresstxt"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/address"
+                            android:text="B-62 Ph 1,Sec 3 Dwarka Dwarka Sec-6,110059"
+                            android:textSize="@dimen/_11ssp"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/black"/>
+
+                    </RelativeLayout>
+
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:background="@color/lightgrey"
+                android:layout_marginTop="@dimen/_4sdp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/customercodetxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:gravity="center"
+                        android:text="Customer Code : "
+                        android:textSize="@dimen/_11ssp"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/customercode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/customercodetxt"
+                        android:text="542371645"
+                        android:textSize="@dimen/_11ssp"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/inter_regular"
+                        android:textColor="@color/darkgrey"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_weight=".8"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:id="@+id/createdDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Apply Date : "
+                        android:textSize="@dimen/_11ssp"
+                        android:layout_toLeftOf="@id/createdDatetxt"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/createdDatetxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:text="08-08-2025"
+                        android:gravity="center"
+                        android:textSize="@dimen/_11ssp"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/inter_regular"
+                        android:textColor="@color/darkgrey"/>
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1081075771702",
+    "project_id": "aopaykit",
+    "storage_bucket": "aopaykit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1081075771702:android:b41160c843e714c8a2eb97",
+        "android_client_info": {
+          "package_name": "com.bosandroidapp.aopaykit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAi_F9oiRC8Zsmr5y1_4dOC-Qas-yKBiHs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

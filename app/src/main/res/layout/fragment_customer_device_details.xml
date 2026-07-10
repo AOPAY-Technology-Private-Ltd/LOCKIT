@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_15sdp"
+        android:background="@drawable/bg_light_blue_rounded"
+        android:backgroundTint="#F0F7FF">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/glLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.40" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/glColon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.47" />
+
+        <!-- Brand -->
+        <TextView
+            android:id="@+id/lblBrand"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Brand"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toStartOf="@+id/glLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textColor="@color/darkgrey"
+            app:layout_constraintStart_toStartOf="@+id/glLabel"
+            app:layout_constraintTop_toTopOf="@+id/lblBrand" />
+
+        <TextView
+            android:id="@+id/tvBrand"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Realme"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/glColon"
+            app:layout_constraintTop_toTopOf="@+id/lblBrand" />
+
+        <!-- Manufacturer -->
+        <TextView
+            android:id="@+id/lblManufacturer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="Manufacturer"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toStartOf="@+id/glLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvBrand" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textColor="@color/darkgrey"
+            app:layout_constraintStart_toStartOf="@+id/glLabel"
+            app:layout_constraintTop_toTopOf="@+id/lblManufacturer" />
+
+        <TextView
+            android:id="@+id/tvManufacturer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Realme"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/glColon"
+            app:layout_constraintTop_toTopOf="@+id/lblManufacturer" />
+
+        <!-- FRP -->
+        <TextView
+            android:id="@+id/lblFrp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="FRP"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toStartOf="@+id/glLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvManufacturer" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textColor="@color/darkgrey"
+            app:layout_constraintStart_toStartOf="@+id/glLabel"
+            app:layout_constraintTop_toTopOf="@+id/lblFrp" />
+
+        <TextView
+            android:id="@+id/tvFrp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="it@oqsolution.in"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/glColon"
+            app:layout_constraintTop_toTopOf="@+id/lblFrp" />
+
+        <!-- IMEI Slot 1 -->
+        <TextView
+            android:id="@+id/lblImei1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="IMEI Slot 1"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toStartOf="@+id/glLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvFrp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textColor="@color/darkgrey"
+            app:layout_constraintStart_toStartOf="@+id/glLabel"
+            app:layout_constraintTop_toTopOf="@+id/lblImei1" />
+
+        <TextView
+            android:id="@+id/tvImei1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="860543082547611"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/glColon"
+            app:layout_constraintTop_toTopOf="@+id/lblImei1" />
+
+        <!-- IMEI Slot 2 -->
+        <TextView
+            android:id="@+id/lblImei2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="IMEI Slot 2"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toStartOf="@+id/glLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvImei1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textColor="@color/darkgrey"
+            app:layout_constraintStart_toStartOf="@+id/glLabel"
+            app:layout_constraintTop_toTopOf="@+id/lblImei2" />
+
+        <TextView
+            android:id="@+id/tvImei2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="860543082547603"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/glColon"
+            app:layout_constraintTop_toTopOf="@+id/lblImei2" />
+
+        <!-- Model -->
+        <TextView
+            android:id="@+id/lblModel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="Model"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toStartOf="@+id/glLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvImei2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textColor="@color/darkgrey"
+            app:layout_constraintStart_toStartOf="@+id/glLabel"
+            app:layout_constraintTop_toTopOf="@+id/lblModel" />
+
+        <TextView
+            android:id="@+id/tvModel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Realme RMX5256"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/glColon"
+            app:layout_constraintTop_toTopOf="@+id/lblModel" />
+
+        <!-- Purchase Date -->
+        <TextView
+            android:id="@+id/lblPurchaseDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="Purchase Date"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toStartOf="@+id/glLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvModel" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textColor="@color/darkgrey"
+            app:layout_constraintStart_toStartOf="@+id/glLabel"
+            app:layout_constraintTop_toTopOf="@+id/lblPurchaseDate" />
+
+        <TextView
+            android:id="@+id/tvPurchaseDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="09-06-2026, 17:18:28"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/glColon"
+            app:layout_constraintTop_toTopOf="@+id/lblPurchaseDate" />
+
+        <!-- Serial Number -->
+        <TextView
+            android:id="@+id/lblSerial"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="Serial Number"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toStartOf="@+id/glLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPurchaseDate" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textColor="@color/darkgrey"
+            app:layout_constraintStart_toStartOf="@+id/glLabel"
+            app:layout_constraintTop_toTopOf="@+id/lblSerial" />
+
+        <TextView
+            android:id="@+id/tvSerial"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="3L364Q00EJJ00000"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/glColon"
+            app:layout_constraintTop_toTopOf="@+id/lblSerial" />
+
+        <!-- Device Pin -->
+        <TextView
+            android:id="@+id/lblDevicePin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="Device Pin"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/btnSetPin"
+            app:layout_constraintEnd_toStartOf="@+id/glLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnSetPin" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textColor="@color/darkgrey"
+            app:layout_constraintStart_toStartOf="@+id/glLabel"
+            app:layout_constraintTop_toTopOf="@+id/lblDevicePin" />
+
+        <TextView
+            android:id="@+id/btnSetPin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/bg_tab_selected"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_15sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:text="Set Pin"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_9ssp"
+            app:layout_constraintStart_toStartOf="@+id/glColon"
+            app:layout_constraintTop_toBottomOf="@+id/tvSerial" />
+
+        <!-- Generate OUC Code -->
+        <TextView
+            android:id="@+id/lblGenerateOuc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="Generate OUC Code"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/btnGenerate"
+            app:layout_constraintEnd_toStartOf="@+id/glLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnGenerate" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textColor="@color/darkgrey"
+            app:layout_constraintStart_toStartOf="@+id/glLabel"
+            app:layout_constraintTop_toTopOf="@+id/lblGenerateOuc" />
+
+        <TextView
+            android:id="@+id/btnGenerate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/bg_tab_selected"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_15sdp"
+            android:paddingVertical="@dimen/_4sdp"
+            android:text="Generate"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_9ssp"
+            app:layout_constraintStart_toStartOf="@+id/glColon"
+            app:layout_constraintTop_toBottomOf="@+id/btnSetPin" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.view.activity.retailer.makepayment.MakePaymentRequestPage">
+
+    <!-- Header -->
+    <RelativeLayout
+        android:id="@+id/headlayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_100sdp"
+        android:background="@drawable/signuptopback"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:src="@drawable/back"
+            app:tint="@color/darkgrey" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Make Payment Request"
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_18ssp"
+            android:fontFamily="@font/inter_bold"/>
+    </RelativeLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/headlayout"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+      
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/_10sdp">
+
+                <!-- Transfer Mode -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Transfer Mode"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/edittext_color"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:background="@drawable/bg_black_border">
+
+                    <Spinner
+                        android:id="@+id/transfermode"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </LinearLayout>
+
+                <!-- Deposit Bank -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="Deposit Bank"
+                    android:textSize="@dimen/_14ssp"
+                    android:textColor="@color/edittext_color"/>
+
+                <TextView
+                    android:id="@+id/bankName"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/_12sdp"
+                    android:background="@drawable/bg_black_border"/>
+
+                <!-- Account Number -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="Account Number"
+                    android:textSize="@dimen/_14ssp"
+                    android:textColor="@color/edittext_color"/>
+
+                <TextView
+                    android:id="@+id/accountNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/_12sdp"
+                    android:background="@drawable/bg_black_border"/>
+
+                <!-- IFSC -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="IFSC Code"
+                    android:textSize="@dimen/_14ssp"
+                    android:textColor="@color/edittext_color"/>
+
+                <TextView
+                    android:id="@+id/ifscCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/_12sdp"
+                    android:background="@drawable/bg_black_border"/>
+
+                <!-- Branch -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="Branch Code / Name"
+                    android:textSize="@dimen/_14ssp"
+                    android:textColor="@color/edittext_color"/>
+
+                <TextView
+                    android:id="@+id/branchcodetxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/_12sdp"
+                    android:background="@drawable/bg_black_border"/>
+
+                <!-- Transaction ID -->
+
+                <TextView
+                    android:id="@+id/transactiontitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="Transaction ID"
+                    android:textSize="@dimen/_14ssp"
+                    android:textColor="@color/edittext_color"/>
+
+                <EditText
+                    android:id="@+id/transactionIdetv"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:background="@drawable/bg_black_border"
+                    android:hint="Enter Transaction ID"
+                    android:paddingHorizontal="@dimen/_12sdp"
+                    android:textSize="@dimen/_15ssp"/>
+
+                <!-- Amount -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="Amount"
+                    android:textSize="@dimen/_14ssp"
+                    android:textColor="@color/edittext_color"/>
+
+                <EditText
+                    android:id="@+id/amountetxtve"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:background="@drawable/bg_black_border"
+                    android:hint="Enter Amount"
+                    android:inputType="numberDecimal"
+                    android:paddingHorizontal="@dimen/_12sdp"
+                    android:textSize="@dimen/_15ssp"/>
+
+                <!-- Remarks -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="Remarks"
+                    android:textSize="@dimen/_14ssp"
+                    android:textColor="@color/edittext_color"/>
+
+                <EditText
+                    android:id="@+id/remarksetxtev"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_80sdp"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:background="@drawable/bg_black_border"
+                    android:gravity="top"
+                    android:hint="Enter Remarks"
+                    android:padding="@dimen/_12sdp"
+                    android:textSize="@dimen/_15ssp"/>
+
+                <!-- Upload Receipt -->
+
+                <LinearLayout
+                    android:id="@+id/uploadpiclayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_160sdp"
+                    android:layout_marginTop="@dimen/_24sdp"
+                    android:background="@drawable/bg_black_border"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/receiptPhoto"
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_height="@dimen/_100sdp"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"/>
+
+                    <ImageView
+                        android:id="@+id/cameraicon"
+                        android:layout_width="@dimen/_60sdp"
+                        android:layout_height="@dimen/_60sdp"
+                        android:src="@drawable/cameraicon"/>
+
+                    <TextView
+                        android:id="@+id/clicktosealphoto1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:text="Upload Payment Receipt"
+                        android:textSize="@dimen/_14ssp"/>
+                </LinearLayout>
+
+                <!-- Submit Button -->
+
+                <LinearLayout
+                    android:id="@+id/confirmbutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_52sdp"
+                    android:layout_marginTop="@dimen/_24sdp"
+                    android:background="@drawable/searchbutton"
+                    android:backgroundTint="#007BFF"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Transfer Amount"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/_15ssp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+     
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

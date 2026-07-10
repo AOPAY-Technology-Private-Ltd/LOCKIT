@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/phonelocked"
+            android:title="@string/menu_lock"
+            android:visible="false"/>
+
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/usericon"
+            android:title="@string/menu_profile"
+            android:visible="true"/>
+
+        <item
+            android:id="@+id/nav_wallet"
+            android:icon="@drawable/wallet"
+            android:title="@string/menu_wallet"
+            android:visible="true"/>
+
+        <item
+            android:id="@+id/nav_addaccount"
+            android:icon="@drawable/banking"
+            android:title="@string/menu_account"
+            android:visible="true"/>
+
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/logout"
+            android:title="@string/menu_sign" />
+
+    </group>
+
+</menu>

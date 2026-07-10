@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardRoot"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="@dimen/_5sdp"
+        app:cardUseCompatPadding="true"
+        app:cardBackgroundColor="@color/bggrey">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- Loan Amount Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+                <!-- Product Name -->
+                <TextView
+                    android:id="@+id/tvProductName"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="oppo A3 5G"
+                    android:textSize="@dimen/_12ssp"
+                    android:fontFamily="@font/inter_bold"
+                    android:textColor="#1B5E20"/>
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loan Amount"
+                        android:layout_gravity="end"
+                        android:textColor="@color/darkgrey"
+                        android:textSize="@dimen/_10ssp"/>
+
+                    <TextView
+                        android:id="@+id/tvLoanAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹10,500.00"
+                        android:layout_gravity="end"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@color/purple"
+                        android:textSize="@dimen/_14ssp"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="8dp"
+                android:background="#CFCFCF"/>
+
+            <!-- Customer Name -->
+            <TextView
+                android:id="@+id/tvCustomerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="xyz khan"
+                android:textSize="@dimen/_14ssp"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="#000000"/>
+
+            <!-- Customer Code -->
+            <TextView
+                android:id="@+id/tvCustomerCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Customer Code : FQ0172"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="@dimen/_11ssp"
+                android:textColor="#555555"
+                android:layout_marginBottom="6dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="6dp"
+                android:background="#CFCFCF"/>
+
+            <!-- Fees Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="6dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/tvProcessingFees"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="Processing Fees : ₹500.00"
+                    android:textSize="@dimen/_10ssp"/>
+
+                <TextView
+                    android:id="@+id/tvMembership"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:fontFamily="@font/inter_regular"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:text="Membership : ₹299.00"
+                    android:textSize="@dimen/_10ssp"/>
+            </LinearLayout>
+
+            <!-- Loan Amount Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="6dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/tvDownPayment"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="Down Payment : ₹4,500.00"
+                    android:textSize="@dimen/_10ssp"/>
+
+                <!-- Holding Amount -->
+                <TextView
+                    android:id="@+id/tvHoldingAmount"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:gravity="end"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="Holding Amount : ₹0.00"
+                    android:textSize="@dimen/_10ssp"/>
+
+
+            </LinearLayout>
+
+            <!-- Settlement Amount -->
+            <TextView
+                android:id="@+id/tvSettlementAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="8dp"
+                android:text="Settlement Amount : ₹9,701.00"
+                android:textSize="14sp"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="#F9A825"
+                android:background="#424242"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
