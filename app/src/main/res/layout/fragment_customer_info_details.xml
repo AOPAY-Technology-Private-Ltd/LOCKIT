@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toplayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_light_blue_rounded"
+        android:padding="@dimen/_15sdp"
+        android:backgroundTint="#F0F7FF">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/glLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.35" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/glColon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.42" />
+
+    <!-- Full Name -->
+    <TextView
+        android:id="@+id/lblFullName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Full Name"
+        android:textColor="@color/darkgrey"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toStartOf="@+id/glLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvFullNameColon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textColor="@color/darkgrey"
+        app:layout_constraintStart_toStartOf="@+id/glLabel"
+        app:layout_constraintTop_toTopOf="@+id/lblFullName" />
+
+    <TextView
+        android:id="@+id/tvFullName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Pinki Sethi"
+        android:textColor="@color/darkgrey"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/glColon"
+        app:layout_constraintTop_toTopOf="@+id/lblFullName" />
+
+    <!-- Email -->
+    <TextView
+        android:id="@+id/lblEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="Email"
+        android:textColor="@color/darkgrey"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toStartOf="@+id/glLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFullName" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textColor="@color/darkgrey"
+        app:layout_constraintStart_toStartOf="@+id/glLabel"
+        app:layout_constraintTop_toTopOf="@+id/lblEmail" />
+
+    <TextView
+        android:id="@+id/tvEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="pyaazaloo@gmail.com"
+        android:textColor="@color/darkgrey"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/glColon"
+        app:layout_constraintTop_toTopOf="@+id/lblEmail" />
+
+    <!-- Mobile -->
+    <TextView
+        android:id="@+id/lblMobile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="Mobile"
+        android:textColor="@color/darkgrey"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toStartOf="@+id/glLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvEmail" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textColor="@color/darkgrey"
+        app:layout_constraintStart_toStartOf="@+id/glLabel"
+        app:layout_constraintTop_toTopOf="@+id/lblMobile" />
+
+    <TextView
+        android:id="@+id/tvMobile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="+91 8989082401"
+        android:textColor="@color/darkgrey"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/glColon"
+        app:layout_constraintTop_toTopOf="@+id/lblMobile" />
+
+    <!-- IMEI -->
+    <TextView
+        android:id="@+id/lblImei"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="IMEI"
+        android:textColor="@color/darkgrey"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toStartOf="@+id/glLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvMobile" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textColor="@color/darkgrey"
+        app:layout_constraintStart_toStartOf="@+id/glLabel"
+        app:layout_constraintTop_toTopOf="@+id/lblImei" />
+
+    <TextView
+        android:id="@+id/tvImei"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="860543082547611"
+        android:textColor="@color/darkgrey"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/glColon"
+        app:layout_constraintTop_toTopOf="@+id/lblImei" />
+
+    <!-- Code -->
+    <TextView
+        android:id="@+id/lblCode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="Code"
+        android:textColor="@color/darkgrey"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toStartOf="@+id/glLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvImei" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textColor="@color/darkgrey"
+        app:layout_constraintStart_toStartOf="@+id/glLabel"
+        app:layout_constraintTop_toTopOf="@+id/lblCode" />
+
+    <TextView
+        android:id="@+id/tvCode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="PS1781005231345"
+        android:textColor="@color/darkgrey"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/glColon"
+        app:layout_constraintTop_toTopOf="@+id/lblCode" />
+
+    <!-- Address -->
+    <TextView
+        android:id="@+id/lblAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="Address"
+        android:textColor="@color/darkgrey"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toStartOf="@+id/glLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCode" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textColor="@color/darkgrey"
+        app:layout_constraintStart_toStartOf="@+id/glLabel"
+        app:layout_constraintTop_toTopOf="@+id/lblAddress" />
+
+    <TextView
+        android:id="@+id/tvAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Vipin Garden, Dwarka Mor, New Delhi Delhi, India, 110064"
+        android:textColor="@color/darkgrey"
+        android:textSize="@dimen/_11ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/glColon"
+        app:layout_constraintTop_toTopOf="@+id/lblAddress" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Bottom Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/_12sdp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/toplayout">
+
+        <TextView
+            android:id="@+id/btnSignature"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_bottom_action_button"
+            android:gravity="center"
+            android:paddingVertical="@dimen/_12sdp"
+            android:text="Signature"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_13ssp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btnDocuments"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_bottom_action_button"
+            android:gravity="center"
+            android:paddingVertical="@dimen/_12sdp"
+            android:text="Documents"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_13ssp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

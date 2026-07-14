@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_5sdp"
+        app:cardCornerRadius="@dimen/_8sdp"
+        app:cardElevation="@dimen/_3sdp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardBackgroundColor="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/_10sdp">
+
+            <!-- Retailer ID -->
+            <TextView
+                android:id="@+id/retailerID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Retailer ID:________"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/orange"
+                android:fontFamily="@font/inter_bold"/>
+
+            <!-- Account Name -->
+            <TextView
+                android:id="@+id/accountName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Account Name: John Doe"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_4sdp"/>
+
+            <!-- Account Number -->
+            <TextView
+                android:id="@+id/accountNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Account Number: 1234567890"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_2sdp"/>
+
+            <!-- Bank Name -->
+            <TextView
+                android:id="@+id/bankName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bank: HDFC Bank"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_2sdp"/>
+
+            <!-- IFSC Code -->
+            <TextView
+                android:id="@+id/ifscCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="IFSC: HDFC0001234"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_2sdp"/>
+
+            <!-- Branch Name + Address -->
+            <TextView
+                android:id="@+id/branchName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Branch: Main Branch"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_2sdp"/>
+
+            <TextView
+                android:id="@+id/branchAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Address: 123 Street, Delhi"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_2sdp"/>
+
+            <!-- Mobile -->
+            <TextView
+                android:id="@+id/mobileNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mobile: 9876543210"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_2sdp"/>
+
+            <!-- Email -->
+            <TextView
+                android:id="@+id/emailID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email: john@example.com"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_2sdp"/>
+
+            <!-- Active Status -->
+            <TextView
+                android:id="@+id/activeStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Status: Active"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/green"
+                android:fontFamily="@font/inter_medium"
+                android:layout_marginTop="@dimen/_4sdp"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

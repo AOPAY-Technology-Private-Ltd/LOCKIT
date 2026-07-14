@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ui.view.activity.retailer.lockkit.LockKitCustomerDetailsInfoPage">
+
+    <!-- Header -->
+    <RelativeLayout
+        android:id="@+id/clHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_100sdp"
+        android:background="@drawable/signuptopback"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:src="@drawable/back"
+            app:tint="@color/darkgrey"
+            android:layout_alignTop="@id/titlelayout"
+            android:layout_alignBottom="@id/titlelayout"
+            android:layout_marginLeft="@dimen/_10sdp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/titlelayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/customerkitinfo"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_18ssp"
+                android:fontFamily="@font/inter_bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/home"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:src="@drawable/homeicon"
+            app:tint="@color/darkgrey"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/titlelayout"
+            android:layout_alignBottom="@id/titlelayout" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clHeader">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_20sdp">
+
+            <!-- Gradient Card -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clGradientCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:background="@drawable/bg_customer_info_card"
+                android:padding="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivProfilePic"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                    tools:src="@tools:sample/avatars" />
+
+                <TextView
+                    android:id="@+id/tvCustName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:text="Pinki Sethi"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_13ssp"
+                    android:fontFamily="@font/inter_bold"
+                    app:layout_constraintEnd_toStartOf="@+id/tvActiveBadge"
+                    app:layout_constraintStart_toEndOf="@+id/ivProfilePic"
+                    app:layout_constraintTop_toTopOf="@+id/ivProfilePic" />
+
+                <TextView
+                    android:id="@+id/tvCustId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PS10069"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_10ssp"
+                    android:fontFamily="@font/inter_regular"
+                    app:layout_constraintStart_toStartOf="@+id/tvCustName"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCustName" />
+
+                <TextView
+                    android:id="@+id/tvActiveBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_status_green"
+                    android:backgroundTint="@color/white"
+                    app:drawableStartCompat="@drawable/dot_active"
+                    android:drawablePadding="@dimen/_4sdp"
+                    android:gravity="center"
+                    android:paddingHorizontal="@dimen/_8sdp"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:text="Active"
+                    android:fontFamily="@font/inter_regular"
+                    android:textColor="@color/green"
+                    android:textSize="@dimen/_8ssp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tvCustName" />
+
+                <LinearLayout
+                    android:id="@+id/locationlayout"
+                    android:layout_width="wrap_content"
+                    app:layout_constraintStart_toStartOf="@+id/tvCustName"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCustId"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/getlocation"
+                        android:layout_width="@dimen/_25sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:src="@drawable/locationicon" />
+
+                    <ImageView
+                        android:id="@+id/alarm"
+                        android:layout_width="@dimen/_25sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:src="@drawable/alarmicon" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_unlock_button"
+                    app:layout_constraintEnd_toEndOf="@+id/tvActiveBadge"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCustId"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/locationlayout"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:padding="@dimen/_2sdp"
+                    android:layout_marginTop="@dimen/_6sdp">
+
+                    <LinearLayout
+                        android:id="@+id/unlocklayout"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="@dimen/_3sdp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_15sdp"
+                            android:layout_height="@dimen/_15sdp"
+                            android:src="@drawable/phonelocked"
+                            android:tint="@color/white"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:drawableTint="@color/white"
+                            android:gravity="center"
+                            android:text="Unlock"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_10ssp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/locklayout"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:background="@drawable/bg_lock_button"
+                        android:paddingHorizontal="@dimen/_8sdp"
+                        android:paddingVertical="@dimen/_3sdp"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="@dimen/_15sdp"
+                            android:layout_height="@dimen/_15sdp"
+                            android:src="@drawable/phonelocked"
+                            android:tint="@color/white"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:text="Lock"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_10ssp" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Tabs RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvTabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/_12sdp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@+id/clGradientCard"
+                tools:listitem="@layout/item_info_tab" />
+
+            <!-- Fragment Container -->
+            <FrameLayout
+                android:id="@+id/fragmentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                app:layout_constraintTop_toBottomOf="@+id/rvTabs">
+
+                 Preview of the fragment content
+                <!--<include layout="@layout/fragment_customer_device_details" />-->
+                <!--<include layout="@layout/fragment_customer_action" />-->
+                <include layout="@layout/fragment_customer_info_details" />
+
+            </FrameLayout>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

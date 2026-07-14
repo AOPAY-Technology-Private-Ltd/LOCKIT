@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/remainingamountcolor">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+         android:layout_margin="@dimen/_10sdp"
+         android:paddingBottom="@dimen/_30sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_weight=".5"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_55sdp"
+            android:src="@drawable/newapplogo"/>
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/ao_pay"
+            android:textAllCaps="true"
+            android:gravity="center"
+            android:layout_marginRight="@dimen/_20sdp"
+            android:textSize="@dimen/_20ssp"
+            android:fontFamily="@font/inter_bold"
+            android:layout_gravity="center"
+            android:textColor="@color/my_nav_bar_color"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:background="@color/black"/>
+
+        <TextView
+            android:id="@+id/currentdate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Date: 01-11-2024"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="@dimen/_11ssp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"/>
+
+        <TextView
+            android:id="@+id/retailerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="To: DHANLAXMI MOBILE AND ELECTRONIC"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="@dimen/_11ssp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/delivery_advice"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="@dimen/_13ssp"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/_5sdp"
+            android:textColorHint="@color/black"/>
+
+        <TextView
+            android:id="@+id/customerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dear Annu ,"
+            android:textColor="@color/black"
+            android:fontFamily="@font/inter_medium" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/_5sdp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1. Product Details"
+            android:fontFamily="@font/inter_bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/_4sdp"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight=".1"
+                android:layout_width="0dp"
+                android:text="A"
+                android:gravity="center"
+                android:padding="@dimen/_4sdp"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10ssp"
+                android:background="@drawable/borderaggreement"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_weight=".5"
+                android:layout_width="0dp"
+                android:text="Customer Name"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:padding="@dimen/_4sdp"
+                android:textSize="@dimen/_10ssp"
+                android:layout_marginHorizontal="@dimen/_2sdp"
+                android:background="@drawable/borderaggreement"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/customername"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:text="ABCCDE"
+                android:textSize="@dimen/_10ssp"
+                android:padding="@dimen/_4sdp"
+                android:background="@drawable/borderaggreement"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight=".1"
+                android:layout_width="0dp"
+                android:text="B"
+                android:gravity="center"
+                android:padding="@dimen/_4sdp"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10ssp"
+                android:background="@drawable/borderaggreement"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_weight=".5"
+                android:layout_width="0dp"
+                android:text="Brand Name"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:padding="@dimen/_4sdp"
+                android:textSize="@dimen/_10ssp"
+                android:layout_marginHorizontal="@dimen/_2sdp"
+                android:background="@drawable/borderaggreement"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/brandname"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:text="MOTOROLA"
+                android:padding="@dimen/_4sdp"
+                android:textSize="@dimen/_10ssp"
+                android:background="@drawable/borderaggreement"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight=".1"
+                android:layout_width="0dp"
+                android:text="C"
+                android:gravity="center"
+                android:textSize="@dimen/_10ssp"
+                android:padding="@dimen/_4sdp"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:background="@drawable/borderaggreement"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_weight=".5"
+                android:layout_width="0dp"
+                android:text="Model Name"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10ssp"
+                android:padding="@dimen/_4sdp"
+                android:layout_marginHorizontal="@dimen/_2sdp"
+                android:background="@drawable/borderaggreement"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/modelName"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:text=" EDGE 50 FUSION/8/128 - HOT PINK"
+                android:padding="@dimen/_4sdp"
+                android:textSize="@dimen/_10ssp"
+                android:background="@drawable/borderaggreement"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight=".1"
+                android:layout_width="0dp"
+                android:text="D"
+                android:gravity="center"
+                android:padding="@dimen/_4sdp"
+                android:textSize="@dimen/_10ssp"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:background="@drawable/borderaggreement"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_weight=".5"
+                android:layout_width="0dp"
+                android:text="IMIE 1 No"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10ssp"
+                android:padding="@dimen/_4sdp"
+                android:layout_marginHorizontal="@dimen/_2sdp"
+                android:background="@drawable/borderaggreement"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/imieno1"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:text="358419294596416"
+                android:padding="@dimen/_4sdp"
+                android:textSize="@dimen/_10ssp"
+                android:background="@drawable/borderaggreement"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight=".1"
+                android:layout_width="0dp"
+                android:text="E"
+                android:gravity="center"
+                android:padding="@dimen/_4sdp"
+                android:textSize="@dimen/_10ssp"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:background="@drawable/borderaggreement"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_weight=".5"
+                android:layout_width="0dp"
+                android:text="IMIE 2 No"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:padding="@dimen/_4sdp"
+                android:textSize="@dimen/_10ssp"
+                android:layout_marginHorizontal="@dimen/_2sdp"
+                android:background="@drawable/borderaggreement"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/imieno2"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:text="358419294596424"
+                android:padding="@dimen/_4sdp"
+                android:textSize="@dimen/_10ssp"
+                android:background="@drawable/borderaggreement"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight=".1"
+                android:layout_width="0dp"
+                android:text="F"
+                android:gravity="center"
+                android:padding="@dimen/_4sdp"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10ssp"
+                android:background="@drawable/borderaggreement"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_weight=".5"
+                android:layout_width="0dp"
+                android:text=" Phone No"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:padding="@dimen/_4sdp"
+                android:textSize="@dimen/_10ssp"
+                android:layout_marginHorizontal="@dimen/_2sdp"
+                android:background="@drawable/borderaggreement"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/mobnumber"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:text="12345678900"
+                android:padding="@dimen/_4sdp"
+                android:textSize="@dimen/_10ssp"
+                android:background="@drawable/borderaggreement"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/_20sdp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Thanking you,"
+                android:textSize="@dimen/_13ssp"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"/>
+
+
+            <TextView
+                android:id="@+id/companyname"
+                android:layout_width="wrap_content"
+                android:text="AO PAY"
+                android:textSize="@dimen/_12ssp"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+         <TextView
+             android:id="@+id/termconditiontxt"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:textColor="@color/black"
+             android:layout_marginTop="@dimen/_10sdp"
+             android:text="@string/delivery_terms_condition"/>
+
+         <LinearLayout
+             android:id="@+id/btnAccept"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:text="Accept"
+             android:layout_marginHorizontal="@dimen/_4sdp"
+             android:layout_marginBottom="@dimen/_10sdp"
+             android:textColor="@android:color/white"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintEnd_toEndOf="parent"
+             android:background="@drawable/searchbutton"
+             android:gravity="center"
+             android:padding="@dimen/_10sdp">
+
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:fontFamily="@font/inter_bold"
+                 android:text="Accept"
+                 android:textColor="@color/white"
+                 android:textSize="@dimen/_14ssp" />
+
+         </LinearLayout>
+
+    </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

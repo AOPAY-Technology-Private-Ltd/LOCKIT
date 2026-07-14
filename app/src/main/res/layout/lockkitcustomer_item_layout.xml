@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/_10sdp"
+    android:layout_marginVertical="@dimen/_4sdp"
+    app:cardCornerRadius="@dimen/_12sdp"
+    app:cardElevation="@dimen/_3sdp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header Section -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/pink"
+            android:padding="@dimen/_3sdp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivProfile"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/tvCustomerName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:text="Pinki Sethi (PS1234567809)"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10ssp"
+                android:fontFamily="@font/inter_bold"
+                app:layout_constraintEnd_toStartOf="@+id/tvStatusBadge"
+                app:layout_constraintStart_toEndOf="@+id/ivProfile"
+                app:layout_constraintTop_toTopOf="@+id/ivProfile" />
+
+            <TextView
+                android:id="@+id/tvCustomerEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="abc@gmail.com"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_9ssp"
+                android:fontFamily="@font/inter_regular"
+                app:layout_constraintEnd_toEndOf="@+id/tvCustomerName"
+                app:layout_constraintStart_toStartOf="@+id/tvCustomerName"
+                app:layout_constraintTop_toBottomOf="@+id/tvCustomerName" />
+
+            <TextView
+                android:id="@+id/tvStatusBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_status_green_dark"
+                app:drawableStartCompat="@drawable/phonelocked"
+                android:drawablePadding="@dimen/_4sdp"
+                app:drawableTint="@color/white"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_7sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="Unlocked"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_9ssp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Body Section -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F0F5FF"
+            android:padding="@dimen/_12sdp">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/glLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.45" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/glColon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.52" />
+
+            <!-- Row: Mobile -->
+            <TextView
+                android:id="@+id/lblMobile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Mobile"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                android:fontFamily="@font/inter_regular"
+                app:layout_constraintEnd_toStartOf="@+id/glLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintStart_toStartOf="@+id/glLabel"
+                app:layout_constraintTop_toTopOf="@+id/lblMobile" />
+
+            <TextView
+                android:id="@+id/tvMobileValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="8929898901"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/glColon"
+                app:layout_constraintTop_toTopOf="@+id/lblMobile" />
+
+            <!-- Row: IMEI 1 -->
+            <TextView
+                android:id="@+id/lblImei1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:text="IMEI 1"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintEnd_toStartOf="@+id/glLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lblMobile" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintStart_toStartOf="@+id/glLabel"
+                app:layout_constraintTop_toTopOf="@+id/lblImei1" />
+
+            <TextView
+                android:id="@+id/tvImei1Value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="869663047581173"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                android:fontFamily="@font/inter_regular"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/glColon"
+                app:layout_constraintTop_toTopOf="@+id/lblImei1" />
+
+            <!-- Row: IMEI 2 -->
+            <TextView
+                android:id="@+id/lblImei2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:text="IMEI 2"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                android:fontFamily="@font/inter_regular"
+                app:layout_constraintEnd_toStartOf="@+id/glLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lblImei1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintStart_toStartOf="@+id/glLabel"
+                app:layout_constraintTop_toTopOf="@+id/lblImei2" />
+
+            <TextView
+                android:id="@+id/tvImei2Value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="869663047581165"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                android:fontFamily="@font/inter_regular"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/glColon"
+                app:layout_constraintTop_toTopOf="@+id/lblImei2" />
+
+            <!-- Row: Serial Number -->
+            <TextView
+                android:id="@+id/lblSerial"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:text="Serial Number"
+                android:textColor="@color/darkgrey"
+                android:fontFamily="@font/inter_regular"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintEnd_toStartOf="@+id/glLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lblImei2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintStart_toStartOf="@+id/glLabel"
+                app:layout_constraintTop_toTopOf="@+id/lblSerial" />
+
+            <TextView
+                android:id="@+id/tvSerialValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="1781092325834"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                android:fontFamily="@font/inter_regular"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/glColon"
+                app:layout_constraintTop_toTopOf="@+id/lblSerial" />
+
+            <!-- Row: Purchase Date -->
+            <TextView
+                android:id="@+id/lblPurchaseDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:text="Purchase Date"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                android:fontFamily="@font/inter_regular"
+                app:layout_constraintEnd_toStartOf="@+id/glLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lblSerial" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintStart_toStartOf="@+id/glLabel"
+                app:layout_constraintTop_toTopOf="@+id/lblPurchaseDate" />
+
+            <TextView
+                android:id="@+id/tvPurchaseDateValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="10-06-2026, 05:22 PM"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                android:fontFamily="@font/inter_regular"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/glColon"
+                app:layout_constraintTop_toTopOf="@+id/lblPurchaseDate" />
+
+            <!-- Row: Schedule Lock Status -->
+            <TextView
+                android:id="@+id/lblLockStatus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:text="Schedule Lock Status"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                android:fontFamily="@font/inter_regular"
+                app:layout_constraintEnd_toStartOf="@+id/glLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lblPurchaseDate" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintStart_toStartOf="@+id/glLabel"
+                app:layout_constraintTop_toTopOf="@+id/lblLockStatus" />
+
+            <TextView
+                android:id="@+id/tvLockStatusValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="ON"
+                android:textColor="@color/green"
+                android:textSize="@dimen/_11ssp"
+                android:textStyle="bold"
+                android:fontFamily="@font/inter_regular"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/glColon"
+                app:layout_constraintTop_toTopOf="@+id/lblLockStatus" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

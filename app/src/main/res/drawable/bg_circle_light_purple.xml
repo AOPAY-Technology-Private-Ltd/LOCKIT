@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <!-- Light purple background to match Step 1 image -->
+    <solid android:color="#F3E5F5" />
+
+    <!-- This ensures the circle has a base size before scaling -->
+    <size
+        android:width="40dp"
+        android:height="40dp" />
+</shape>

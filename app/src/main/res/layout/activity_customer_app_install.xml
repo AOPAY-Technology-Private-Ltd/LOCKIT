@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.view.activity.retailer.CustomerAppInstall">
+
+    <RelativeLayout
+        android:id="@+id/headlayout"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_100sdp"
+        android:background="@drawable/signuptopback"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:src="@drawable/back"
+            app:tint="@color/darkgrey"
+            android:layout_alignTop="@id/titlelayout"
+            android:layout_alignBottom="@id/titlelayout"
+            android:layout_marginLeft="@dimen/_10sdp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/titlelayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/qrcode"
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_18ssp"
+                android:fontFamily="@font/inter_bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/home"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:src="@drawable/homeicon"
+            app:tint="@color/darkgrey"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/titlelayout"
+            android:layout_alignBottom="@id/titlelayout" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/headlayout"
+        android:padding="@dimen/_20sdp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="FRP Mail ID : info@aopay.in"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_14ssp"
+            android:fontFamily="@font/inter_bold" />
+
+        <!-- QR Code -->
+        <ImageView
+            android:id="@+id/qrImage"
+            android:layout_width="@dimen/_180sdp"
+            android:layout_height="@dimen/_180sdp"
+            android:padding="@dimen/_8sdp"
+            android:src="@drawable/testdpcqr"
+            android:layout_marginTop="@dimen/_10sdp"/>
+
+        <!-- Download Illustration -->
+        <ImageView
+            android:id="@+id/downloadIcon"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_customer_app_install"/>
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/clicktoopenqralert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:text="Scan And Download DPC App"
+            android:textColor="@color/purple"
+            android:textSize="@dimen/_16ssp"
+            android:fontFamily="@font/inter_bold"/>
+
+        <!-- Indicator -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <View
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:background="@drawable/dot_inactive"/>
+
+            <View
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:background="@drawable/dot_inactive"/>
+
+            <View
+                android:layout_width="@dimen/_6sdp"
+                android:layout_height="@dimen/_6sdp"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:background="@drawable/dot_inactive"/>
+        </LinearLayout>
+
+        <!-- Bottom Text -->
+        <TextView
+            android:id="@+id/clicktoopenappqr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="Click to open Next QR"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_14ssp"
+            android:fontFamily="@font/inter_bold"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/imagea" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_4sdp"
+            android:fontFamily="@font/inter_bold"
+            android:text="@string/aopay_technology_ltd"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_10ssp" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
