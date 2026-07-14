@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true"
+        app:cardBackgroundColor="@color/bggrey"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <!-- Status & Amount -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+
+                    <!-- RID / Transaction ID -->
+                    <TextView
+                        android:id="@+id/tvTxnId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Txn ID : PAY0000000055"
+                        android:textSize="@dimen/_9ssp"
+                        android:textColor="@color/darkgrey"
+                        android:fontFamily="@font/inter_regular"
+                        android:layout_marginTop="6dp"/>
+
+                <TextView
+                    android:id="@+id/tvStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Approved"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="@dimen/_14ssp"
+                    android:textColor="@color/green"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/emiamounttitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="Received Amount"
+                        android:layout_gravity="center"
+                        android:gravity="right"
+                        android:fontFamily="@font/inter_medium"
+                        android:textColor="@color/darkgrey"
+                        android:textSize="@dimen/_9ssp"/>
+
+                    <TextView
+                        android:id="@+id/tvAmount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="₹1,825.50"
+                        android:layout_gravity="center"
+                        android:gravity="right"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="@dimen/_16ssp"
+                        android:textColor="#6A1B9A"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <!-- Date & Time -->
+            <TextView
+                android:id="@+id/tvDateTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="16 Jan 2026 • 4:31 PM"
+                android:fontFamily="@font/inter_regular"
+                android:textSize="@dimen/_10ssp"
+                android:textColor="#777777"
+                android:layout_marginTop="4dp"/>
+
+            <!-- Message -->
+            <TextView
+                android:id="@+id/tvMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cash payment received for 1 EMIs."
+                android:textSize="@dimen/_11ssp"
+                android:fontFamily="@font/inter_regular"
+                android:textColor="#444444"
+                android:layout_marginTop="6dp"/>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#CFCFCF"
+                android:layout_marginVertical="8dp"/>
+
+            <!-- Charges -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvServiceCharge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Service Charge : ₹0.00"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="@dimen/_10ssp"/>
+
+                <TextView
+                    android:id="@+id/tvGST"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="GST (18%) : ₹0.00"
+                    android:fontFamily="@font/inter_regular"
+                    android:textSize="@dimen/_10ssp"
+                    android:layout_marginTop="2dp"/>
+
+                <TextView
+                    android:id="@+id/tvTotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Net Amount : ₹1,825.50"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="@dimen/_11ssp"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+
+
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

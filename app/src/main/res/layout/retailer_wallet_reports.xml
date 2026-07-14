@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/_5sdp"
+        app:cardUseCompatPadding="true"
+        app:cardBackgroundColor="@color/bggrey"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/_5sdp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp">
+
+                <TextView
+                    android:id="@+id/statustxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="Status :"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="@dimen/_11ssp"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@id/loanidtxt"
+                    android:gravity="center"
+                    android:text="Success"
+                    android:textSize="@dimen/_13ssp"
+                    android:fontFamily="@font/inter_bold"
+                    android:textColor="@color/green"/>
+
+
+                <TextView
+                    android:id="@+id/loanidtxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/statustxt"
+                    android:text="Transaction ID : "
+                    android:textSize="@dimen/_12ssp"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/transactionid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/loanidtxt"
+                    android:layout_alignBottom="@+id/loanidtxt"
+                    android:gravity="center"
+                    android:layout_below="@+id/statustxt"
+                    android:text="TXN000055"
+                    android:textSize="@dimen/_10ssp"
+                    android:fontFamily="@font/inter_regular"
+                    android:textColor="@color/grey"/>
+
+                <TextView
+                    android:id="@+id/emiamounttitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="Transfer Amt"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/darkgrey"
+                    android:textSize="@dimen/_10ssp"/>
+
+                <TextView
+                    android:id="@+id/withdrawAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="₹ 140.00"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="@dimen/_15ssp"
+                    android:textColor="@color/purple"
+                    android:layout_below="@+id/emiamounttitle"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_4sdp">
+
+
+                <LinearLayout
+                    android:layout_weight=".5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical">
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/customercodetxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:gravity="center"
+                            android:text="Retailer Code : "
+                            android:textSize="@dimen/_12ssp"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/inter_medium"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:id="@+id/retailercode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/customercodetxt"
+                            android:text="542371645"
+                            android:textSize="@dimen/_12ssp"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/inter_regular"
+                            android:textColor="@color/black"/>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5sdp">
+
+
+
+                <TextView
+                    android:id="@+id/duedatetxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Transaction Date : "
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/red"/>
+
+                <TextView
+                    android:id="@+id/transactiondate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/duedatetxt"
+                    android:layout_centerInParent="true"
+                    android:text="08-08-2025"
+                    android:gravity="center"
+                    android:textSize="@dimen/_10ssp"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/inter_regular"
+                    android:textColor="@color/grey"/>
+
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5sdp">
+
+                <TextView
+                    android:id="@+id/remarkstxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Remarks :"
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/_11ssp"
+                    android:layout_alignParentLeft="true"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/remarksmsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/remarkstxt"
+                    android:layout_alignTop="@+id/remarkstxt"
+                    android:layout_alignBottom="@+id/remarkstxt"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:gravity="center"
+                    android:textSize="@dimen/_11ssp"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/black"/>
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

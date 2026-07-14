@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/_5sdp"
+        app:cardUseCompatPadding="true"
+        app:cardBackgroundColor="@color/bggrey"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/_5sdp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5sdp">
+
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status"
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_alignParentLeft="true"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/reporteddate"
+                    android:layout_alignTop="@+id/status"
+                    android:layout_alignBottom="@+id/status"
+                    android:gravity="center"
+                    android:text="Reported On : "
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/red"/>
+
+                <TextView
+                    android:id="@+id/reporteddate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:text="08-08-2025"
+                    android:gravity="center"
+                    android:textSize="@dimen/_10ssp"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/inter_regular"
+                    android:textColor="@color/grey"/>
+
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:background="@color/grey" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5sdp">
+
+                <TextView
+                    android:id="@+id/loanamount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LoanAmount : 13500.00"
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/_11ssp"
+                    android:layout_alignParentLeft="true"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/currentamount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/loanamount"
+                    android:layout_alignBottom="@+id/loanamount"
+                    android:gravity="center"
+                    android:text="CurrentAmount : 1500.00 "
+                    android:textSize="@dimen/_11ssp"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/black"/>
+
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="Account Number   "
+                    android:textSize="@dimen/_11ssp"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/accountnumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:hint="1234354875756586"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="@dimen/_11ssp"
+                    android:textColor="@color/green"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5sdp">
+
+                <TextView
+                    android:id="@+id/tenure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Subscriber Name"
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_alignParentLeft="true"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/subname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="Indian Overseas Bank"
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/black"/>
+
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/viewdetailscard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/_50sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                app:cardCornerRadius="@dimen/_7sdp"
+                android:layout_margin="@dimen/_5sdp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/view_loan_details"
+                    android:paddingHorizontal="@dimen/_10sdp"
+                    android:paddingVertical="@dimen/_5sdp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10ssp"
+                    android:fontFamily="@font/inter_medium"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

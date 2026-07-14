@@ -1,0 +1,22 @@
+<!-- res/drawable/progress_drawable.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background (unfilled part) -->
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/remainingamountcolor" /> <!-- Light gray background -->
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+
+    <!-- Progress (filled part) -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <solid android:color="@color/green" /> <!-- Default green -->
+                <corners android:radius="8dp" />
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>

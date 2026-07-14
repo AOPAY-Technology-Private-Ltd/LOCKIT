@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/forgetpagelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/headlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_100sdp"
+            android:background="@drawable/signuptopback"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/detaillayout">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:src="@drawable/back"
+                app:tint="@color/darkgrey"
+                android:layout_alignTop="@id/titlelayout"
+                android:layout_alignBottom="@id/titlelayout"
+                android:layout_marginLeft="@dimen/_10sdp" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/titlelayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/idverification"
+                    android:textColor="@color/darkgrey"
+                    android:textSize="@dimen/_18ssp"
+                    android:fontFamily="@font/inter_bold"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </RelativeLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/detaillayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/headlayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/lockimage"
+                android:layout_width="@dimen/_150sdp"
+                android:layout_height="@dimen/_120sdp"
+                android:src="@drawable/userimage"
+                android:layout_margin="@dimen/_35sdp"
+                android:scaleType="centerInside"
+                app:tint="@color/teal_200"
+                android:padding="@dimen/_10sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+
+            <LinearLayout
+                android:id="@+id/radiolayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                app:layout_constraintTop_toBottomOf="@id/lockimage">
+
+                <RadioGroup
+                    android:id="@+id/radioGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioButton1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Online"
+                        android:padding="8dp"/>
+
+                    <RadioButton
+                        android:id="@+id/radioButton2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Offline"
+                        android:padding="8dp"/>
+
+                    <RadioButton
+                        android:id="@+id/radioButton3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lock Kit"
+                        android:padding="8dp" />
+
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pancardlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/radiolayout"
+                android:background="@drawable/bg_black_border"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="@dimen/_50sdp"
+                        android:layout_height="@dimen/_40sdp"
+                        android:src="@drawable/pancard"
+                        android:scaleType="centerCrop"
+                        app:tint="@color/purple"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/_9sdp"
+                        android:textSize="@dimen/_14ssp"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/inter_regular"
+                        android:textColor="@color/purple"
+                        android:text="@string/pancard"
+                        android:layout_marginRight="@dimen/_50sdp"/>
+
+                </LinearLayout>
+
+
+                <ImageView
+                    android:id="@+id/donepancard"
+                    android:layout_weight=".2"
+                    android:layout_width="0dp"
+                    android:visibility="gone"
+                    android:layout_height="@dimen/_25sdp"
+                    android:src="@drawable/doneicon"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/aadharcardlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/pancardlayout"
+                android:background="@drawable/bg_black_border"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/aadharcard"
+                    app:tint="@color/purple"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_9sdp"
+                    android:textSize="@dimen/_14ssp"
+                    android:fontFamily="@font/inter_regular"
+                    android:textColor="@color/purple"
+                    android:text="@string/aadhar" />
+
+            </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/doneaadhaar"
+                    android:layout_weight=".2"
+                    android:layout_width="0dp"
+                    android:visibility="gone"
+                    android:layout_height="@dimen/_25sdp"
+                    android:src="@drawable/cross"
+                    app:tint="@color/red"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/cibilcardlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:background="@drawable/bg_black_border"
+                app:layout_constraintTop_toBottomOf="@id/aadharcardlayout"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:scaleType="centerCrop"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/_10sdp"
+                    android:src="@drawable/speedometer"
+                    app:tint="@color/purple"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_9sdp"
+                    android:textSize="@dimen/_14ssp"
+                    android:fontFamily="@font/inter_regular"
+                    android:textColor="@color/purple"
+                    android:text="@string/civil" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ImageView
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/imagea"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                   android:text="@string/aopay_technology_ltd"
+                    android:textSize="@dimen/_10ssp"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/inter_bold"
+                    android:layout_marginLeft="@dimen/_4sdp"/>
+
+            </LinearLayout>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4FA6D7</color>
+    <color name="colorPrimaryDark">#4FA6D7</color>
+    <color name="lightbluee">#BDD9E9</color>
+    <color name="lightbluee100">#EBF7FD</color>
+    <color name="colorAccent">#92B4DF</color>
+    <color name="teal_700">#005B8F</color>
+    <color name="teal_100">#4FA6D7</color>
+    <color name="teal_200">#0371B0</color>
+
+    <color name="black">#FF000000</color>
+    <color name="grey">#7E7A7A</color>
+    <color name="darkgrey">#434242</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="purple">#0371B0</color>
+    <color name="edittext_color">#3D3D3D</color>
+    <color name="lighttpurple">#8454EB</color>
+    <color name="pink">#3461FF</color>
+    <color name="button_text_light_gray">#DFDFDF</color>
+    <color name="editbgcolor">#FAF8F8</color>
+    <color name="signupback">#F0ECEC</color>
+    <color name="edt_color">#181717</color>
+    <color name="yellow">#E2A041</color>
+    <color name="orange">#DB570A</color>
+    <color name="darkpurple">#0371B0</color>
+    <color name="my_status_bar_color">#E2A041</color>
+    <color name="my_nav_bar_color">#391466</color>
+    <color name="lightpurple">#8FF1ECF8</color>
+
+    // color list
+    <color name="lightblue">#8193DD</color>
+    <color name="lightpink">#EA9AF0</color>
+    <color name="skyblue">#62D7F0</color>
+    <color name="darkred">#A52A2A</color>
+    <color name="lightgrey">#AAAAAA</color>
+    <color name="grey100">#EDEBEB</color>
+    <color name="lightgreen">#95D595</color>
+    <color name="green">#3AC33A</color>
+    <color name="remainingamountcolor">#D3D3D3</color>
+    <color name="blue">#4A4AA0</color>
+    <color name="teal700">#1D97A7</color>
+    <color name="teal7000">#85D7E2</color>
+    <color name="teallight700">#B2E6ED</color>
+
+    <color name="bggrey">#F0ECEC</color>
+    <color name="bggreyy">#F4F4F4</color>
+
+    <color name="lightpurple100">#CFB3F2</color>
+
+    <color name="red">#F02E2E</color>
+
+
+
+
+
+</resources>

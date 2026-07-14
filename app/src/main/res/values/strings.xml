@@ -1,0 +1,368 @@
+<resources>
+    <string name="app_name">LockKit</string>
+    <string name="MAPS_API_KEY">AIzaSyDu-tT_-yOsQGweZDJNMiXSDjyMbj9-SIg</string>
+
+    <string name="splachscreentxt1">"Smart money"</string>
+    <string name="splachscreentxt2">"Simple tools,Strong future"</string>
+    <string name="signup"><u>SIGN UP</u></string>
+    <string name="sign">Sign Up</string>
+    <string name="title_activity_dash_board">DashBoard</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_lock">Lock Phone</string>
+    <string name="menu_profile">Profile</string>
+    <string name="menu_wallet">Wallet</string>
+    <string name="menu_account">Bank Accounts</string>
+
+    <string name="retailerprofile">Profile</string>
+    <string name="menu_sign">Sign Out</string>
+    <string name="dashboardmsg">One Tap to Your Next Loan</string>
+
+    <string name="emi">EMI</string>
+    <string name="product">Product</string>
+    <string name="customer">Customer</string>
+    <string name="credit">Report</string>
+    <string name="emicalculation">Select Mobile</string>
+    <string name="emidetails">EMI Details</string>
+    <string name="forgetpass">Forget Password</string>
+    <string name="idverification">ID Verification</string>
+    <string name="biomatric">Biometric Kyc</string>
+    <string name="pancard">Pan Card</string>
+    <string name="aadhar">Aadhaar Card</string>
+    <string name="clickdocument"><u>Upload</u></string>
+    <string name="aadharverify">Aadhaar Verification</string>
+    <string name="walletpayout">Wallet</string>
+    <string name="bankaccount">Bank Accounts</string>
+    <string name="panarverify">Pan Verification</string>
+    <string name="aadhartitle">Please enter your 12-digit Aadhaar number and upload document for Verification</string>
+    <string name="panhint">Enter PAN number</string>
+    <string name="pancardtitle">Please enter your PAN number  for Verification</string>
+    <string name="newuserreg">Customer Verification</string>
+    <string name="paymentInfo">Payment Information</string>
+    <string name="mobilenumber">Please enter user 10 digit mobile number for Verification</string>
+    <string name="accept_term_condition">Accept Term and Condition</string>
+    <string name="referencedetails">Reference Details</string>
+    <string name="imeinumber">IMEI Number</string>
+    <string name="qrcode">QR Code</string>
+    <string name="customerkitlist"> Customer List</string>
+    <string name="customerkitinfo"> Customer Information</string>
+    <string name="terms_conditions">Terms &amp; Conditions</string>
+    <string name="cust">Customer</string>
+    <string name="retailer">Retailer</string>
+    <string name="chooserole">Choose your Role</string>
+    <string name="customerpro">Customer Profile</string>
+    <string name="reports">Reports</string>
+    <string name="profile">Profile</string>
+    <string name="makepayment">Make Payment</string>
+    <string name="customeremi"> EMI </string>
+    <string name="loandetails"> Loan Details </string>
+    <string name="customerdashboard"> Your loan not creadted yet, once your process done ,you go to on your dashboard</string>
+
+    <string name="due">TodayDue</string>
+    <string name="overdue">OverDue</string>
+
+
+    <string-array name="accounttype">
+        <item>Select Account Type</item>
+        <item>Savings</item>
+        <item>Current</item>
+
+    </string-array>
+
+    <string-array name="customerreporttype">
+        <item>All</item>
+        <item>Pending</item>
+        <item>Approved</item>
+        <item>Rejected</item>
+        <item>Close</item>
+        <item>Foreclosure</item>
+        <item>Settled</item>
+    </string-array>
+
+    <string-array name="reporttype">
+        <item>All</item>
+        <item>Pending</item>
+        <item>Approved</item>
+        <item>Rejected</item>
+        <item>Disbursed</item>
+        <item>Disbursed Rejected</item>
+        <item>Close</item>
+        <item>Foreclosure</item>
+        <item>Settled</item>
+    </string-array>
+
+    <string-array name="cibilreporttype">
+        <item>All</item>
+        <item>Pending</item>
+        <item>Approved</item>
+        <item>Rejected</item>
+    </string-array>
+
+
+    <string-array name="duesreporttype">
+        <item>Over Dues</item>
+        <item>Today Dues</item>
+    </string-array>
+
+    <string-array name="payoutreportstatustype">
+        <item>Approved</item>
+        <item>Rejected</item>
+    </string-array>
+
+    <string-array name="mobile_company_names">
+        <item>Apple</item>
+        <item>Samsung</item>
+        <item>OnePlus</item>
+        <item>Realme</item>
+    </string-array>
+
+    <string-array name="apple_models">
+        <item>iPhone 14</item>
+        <item>iPhone 15</item>
+        <item>iPhone 16 Pro</item>
+    </string-array>
+
+    <string-array name="samsung_models">
+        <item>Galaxy F36 5G</item>
+        <item>Galaxy S24</item>
+        <item>Galaxy M14</item>
+    </string-array>
+
+    <string-array name="oneplus_models">
+        <item>OnePlus 11</item>
+        <item>OnePlus 12</item>
+        <item>OnePlus Nord CE</item>
+    </string-array>
+
+    <string-array name="realme_models">
+        <item>Realme GT Neo 3</item>
+        <item>Realme Narzo 60</item>
+        <item>Realme C67</item>
+    </string-array>
+
+
+    <string-array name="paymentmodeCustomer">
+        <item>UPI</item>
+    </string-array>
+
+
+    <string-array name="paymentmodeRetailer">
+        <item>Cash</item>
+    </string-array>
+
+    <!-- <string-array name="paymentmodeRetailer">
+        <item>Cash</item>
+        <item>NEFT</item>
+        <item>Cheque</item>
+    </string-array>-->
+
+
+    <string-array name="walletpaymentmode">
+        <item>Select Payment Mode</item>
+        <item>IMPS</item>
+        <item>NEFT</item>
+    </string-array>
+
+
+    <string-array name="NoOfEMI">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string name="sample_terms_text_customer">
+
+    I hereby confirm that I am a citizen of India and competent to give this declaration/undertaking and to execute and submit this application form and all other documents for the purpose of availing loan, creation of security, and representing generally for all the purposes mentioned/required.
+
+    I confirm that all the particulars and information given in the application form and otherwise in writing or over any contact option by me are true, correct, and complete, and no information has been withheld or suppressed.
+
+    I confirm that I am submitting this application after reading and fully understanding the terms and conditions of availing a loan from AO Pay. I understand that AO Pay is entitled to reject my application without assigning any reason.
+
+    I confirm that no insolvency proceedings are against me, and I have never been adjudicated insolvent. No suit for recovery of dues or criminal proceedings is pending against me. No person’s consent is required for availing the loan. The loan amount will not be used for gambling, lottery, races, or any other illegal purpose as prohibited by RBI or regulatory authorities.
+
+    I understand that AO Pay offers different interest rates based on loan amount, tenure, down payment, payment history, credit score, income, documents provided, and other required information.
+
+    I confirm that I have issued post-dated cheques towards EMI repayment and authorize AO Pay to present them on due dates.
+
+    The dealer confirms joint and several liability for loan repayment.
+
+    The address on my Aadhaar card is correct. Any communication sent there shall be deemed duly served.
+
+    Disputes arising from this agreement will be referred to a sole arbitrator appointed by the lender. Arbitration will be held in Nagpur, in English.
+
+    The dealer guarantees EMI payment.
+
+    You authorize AO Pay to act upon instructions/applications sent via contact options (e.g., email, SMS) regarding your loans.
+
+    Interest rates are based on various borrower-related factors. You agree to abide by such assessments. Interest is calculated using a flat rate over the entire loan term and will be appropriated based on the monthly reducing balance.
+
+    If EMI is not paid, the lender may block the mobile phone until dues are cleared.
+
+    You should pay the monthly installment by the recommended date to ensure timely credit to your loan account.
+
+    All mentioned fees include applicable GST at 18% (integrated tax).
+
+    AO Pay
+    AUTHORIZED SIGNATORY
+
+    Note: This is a computer-generated document and does not require a company signature.
+</string>
+
+    <string name="retailer_term_condition">
+
+    </string>
+
+    <string name="view_loan_details">View Loan Details</string>
+    <string name="loan_status">Loan Status</string>
+    <string name="loan_amount">Loan Amount</string>
+    <string name="_79_000">₹ 79,000</string>
+    <string name="emi_details">EMI Details</string>
+    <string name="make_payment">Make Payment</string>
+    <string name="make_payment_request">Make Payment Request</string>
+    <string name="submit">Submit</string>
+    <string name="exit">Exit</string>
+    <string name="are_you_sure_you_want_to_sign_out">Are you sure you want to sign out?</string>
+    <string name="emi_split_calculation">EMI Split Calculation</string>
+    <string name="delivery_advice"><u>Delivery Advice</u></string>
+    <string name="we_are_pleased_to_inform_you_that_the_loan_application_of_mr_mrs_jay_krishna_dalvi_has_been_approved_for_consumer_durable_consumption_loan_vide_approval_no_tecloan45140_as_per_the_details_mentioned_below">We are pleased to inform you that the loan application of Mr/Mrs. Jay krishna dalvi has been approved for Consumer Durable/Consumption Loan vide approval no: TECLOAN45140 as per the details mentioned below;</string>
+
+    <string name="delivery_terms_condition"><![CDATA[
+<p><b>Terms &amp; Conditions</b></p>
+<ul>
+<li>This is a computer generated delivery advice (DA) and does not require any signature.</li>
+
+<li> This DA is valid for 15 days from the date of issuance. For whatever reason, if the loan is not disbursed within 15 days of issuance of this DA, then AO PAY will not be liable to pay the dealer.</li>
+
+<li> In case, if it is later found that customer has a different product or same product with different IMEI/Serial
+ No. than the one mentioned on the invoice provided by the dealer, then AO PAY will not be
+    liable to pay for that case. In case amount is transferred already, the AO PAY is allowed to adjust the
+ same from subsequent disbursal(s) along with penalty.</li>
+
+<li> Smart Phone must be delivered to the customer over the counter only against proper acknowledgement
+ thereof.</li>
+
+<li> Date on the invoice should be for the same date as the date on the DA. It is mandatory to capture
+ IMEI/Serial No., EMI Months and Amount on the invoice.</li>
+
+<li> At the time of delivery, dealer’s staff needs to click &amp; upload the picture of the below requirement
+ through AO PAY Dealer’s application:
+    <ul>
+        <li>Delivery Challan</li>
+        <li>Photo of the customer</li>
+        <li>IMEI No. with product image</li>
+    </ul>
+</li>
+<li> The dealer has to check original photo ID proof of their customer before handing over any Goods. Dealer
+ staff is expected to match:
+    <ul>
+        <li>Name in ID card must match DA</li>
+        <li>Photo in ID must match person receiving goods</li>
+    </ul>
+</li>
+<li> It is the dealer’s responsibility to have delivery proof with customer acknowledgement on records and to
+ share it with AO PAY as and when requested</li>
+<li> Customer’s actual Rate of Interest may vary from that mentioned in the Sanction Letter which is due to
+ system logics and rounding off mechanism. However, customer\'s EMI amount will remain the same.</li>
+<li>In case of customer raising concerns on defective/ damaged product post-disbursal, it will be the dealer’s
+ responsibility to foreclose the loan via AO PAY.</li>
+<li>Other charges pertain to cost incurred to pull customer\'s bureau details.</li>
+</ul>
+]]>
+    </string>
+
+    <string name="edit">Edit Profile</string>
+    <string name="cancel">Cancel</string>
+    <string name="profile_retaler">Profile</string>
+    <string name="lock_customer">Lock Kit Customer</string>
+    <string name="fname">First Name</string>
+    <string name="lname">Last Name</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="civil">Cibil Report</string>
+
+
+    <string name="cibiltermcondition"><![CDATA[
+<p><strong>This End User Agreement (the “Agreement”)</strong> is made between you (the “User” or “You”) and BOS Center, a private limited company having its registered office at Plot No.118 First Floor, Kakrola Housing Complex, Beside Indian Bank Nearest Metro Station Dwarka Mor, New Delhi,110078 (“CLIENT”, “Us” or “We”, which term shall include its successors and permitted assigns).</p>
+
+<p>The User and CLIENT shall be collectively referred to as the “Parties” and individually as a “Party”.</p>
+
+<p><strong>BY EXECUTING THIS AGREEMENT / CONSENT FORM,</strong> YOU ARE EXPRESSLY AGREEING TO ACCESS THE EXPERIAN CREDIT INFORMATION REPORT AND CREDIT SCORE, AGGREGATE SCORES, INFERENCES, REFERENCES AND DETAILS (TOGETHER REFERRED AS “CREDIT INFORMATION”). YOU HEREBY ALSO CONSENT TO SUCH CREDIT INFORMATION BEING PROVIDED BY EXPERIAN TO YOU AND CLIENT BY USING EXPERIAN TOOLS, ALGORITHMS AND DEVICES AND YOU HEREBY AGREE, ACKNOWLEDGE AND ACCEPT THE TERMS AND CONDITIONS SET FORTH HEREIN.</p>
+
+<h6>Terms and Conditions:</h6>
+
+<p><strong>Information Collection, Use, Confidentiality, No-Disclosure and Data Purging:</strong><br />
+CLIENT shall access your Credit Information as your authorized representative and shall use it solely for services proposed to be availed by you from CLIENT. We will not aggregate, store, copy, or disclose the Credit Information except as agreed herein and in compliance with CICRA.</p>
+
+<p>The Parties agree to protect and keep confidential the Credit Information both online and offline.</p>
+
+<p>The Credit Information shared by you or received by us on your behalf shall be destroyed, purged, or erased promptly after completion of the transaction, or within 6 months at most.</p>
+
+<h6>Governing Law and Jurisdiction:</h6>
+<p>The relationship between you and CLIENT shall be governed by the laws of India. All claims or disputes arising therefrom shall be subject to the exclusive jurisdiction of the courts of Mumbai.</p>
+
+<h6>Definitions:</h6>
+
+<ul>
+    <li><strong>Business Day:</strong> A day (other than a public holiday) when banks are open for general business in Mumbai.</li>
+    <li><strong>Credit Information Report:</strong> The credit information / scores / aggregates / variables / inferences generated by Experian.</li>
+    <li><strong>Credit Score:</strong> The score mentioned on the Credit Information Report, computed by Experian.</li>
+    <li><strong>CICRA:</strong> The Credit Information Companies (Regulation) Act, 2005, including the Rules and Regulations made thereunder.</li>
+</ul>
+
+<p><strong>PLEASE READ THE ABOVE TERMS AND CLICK “ACCEPT” BELOW TO COMPLETE THE AUTHORISATION PROCESS FOR SHARING YOUR CREDIT INFORMATION BY EXPERIAN WITH CLIENT.</strong></p>
+
+<p><strong>By clicking “ACCEPT”, you agree and accept the disclaimers and terms set out herein.</strong></p>
+
+<hr />
+<p class="text-muted small">** This document is an electronic record in terms of the Information Technology Act, 2000 and rules made thereunder.</p>
+]]>
+    </string>
+
+    <string name="accessibility_service_description">
+    This service helps automate actions and improve usability by monitoring user interface events.
+    </string>
+
+    <string name="civilform"> Cibil Form </string>
+    <string name="civildetails"> Cibil Reports </string>
+    <string name="loan_settlement">Loan Settlement</string>
+    <string name="access_token">Access token</string>
+    <string name="termforecs">I authorize the auto-debit of EMI through ECS and agree to the terms and conditions.</string>
+    <string name="kyc_details">I agree to complete KYC verification.</string>
+    <string name="please_accept_the_agreement">Please accept the agreement</string>
+    <string name="please_accept_kyc_agreement">Please accept and verify KYC</string>
+    <string name="click_to_open_next_qr">Click to open Next QR</string>
+    <string name="low_cibil_score_list">Low CIBIL Score List</string>
+    <string name="ledger_report">Ledger Report</string>
+    <string name="due_date">Due Date</string>
+    <string name="status">Emi Status</string>
+    <string name="emistatus">Closed</string>
+    <string name="aadhaar_and_bank">Name mismatch between Aadhaar and bank account. Please use an account linked with the same Aadhaar name.</string>
+    <string name="your_enach_mandate">Your eNACH mandate request has been rejected. Please try again or contact support.</string>
+    <string name="paid_amount">Paid Amount</string>
+    <string name="due_amount">Due Amount</string>
+    <string name="ao_pay">AO Pay</string>
+    <string name="scan_the_qr_code">Scan the QR code to download the Loan Management App provided by AOPay Company.</string>
+
+
+    <string name="late_fine">Late Fine</string>
+    <string name="bounce_charge">Bounce Charge</string>
+    <string name="other_charge">Other Charge</string>
+    <string name="waive_off">Waive Off</string>
+    <string name="down_payment">Down Payment</string>
+
+    <string name="your_payment_was_cancelled">Your payment was cancelled and no amount has been deducted from your account.\n\nIf this was unintentional, please try again to complete your payment.</string>
+    <string name="your_payment_has_been_completed">Your payment has been completed successfully.\n The transaction has been processed .</string>
+    <string name="aopay_technology_ltd">AOPay Technology Ltd.</string>
+    <string name="customer_app_install">Customer App Install</string>
+    <string name="your_loan">Your loan has been successfully created.</string>
+    <string name="your_kit_message">Your Kit has been installed successfully..</string>
+
+
+</resources>
