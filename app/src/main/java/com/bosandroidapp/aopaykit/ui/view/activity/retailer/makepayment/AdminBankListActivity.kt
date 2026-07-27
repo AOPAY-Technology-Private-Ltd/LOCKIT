@@ -84,7 +84,7 @@ class AdminBankListActivity : Fragment() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(requireContext())
+                        ConstantClass.OpenLoader(requireContext())
                     }
 
                 }

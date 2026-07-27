@@ -143,7 +143,7 @@ class CustomerReportsPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }

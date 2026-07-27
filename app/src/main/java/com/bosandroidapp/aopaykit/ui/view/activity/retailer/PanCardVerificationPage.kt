@@ -266,7 +266,6 @@ class PanCardVerificationPage : AppCompatActivity() {
                     ApiStatus.SUCCESS -> {
                         it.data.let { users ->
                             users!!.body().let { response ->
-
                                 ConstantClass.dialog.dismiss()
                                 Log.d("PanVerificationResp", Gson().toJson(response))
                                 if (response!!.httpResponseCode == 203) {
@@ -327,7 +326,7 @@ class PanCardVerificationPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                       // ConstantClass.OpenPopUpForVeryfyOTP(this)
+                       // ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -384,7 +383,7 @@ class PanCardVerificationPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
                 }
             }

@@ -337,7 +337,7 @@ class MakePaymentPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -379,7 +379,7 @@ class MakePaymentPage : AppCompatActivity() {
         )
         Log.d("RequestMakePayment",requestMap.toString())
 
-        ConstantClass.OpenPopUpForVeryfyOTP(this)
+        ConstantClass.OpenLoader(this)
         lifecycleScope.launch {
             try {
                 val response = api.getCustomerReceiptUpload(

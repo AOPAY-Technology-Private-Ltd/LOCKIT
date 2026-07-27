@@ -160,7 +160,7 @@ class PayoutReports : Fragment() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(requireContext())
+                        ConstantClass.OpenLoader(requireContext())
                     }
 
                 }

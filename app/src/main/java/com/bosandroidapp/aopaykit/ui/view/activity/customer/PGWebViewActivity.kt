@@ -29,6 +29,9 @@ import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.constant.ConstantClass
 import com.bosandroidapp.aopaykit.constant.ConstantClass.getCurrentUtcTimestamp
 import com.bosandroidapp.aopaykit.constant.ConstantClass.isPgClosing
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPlanListDataItem
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPurchaseHistoryRequest
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPurchasePlanSaveRequest
 import com.bosandroidapp.aopaykit.data.model.loginsignup.CustomerLoanEmiReceiveReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
@@ -39,17 +42,24 @@ import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 
 import com.google.gson.Gson
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class PGWebViewActivity : AppCompatActivity() {
     lateinit var binding : ActivityPgwebViewBinding
     lateinit var dialog: Dialog
     lateinit var preference : SharedPreference
     lateinit var viewModel: AuthenticationViewModel
+    lateinit var Activityname: String
+
+
 
     companion object{
         var emiList = mutableListOf<EmiLoanDetailPage.EmiData>()
         var EMIamountPG : String =""
         var LoanCodePG : String = ""
+
+        lateinit var kitPlanListDataItem : KitPlanListDataItem
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,17 +84,22 @@ class PGWebViewActivity : AppCompatActivity() {
         }
 
         preference = SharedPreference(this)
-        viewModel = ViewModelProvider(this,
-            CommonViewModelFactory(AuthRepository(RetrofitClient.apiInterface))
+        viewModel = ViewModelProvider(this, CommonViewModelFactory(
+            AuthRepository(RetrofitClient.apiInterface))
         )[AuthenticationViewModel::class.java]
 
         clearWebViewData(binding.pgwebview)
+
+        if(intent.hasExtra("kittopup")){
+            Activityname= intent.getStringExtra("kittopup").toString()
+        }
 
         launchPGOnWebView()
     }
 
     fun launchPGOnWebView(){
         val pgUrl = intent.getStringExtra("pgurl")
+
         val finalHtml = """
     <html>
     <head>
@@ -117,13 +132,17 @@ class PGWebViewActivity : AppCompatActivity() {
                         url.contains("status=success", ignoreCase = true) || url.contains("/success", ignoreCase = true) -> {
 
                             Handler(Looper.getMainLooper()).postDelayed({
-
                                 val uri = Uri.parse(url)
                                 val utrNumber = uri.getQueryParameter("utrNumber")
+                                val paymentMode = uri.getQueryParameter("PaymentMode") // handles different casing
+                                val transactionNo = uri.getQueryParameter("txnid")
+
+                                Log.d("TAG", "UTR: $utrNumber")
+                                Log.d("TAG", "Payment Mode: $paymentMode")
+                                Log.d("TAG", "Transaction No: $transactionNo")
+
                                 Log.d("UTR", utrNumber ?: "")
-                                showingSuccessPopUp(utrNumber!!)
-
-
+                                showingSuccessPopUp(utrNumber!!,paymentMode!!,transactionNo!!)
 
                             }, 1000)
 
@@ -154,7 +173,6 @@ class PGWebViewActivity : AppCompatActivity() {
                     false // Let WebView load the URL itself
 
                 }
-
                 else {
                     try {
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -192,6 +210,7 @@ class PGWebViewActivity : AppCompatActivity() {
         binding.pgwebview.loadDataWithBaseURL("https://secure.payu.in/", finalHtml, "text/html", "UTF-8", null)
 
         binding.pgwebview.loadUrl(pgUrl!!)
+
     }
 
 
@@ -255,7 +274,7 @@ class PGWebViewActivity : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -320,7 +339,7 @@ class PGWebViewActivity : AppCompatActivity() {
         binding.pgwebview.destroy()
     }
 
-    fun showingSuccessPopUp(utrNumber: String){
+    fun showingSuccessPopUp(utrNumber: String,paymentMode:String,transactionNo:String){
         dialog = Dialog(this, R.style.Theme_Black_NoTitleBar_Fullscreen)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(com.bosandroidapp.aopaykit.R.layout.payment_success_alert)
@@ -329,7 +348,6 @@ class PGWebViewActivity : AppCompatActivity() {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
             statusBarColor = Color.TRANSPARENT
             navigationBarColor = Color.TRANSPARENT
         }
@@ -341,17 +359,81 @@ class PGWebViewActivity : AppCompatActivity() {
         textmessage.text = message
 
         Ok.setOnClickListener {
-            if(emiList.size>0){
-                for(i in 0 until emiList.size){
-                    HitApiForPayEmiAmount(emiList[i].selectedNoofEmi, emiList[i].emiNo, emiList[i].emiAmount,emiList[i].lateFine,emiList[i].loancode,dialog,utrNumber)
+
+            if(ConstantClass.KitPlan==Activityname){
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+                val currentDateTime = LocalDateTime.now().format(formatter)
+                val endDateTime = LocalDateTime.now()
+                    .plusYears(1)
+                    .format(formatter)
+
+                var request = KitPurchasePlanSaveRequest(
+                    companyCode= ConstantClass.ClientCode ,
+                    gstAmount= kitPlanListDataItem.gstAmount,
+                    purchaseCode= "",
+                    purchaseDate = currentDateTime,
+                    netAmount= kitPlanListDataItem.totalAmount ,
+                    paymentMode= paymentMode ,
+                    transactionNo= transactionNo,
+                    discountAmount= kitPlanListDataItem.discountAmount ,
+                    paymentReferenceNo= utrNumber,
+                    mappingCode= kitPlanListDataItem.mappingCode,
+                    isActive= true ,
+                    planCode= kitPlanListDataItem.planCode,
+                    createdBy= "Retailer" ,
+                    retailerCode= preference.getStringValue(ConstantClass.RetailerCode,""),
+                    planStartDate= currentDateTime ,
+                    invoiceNo= "",
+                    planEndDate= endDateTime,
+                    planAmount= kitPlanListDataItem.planAmount,
+                    paymentStatus= "SUCCESS",
+                    remarks= "Plan purchased successfully",
+                )
+                Log.d("kitpurchaserequest", Gson().toJson(request))
+
+                saveKitPlanDataAfterSuccess(request)
+
+            }
+            else {
+                if(emiList.size>0){
+                    for(i in 0 until emiList.size){
+                        HitApiForPayEmiAmount(emiList[i].selectedNoofEmi, emiList[i].emiNo, emiList[i].emiAmount,emiList[i].lateFine,emiList[i].loancode,dialog,utrNumber)
+                    }
                 }
             }
+
         }
 
         dialog.setCanceledOnTouchOutside(false)
 
         dialog.show()
 
+    }
+
+    fun saveKitPlanDataAfterSuccess(request : KitPurchasePlanSaveRequest) {
+        viewModel.savePurchaseHistoryDataOnSuccessPG(request).observe(this) { resources ->
+            resources.let {
+                when (it.apiStatus) {
+                    ApiStatus.SUCCESS -> {
+                        it.data?.let { users ->
+                            users.body()?.let { response ->
+                                Log.d("savePurchaseHistoryDataOnSuccessPG", Gson().toJson(response))
+                                ConstantClass.dialog.dismiss()
+                                finish()
+                            }
+                        }
+
+                    }
+                    ApiStatus.LOADING -> {
+                        ConstantClass.OpenLoader(this)
+                    }
+                    ApiStatus.ERROR->{
+                        ConstantClass.dialog.dismiss()
+                    }
+                }
+            }
+
+        }
     }
 
 

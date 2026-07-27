@@ -104,7 +104,7 @@ class AddBank : Fragment() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(requireContext())
+                        ConstantClass.OpenLoader(requireContext())
                     }
 
                 }
@@ -396,7 +396,7 @@ class AddBank : Fragment() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(requireContext())
+                        ConstantClass.OpenLoader(requireContext())
                     }
 
                 }
@@ -507,7 +507,7 @@ class AddBank : Fragment() {
                }
 
                ApiStatus.LOADING -> {
-                   ConstantClass.OpenPopUpForVeryfyOTP(requireContext())
+                   ConstantClass.OpenLoader(requireContext())
                }
            }
        }

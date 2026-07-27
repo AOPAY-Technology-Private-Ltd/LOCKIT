@@ -215,7 +215,7 @@
         android:id="@+id/tvAddress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Vipin Garden, Dwarka Mor, New Delhi Delhi, India, 110064"
+        android:text=""
         android:textColor="@color/darkgrey"
         android:textSize="@dimen/_11ssp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -223,6 +223,7 @@
         app:layout_constraintTop_toTopOf="@+id/lblAddress" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
     <!-- Bottom Buttons -->
     <LinearLayout
         android:layout_width="match_parent"

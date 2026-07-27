@@ -157,7 +157,7 @@ class KioskActivity : AppCompatActivity() {
                      lifecycleScope.launch {
                         selectedNoofEmi = binding.noOfEmi.selectedItem.toString().toInt()
                         // val file = saveImageToCache(this@EmiLoanDetailPage,receiptUri,"ReceiptPhoto")
-                        // ConstantClass.OpenPopUpForVeryfyOTP(this@EmiLoanDetailPage)
+                        // ConstantClass.OpenLoader(this@EmiLoanDetailPage)
                         var ForServerlatefine:String ?= ""
                         PGWebViewActivity.emiList.clear()
 
@@ -333,7 +333,7 @@ class KioskActivity : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -451,7 +451,7 @@ class KioskActivity : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }

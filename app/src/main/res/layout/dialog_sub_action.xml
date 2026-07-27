@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_20sdp"
+    android:background="@drawable/bg_white_rounded_dialog"
+    android:paddingBottom="@dimen/_15sdp">
+
+    <!-- Header -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/_15sdp"
+        android:paddingVertical="@dimen/_12sdp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <CheckBox
+            android:id="@+id/cbSelectAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/grey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvDialogTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:text="Select Social App"
+            android:textColor="#3B82F6"
+            android:textSize="@dimen/_14ssp"
+            android:fontFamily="@font/inter_bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivClose"
+            app:layout_constraintStart_toEndOf="@+id/cbSelectAll"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:background="@drawable/bg_red_circle"
+            android:padding="@dimen/_4sdp"
+            android:src="@drawable/close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/white" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey100"
+        app:layout_constraintTop_toBottomOf="@+id/clHeader" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSubActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintHeight_max="@dimen/_350sdp"
+        app:layout_constraintBottom_toTopOf="@+id/btnSave"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        tools:listitem="@layout/item_sub_action" />
+
+    <TextView
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:background="@drawable/bg_tab_selected"
+        android:gravity="center"
+        android:minWidth="@dimen/_100sdp"
+        android:paddingVertical="@dimen/_8sdp"
+        android:text="Save"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_12ssp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvSubActions" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -228,6 +228,7 @@
             android:text="Purchase Date"
             android:textColor="@color/darkgrey"
             android:textSize="@dimen/_11ssp"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/glLabel"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvModel" />
@@ -236,6 +237,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=":"
+            android:visibility="gone"
             android:textColor="@color/darkgrey"
             app:layout_constraintStart_toStartOf="@+id/glLabel"
             app:layout_constraintTop_toTopOf="@+id/lblPurchaseDate" />
@@ -247,6 +249,7 @@
             android:text="09-06-2026, 17:18:28"
             android:textColor="@color/darkgrey"
             android:textSize="@dimen/_11ssp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/glColon"
             app:layout_constraintTop_toTopOf="@+id/lblPurchaseDate" />
@@ -276,7 +279,6 @@
             android:id="@+id/tvSerial"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="3L364Q00EJJ00000"
             android:textColor="@color/darkgrey"
             android:textSize="@dimen/_11ssp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -292,10 +294,9 @@
             android:text="Device Pin"
             android:textColor="@color/darkgrey"
             android:textSize="@dimen/_11ssp"
-            app:layout_constraintBottom_toBottomOf="@+id/btnSetPin"
             app:layout_constraintEnd_toStartOf="@+id/glLabel"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnSetPin" />
+            app:layout_constraintTop_toBottomOf="@+id/lblSerial" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -305,20 +306,18 @@
             app:layout_constraintStart_toStartOf="@+id/glLabel"
             app:layout_constraintTop_toTopOf="@+id/lblDevicePin" />
 
+
         <TextView
             android:id="@+id/btnSetPin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:background="@drawable/bg_tab_selected"
             android:gravity="center"
             android:paddingHorizontal="@dimen/_15sdp"
             android:paddingVertical="@dimen/_4sdp"
-            android:text="Set Pin"
-            android:textColor="@color/white"
+            android:textColor="@color/darkgrey"
             android:textSize="@dimen/_9ssp"
             app:layout_constraintStart_toStartOf="@+id/glColon"
-            app:layout_constraintTop_toBottomOf="@+id/tvSerial" />
+            app:layout_constraintTop_toTopOf="@+id/lblDevicePin" />
 
         <!-- Generate OUC Code -->
         <TextView
@@ -329,6 +328,7 @@
             android:text="Generate OUC Code"
             android:textColor="@color/darkgrey"
             android:textSize="@dimen/_11ssp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/btnGenerate"
             app:layout_constraintEnd_toStartOf="@+id/glLabel"
             app:layout_constraintStart_toStartOf="parent"
@@ -338,6 +338,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=":"
+            android:visibility="gone"
             android:textColor="@color/darkgrey"
             app:layout_constraintStart_toStartOf="@+id/glLabel"
             app:layout_constraintTop_toTopOf="@+id/lblGenerateOuc" />
@@ -352,6 +353,7 @@
             android:paddingHorizontal="@dimen/_15sdp"
             android:paddingVertical="@dimen/_4sdp"
             android:text="Generate"
+            android:visibility="gone"
             android:textColor="@color/white"
             android:textSize="@dimen/_9ssp"
             app:layout_constraintStart_toStartOf="@+id/glColon"

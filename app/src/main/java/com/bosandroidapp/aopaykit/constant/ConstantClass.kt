@@ -80,6 +80,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import java.util.concurrent.TimeUnit
+import javax.crypto.SecretKey
 
 object ConstantClass {
 
@@ -92,6 +93,13 @@ object ConstantClass {
      // UAT API
       const val BASE_URL = "https://uatapi.aopay.co.in/"
       const val BASE_URL_IMAGE = "https://uatapi.aopay.co.in"
+
+
+    /*const val PAN_VERIFICATION_REGISTRATION_ID = "AOP-5048"
+    const val PENNYDROP_REGISTRATION_ID = "AOP-5048"*/
+
+     const val PAN_VERIFICATION_REGISTRATION_ID = "AOP-554"
+     const val PENNYDROP_REGISTRATION_ID = "AOP-554"
 
      const val SMS_BASE_URL = "http://web.adcruxmedia.in/"
      const val PAN_BASE_URL = "https://api.aopay.in/"
@@ -142,6 +150,7 @@ object ConstantClass {
      const val online = "Online"
      const val offline = "Offline"
      const val kit = "kit"
+     const val KitPlan = "KITPLAN"
 
     var isPgClosing = false
     var isLockTaskStarted = false
@@ -310,6 +319,9 @@ object ConstantClass {
      var deviceManufacturer : String = ""
      var deviceModel : String = ""
      var DeviceBrand : String = ""
+
+     var SerialNumber : String = ""
+     var CustomerDevicePin : String = ""
      var DeviceOSVersion : String = ""
      var AppVersion : String = ""
      var IMEI : String = ""
@@ -321,6 +333,92 @@ object ConstantClass {
     var eMandate = "accepted"
     var eMandatepending = "pending"
     var isMandate = "Yes"
+
+    // notification all triggered
+
+    val  NotificationCode ="NotificationCode"
+
+    val SocialApps ="SOCIAL_APPS"
+//........................................................................
+    val FaceBook = "Facebook"
+    val WhatsApp = "WhatsApp"
+    val Instagram = "Instagram"
+    val Telegram = "Telegram"
+    val Snapchat = "Snapchat"
+    val YouTube = "YouTube"
+//..............................................................Social............................
+    val GamingApps ="GAMING_APPS"
+
+    val CandyCrush = "Candy Crush"
+    val BattleGroundMobile = "Battle Ground mobile"
+    val Chess = "Chess"
+    val FreeFire = "Free Fire"
+    val CallOfDuty = "Call of duty"
+    val BallPool = "8 Ball Pool"
+
+    //....................................Gaming.....................................................................
+
+    val UPIApps ="UPI_APPS"
+
+    val Phonepe = "Phonepe"
+    val Googlepay = "Googlepay"
+    val Paytm = "Paytm"
+    val Cred = "Cred"
+    val BHIM = "BHIM"
+
+    //.............................................Upi................................................................
+
+    val Lock ="LOCK_DEVICE"
+    val UnLock ="UNLOCK_DEVICE"
+    val DisableSetting ="DISABLE_SETTINGS"
+    //....................................................................................................................
+    val Bluetooth ="Bluetooth"
+    val Wifi ="Wifi"
+    val Hotspot ="Hotspot"
+    val USB ="USB"
+    //.......................................Settings.......................................................................
+
+    val AppHide = "APP_HIDE"
+    //.......................................................................................................................
+    val Gallery="Gallery"
+    val Chrome="Chrome"
+    val Gmail="Gmail"
+    val GooglePhotos="Google Photos"
+    val GoogleDrive="Google Drive"
+    val PlayStore="Play Store"
+    val GoogleMaps="Google Maps"
+    val Files="Files"
+    val Calculator="Calculator"
+    val Calendar="Calendar"
+    val Contacts="Contacts"
+    val Messages="Messages"
+    val Phone="Phone"
+    val XTwitter="X (Twitter)"
+    val Amazon="Amazon"
+    val Flipkart="Flipkart"
+    val Netflix="Netflix"
+    val Spotify="Spotify"
+
+    //.........................................................hide app .....................................................
+    const val CameraDisable ="DISABLE_CAMERA"
+    const val CameraEnable ="ENABLE_CAMERA"
+    const val DevicePin ="DEVICE_PIN"
+    const val JSONACTIONPIN ="DevicePin"
+    const val GETLOCATION ="GET_LOCATION"
+    const val JSONAction ="Action"
+    const val CALL_DISABLE ="DISABLE_CALL"
+    const val Reboot ="REBOOT"
+    const val Airplane ="AIRPLANE_MODE"
+    const val Kisok ="KIOSK_MODE"
+    const val SIM_REMOVE_LOCK ="SIM_REMOVE_LOCK"
+    const val SIM_TRACK_ONLINE ="SIM_TRACK_ONLINE"
+    const val SIM_TRACK_OFFLINE ="SIM_TRACK_OFFLINE"
+    const val UNINSTALL ="APP_UNINSTALL"
+
+    val SecretKey = "SecretKey"
+
+    var subApp: MutableList<String> = mutableListOf()
+
 
 
 
@@ -340,7 +438,7 @@ object ConstantClass {
     }
 
 
-    fun OpenPopUpForVeryfyOTP(context: Context){
+    fun OpenLoader(context: Context){
         dialog = Dialog(context)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.loader)

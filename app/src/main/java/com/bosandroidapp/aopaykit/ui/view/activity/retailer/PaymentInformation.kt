@@ -250,7 +250,7 @@ class PaymentInformation : AppCompatActivity() {
                   }
 
                   ApiStatus.LOADING -> {
-                       ConstantClass.OpenPopUpForVeryfyOTP(this)
+                       ConstantClass.OpenLoader(this)
                   }
 
               }
@@ -683,7 +683,7 @@ class PaymentInformation : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -782,7 +782,7 @@ class PaymentInformation : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
 
@@ -816,7 +816,7 @@ class PaymentInformation : AppCompatActivity() {
 
                     if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
                         ConstantClass.dialog.dismiss()
-                        OpenPopUpForVeryfyOTP(mobnumber, OTP)
+                        OpenLoader(mobnumber, OTP)
                     }
 
                     Log.d("API_SUCCESS", loanData.toString())
@@ -831,7 +831,7 @@ class PaymentInformation : AppCompatActivity() {
     }
 
 
-    fun OpenPopUpForVeryfyOTP(EmailID: String, otp: String) {
+    fun OpenLoader(EmailID: String, otp: String) {
         dialog = Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.verifyforgetpasswordotplayour)
@@ -939,7 +939,7 @@ class PaymentInformation : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -985,7 +985,7 @@ class PaymentInformation : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
 
@@ -1493,7 +1493,7 @@ class PaymentInformation : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
                 }
             }

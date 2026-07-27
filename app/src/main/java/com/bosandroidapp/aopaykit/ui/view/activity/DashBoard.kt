@@ -98,6 +98,7 @@ import com.bosandroidapp.aopaykit.ui.view.activity.retailer.MobileSelectionActiv
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.RetailerProfilePage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.WalletAccountDetails
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.lockkit.LockKitCustomerListPage
+import com.bosandroidapp.aopaykit.ui.view.activity.retailer.lockkit.LockKitPackageTopUpPage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.makepayment.MakePaymentPage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.reports.ReportSelectionPage
 import com.bosandroidapp.aopaykit.ui.view.adapter.NavAdapter
@@ -163,6 +164,7 @@ class DashBoard : AppCompatActivity() {
                     Manifest.permission.ACCESS_COARSE_LOCATION), 101)
             }
             binding.makePaymentLayout.visibility=View.GONE
+            binding.kitPlanPurchase.visibility=View.GONE
             binding.installAppLayout.visibility=View.GONE
             binding.logout.visibility = View.GONE
 
@@ -175,7 +177,8 @@ class DashBoard : AppCompatActivity() {
 
             binding.makePaymentLayout.visibility=View.VISIBLE
             binding.installAppLayout.visibility=View.VISIBLE
-            /*          binding.navRecyclerViewlayout.visibility=View.GONE
+            binding.kitPlanPurchase.visibility=View.VISIBLE
+            /*binding.navRecyclerViewlayout.visibility=View.GONE
             binding.navRecyclerView.layoutManager = LinearLayoutManager(this)
             navAdapter = NavAdapter(this, items) { clickedChild ->
                 // Handle child item clicks here
@@ -265,6 +268,7 @@ class DashBoard : AppCompatActivity() {
             }
             hitApiForLogin()
             hitApiForKitOption()
+
             var request = SendNotificationFeatureNameRequest(
                 clientCode = ConstantClass.ClientCode,
                 customerCode =  preference.getStringValue(ConstantClass.CustomerCode,""),
@@ -275,6 +279,7 @@ class DashBoard : AppCompatActivity() {
             )
 
             sendDataOnServerForFeatureActivate(request)
+
         }
 
     }
@@ -336,7 +341,7 @@ class DashBoard : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -463,7 +468,7 @@ class DashBoard : AppCompatActivity() {
 
 
         binding.logout.setOnClickListener {
-            OpenPopUpForVeryfyOTP()
+            OpenLoader()
         }
 
 
@@ -501,6 +506,11 @@ class DashBoard : AppCompatActivity() {
 
         binding.appBarDashBoard.deskdesign.customerprofile.setOnClickListener {
             startActivity(Intent(this, RetailerProfilePage::class.java))
+        }
+
+
+        binding.kitPlanPurchase.setOnClickListener {
+            startActivity(Intent(this, LockKitPackageTopUpPage::class.java))
         }
 
 
@@ -586,7 +596,7 @@ class DashBoard : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -616,7 +626,7 @@ class DashBoard : AppCompatActivity() {
 
 
 
-    fun OpenPopUpForVeryfyOTP() {
+    fun OpenLoader() {
         dialog = Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.signoutalert)
@@ -732,7 +742,7 @@ class DashBoard : AppCompatActivity() {
                         }
 
                         ApiStatus.LOADING -> {
-                            //ConstantClass.OpenPopUpForVeryfyOTP(this)
+                            //ConstantClass.OpenLoader(this)
                         }
 
                     }

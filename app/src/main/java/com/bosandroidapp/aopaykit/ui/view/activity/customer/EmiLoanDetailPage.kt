@@ -248,7 +248,7 @@ class EmiLoanDetailPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        // ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        // ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -489,7 +489,7 @@ class EmiLoanDetailPage : AppCompatActivity() {
                             lifecycleScope.launch {
                                 var selectedNoofEmi = binding.noOfEmi.selectedItem.toString().toInt()
                                 val file = saveImageToCache(this@EmiLoanDetailPage,receiptUri,"ReceiptPhoto")
-                                ConstantClass.OpenPopUpForVeryfyOTP(this@EmiLoanDetailPage)
+                                ConstantClass.OpenLoader(this@EmiLoanDetailPage)
                                 var ForServerlatefine:String ?= ""
 
                                 for (j in 1..selectedNoofEmi) {
@@ -528,7 +528,7 @@ class EmiLoanDetailPage : AppCompatActivity() {
                         lifecycleScope.launch {
                             selectedNoofEmi = binding.noOfEmi.selectedItem.toString().toInt()
                             // val file = saveImageToCache(this@EmiLoanDetailPage,receiptUri,"ReceiptPhoto")
-                            // ConstantClass.OpenPopUpForVeryfyOTP(this@EmiLoanDetailPage)
+                            // ConstantClass.OpenLoader(this@EmiLoanDetailPage)
                             var ForServerlatefine:String ?= ""
                             PGWebViewActivity.emiList.clear()
 
@@ -631,7 +631,7 @@ class EmiLoanDetailPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -777,7 +777,7 @@ class EmiLoanDetailPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -836,7 +836,7 @@ class EmiLoanDetailPage : AppCompatActivity() {
                                     finish()
 
                                     /* if(logintype.equals(Customer)){
-                                         OpenPopUpForVeryfyOTP()
+                                         OpenLoader()
                                      }
                                      else{
                                          startActivity(Intent(this@EmiLoanDetailPage, MakePaymentPage::class.java))
@@ -869,7 +869,7 @@ class EmiLoanDetailPage : AppCompatActivity() {
     }
 
 
-    fun OpenPopUpForVeryfyOTP(){
+    fun OpenLoader(){
         dialog = Dialog(this,android.R.style.Theme_Black_NoTitleBar_Fullscreen)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.layout_for_payment)
@@ -1051,7 +1051,7 @@ class EmiLoanDetailPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -1144,7 +1144,7 @@ class EmiLoanDetailPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
 
@@ -1173,7 +1173,7 @@ class EmiLoanDetailPage : AppCompatActivity() {
                     Toast.makeText(this@EmiLoanDetailPage, "Otp sent on your mobile number.", Toast.LENGTH_SHORT).show()
                     val loanData = response.body()
 
-                    OpenPopUpForVeryfyOTP(mobnumber, OTP)
+                    OpenLoader(mobnumber, OTP)
 
                     Log.d("API_SUCCESS", loanData.toString())
                 } else {
@@ -1187,7 +1187,7 @@ class EmiLoanDetailPage : AppCompatActivity() {
     }
 
 
-    fun OpenPopUpForVeryfyOTP(EmailID: String, otp: String) {
+    fun OpenLoader(EmailID: String, otp: String) {
         dialog = Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.verifyforgetpasswordotplayour)
@@ -1309,7 +1309,7 @@ class EmiLoanDetailPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -1397,7 +1397,7 @@ class EmiLoanDetailPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }

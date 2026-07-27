@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginVertical="6dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvPurchaseCode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="PUR000001"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_status_success"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:text="SUCCESS"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvPurchaseDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="24 Jul 2026"
+                android:textColor="#757575"
+                android:textSize="13sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="10dp"
+                android:background="#DDDDDD" />
+
+            <!-- Plan Details -->
+
+            <TextView
+                android:id="@+id/tvPlanName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Basic Lock Kit Plan"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvPlanCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Plan Code : LKP0037"
+                android:textColor="#666666"
+                android:textSize="13sp" />
+
+            <!-- Amount Details -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Plan Amount" />
+
+                    <TextView
+                        android:id="@+id/tvPlanAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹5,000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Discount" />
+
+                    <TextView
+                        android:id="@+id/tvDiscount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="- ₹500"
+                        android:textColor="#4CAF50" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="GST" />
+
+                    <TextView
+                        android:id="@+id/tvGST"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹810" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="8dp"
+                    android:background="#DDDDDD" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Net Amount"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvNetAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹5,310"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="10dp"
+                android:background="#DDDDDD" />
+
+            <!-- Payment Details -->
+
+            <TextView
+                android:id="@+id/tvPaymentMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Payment Mode : UPI"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvTransactionNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Transaction No : TXN123456789"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvValidity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Valid : 24 Jul 2026 - 23 Jul 2027"
+                android:textColor="#1976D2"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+

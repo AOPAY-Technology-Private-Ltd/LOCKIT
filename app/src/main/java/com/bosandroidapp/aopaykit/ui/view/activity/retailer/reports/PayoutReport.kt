@@ -132,7 +132,7 @@ class PayoutReport : AppCompatActivity() {
 
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }

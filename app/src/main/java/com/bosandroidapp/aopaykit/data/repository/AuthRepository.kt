@@ -1,6 +1,12 @@
 package com.bosandroidapp.aopaykit.data.repository
 
 import com.bos.payment.appName.network.ApiInterface
+import com.bosandroidapp.aopaykit.data.customeraction.GetKitCustomerLocation
+import com.bosandroidapp.aopaykit.data.customeraction.GetPendingDeviceActionReq
+import com.bosandroidapp.aopaykit.data.customeraction.RetailerSaveDeviceActionRequest
+import com.bosandroidapp.aopaykit.data.customeraction.RetailerSendNotificationToCustomerReq
+import com.bosandroidapp.aopaykit.data.customeraction.UpdateCustomerDeviceActionRequest
+import com.bosandroidapp.aopaykit.data.customeraction.UploadCustomerLocationRequest
 import com.bosandroidapp.aopaykit.data.enach.EnachDateUploadReq
 import com.bosandroidapp.aopaykit.data.model.AdminBankDetailsReq
 import com.bosandroidapp.aopaykit.data.model.CustomerEmiStatusReq
@@ -22,7 +28,12 @@ import com.bosandroidapp.aopaykit.data.model.UploadDeviceInfoReq
 import com.bosandroidapp.aopaykit.data.model.ValidateAccessKeyReq
 import com.bosandroidapp.aopaykit.data.model.ValidateSessionRequest
 import com.bosandroidapp.aopaykit.data.model.VerifyCustomerReq
+import com.bosandroidapp.aopaykit.data.model.kitoption.KitCustomerListResponse
 import com.bosandroidapp.aopaykit.data.model.kitoption.KitOptionRequest
+import com.bosandroidapp.aopaykit.data.model.kitoption.KitOptionResponse
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPlanRequest
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPurchaseHistoryRequest
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPurchasePlanSaveRequest
 import com.bosandroidapp.aopaykit.data.model.loginsignup.CustomerLoanEmiReceiveReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.CustomerMakePaymentResp
 import com.bosandroidapp.aopaykit.data.model.loginsignup.ForgotPasswordReq
@@ -46,6 +57,9 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.reports.TransactionHist
 import com.bosandroidapp.aopaykit.data.model.loginsignup.verification.AadharVerificationReq
 import com.bosandroidapp.aopaykit.data.notification.NotificationSendTokenRequest
 import com.bosandroidapp.aopaykit.data.notification.SendNotificationFeatureNameRequest
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -53,6 +67,15 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 
 class AuthRepository(private val apiInterface: ApiInterface) {
+
+  companion object {
+    private val _customerListUpdate = MutableSharedFlow<Unit>(replay = 1)
+    val customerListUpdate: SharedFlow<Unit> = _customerListUpdate.asSharedFlow()
+
+    suspend fun notifyCustomerListChanged() {
+      _customerListUpdate.emit(Unit)
+    }
+  }
 
   suspend fun getregistration(req: RegistrationReq): Response<RegistrationRes> {
     val firstname = req.firstName.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -146,6 +169,8 @@ class AuthRepository(private val apiInterface: ApiInterface) {
 
   suspend fun verifycustomerReq(req: VerifyCustomerReq) = apiInterface.verifycustomerReq(req)
 
+  suspend fun verifyKitcustomerReq(req: VerifyCustomerReq) = apiInterface.verifyKitcustomerReq(req)
+
   suspend fun getEmiSplitData(req: GetEMISplitDetlailsReq) = apiInterface.getEmiSplitDataDetails(req)
 
   suspend fun getRetailerLoanCreatedReq(req:LoanCreatedReq) = apiInterface.getLoanCreatedByRetailer(req)
@@ -229,7 +254,15 @@ class AuthRepository(private val apiInterface: ApiInterface) {
   suspend fun UpdateEmandateDetails(req: EnachDateUploadReq) = apiInterface.UpdateEmandateDetails(req)
   suspend fun sendTokenViaNotificationReq(req: NotificationSendTokenRequest) = apiInterface.sendTokenViaNotificationReq(req)
 
+  suspend fun updateActionFromCustomerDevice(req: UpdateCustomerDeviceActionRequest) = apiInterface.updateActionFromCustomerDevice(req)
+
+  suspend fun uploadKitCustomerLocationRequest(req: UploadCustomerLocationRequest) = apiInterface.uploadKitCustomerLocationRequest(req)
+
   suspend fun sendNotificationFeatureNameReq(req: SendNotificationFeatureNameRequest) = apiInterface.sendNotificationFeatureNameReq(req)
+
+  suspend fun getPurchaseHistoryRequest(req: KitPurchaseHistoryRequest) = apiInterface.getPurchaseHistoryRequest(req)
+
+  suspend fun savePurchaseKitPlan(req: KitPurchasePlanSaveRequest) = apiInterface.savePurchaseKitPlan(req)
 
   suspend fun LoanEmIScheduleWithStatusReq(req: CustomerEmiStatusReq) = apiInterface.LoanEmIScheduleWithStatusReq(req)
 
@@ -265,12 +298,24 @@ class AuthRepository(private val apiInterface: ApiInterface) {
 
   }
 
+
   suspend fun getMakePaymentReportReq(req: MakePaymentAdminReportRequest) = apiInterface.getMakePaymentReportReq(req)
+
+  suspend fun kitPlanTopUpRequest(req: KitPlanRequest) = apiInterface.kitPlanTopUpRequest(req)
 
   suspend fun getRequestKitOption(req: KitOptionRequest) = apiInterface.getRequestKitOption(req)
 
+  suspend fun getKitCustomerLocation(req: GetKitCustomerLocation) = apiInterface.getKitCustomerLocation(req)
 
-  suspend fun getCustomerKitRequest(req: CustomerKitRequest): Response<RegisterCustomerResp> {
+  suspend fun getRetailerDeviceActionToCustomerRequest(req: RetailerSaveDeviceActionRequest) = apiInterface.getRetailerDeviceActionToCustomerRequest(req)
+
+  suspend fun sendRetailerNotificationToCustomerRequest(req: RetailerSendNotificationToCustomerReq) = apiInterface.sendRetailerNotificationToCustomerRequest(req)
+
+  suspend fun getPendingDeviceActionRequest(req: GetPendingDeviceActionReq) = apiInterface.getPendingDeviceActionRequest(req)
+
+  suspend fun getActiveDeviceActionRequest(req: GetPendingDeviceActionReq) = apiInterface.getActiveDeviceActionRequest(req)
+
+  suspend fun getCustomerKitRequest(req: CustomerKitRequest): Response<KitCustomerListResponse> {
     val mode = req.mode.toRequestBody("text/plain".toMediaTypeOrNull())
     val firstName = req.firstName.toRequestBody("text/plain".toMediaTypeOrNull())
     val middleName = req.middleName.toRequestBody("text/plain".toMediaTypeOrNull())

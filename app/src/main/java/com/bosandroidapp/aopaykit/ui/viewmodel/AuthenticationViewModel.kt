@@ -3,6 +3,11 @@ package com.bosandroidapp.aopaykit.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import com.bosandroidapp.aopaykit.data.customeraction.GetKitCustomerLocation
+import com.bosandroidapp.aopaykit.data.customeraction.GetPendingDeviceActionReq
+import com.bosandroidapp.aopaykit.data.customeraction.RetailerSaveDeviceActionRequest
+import com.bosandroidapp.aopaykit.data.customeraction.RetailerSendNotificationToCustomerReq
+import com.bosandroidapp.aopaykit.data.customeraction.UpdateCustomerDeviceActionRequest
 import com.bosandroidapp.aopaykit.data.enach.EnachDateUploadReq
 import com.bosandroidapp.aopaykit.data.model.AdminBankDetailsReq
 import com.bosandroidapp.aopaykit.data.model.CustomerEmiStatusReq
@@ -23,6 +28,9 @@ import com.bosandroidapp.aopaykit.data.model.ValidateAccessKeyReq
 import com.bosandroidapp.aopaykit.data.model.ValidateSessionRequest
 import com.bosandroidapp.aopaykit.data.model.VerifyCustomerReq
 import com.bosandroidapp.aopaykit.data.model.kitoption.KitOptionRequest
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPlanRequest
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPurchaseHistoryRequest
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPurchasePlanSaveRequest
 import com.bosandroidapp.aopaykit.data.model.loginsignup.CustomerLoanEmiReceiveReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.ForgotPasswordReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.GetCustomerLoanDetailsReq
@@ -204,6 +212,7 @@ class AuthenticationViewModel (private val repository: AuthRepository):ViewModel
         }
     }
 
+
     fun getverifycustomerReq(req: VerifyCustomerReq) = liveData(Dispatchers.IO) {
         emit(ApiResponse.loading(data = null))
         try {
@@ -214,6 +223,17 @@ class AuthenticationViewModel (private val repository: AuthRepository):ViewModel
         }
     }
 
+
+
+    fun verifyKitcustomerReq(req: VerifyCustomerReq) = liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.verifyKitcustomerReq(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
 
     fun getCustomerLoanDetailsReq(req: CustomerLoanEmiReceiveReq) = liveData(Dispatchers.IO) {
         emit(ApiResponse.loading(data = null))
@@ -488,6 +508,7 @@ class AuthenticationViewModel (private val repository: AuthRepository):ViewModel
     }
 
 
+
     fun NotificationSendTokenRequest(req: NotificationSendTokenRequest) = liveData(Dispatchers.IO) {
         emit(ApiResponse.loading(data = null))
         try {
@@ -499,10 +520,48 @@ class AuthenticationViewModel (private val repository: AuthRepository):ViewModel
     }
 
 
-    fun sendNotificationFeatureNameReq(req: SendNotificationFeatureNameRequest) = liveData(Dispatchers.IO) {
+
+    fun updateActionFromCustomerDevice(req: UpdateCustomerDeviceActionRequest) = liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.updateActionFromCustomerDevice(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
+
+
+
+        fun sendNotificationFeatureNameReq(req: SendNotificationFeatureNameRequest) = liveData(Dispatchers.IO) {
         emit(ApiResponse.loading(data = null))
         try {
             emit(ApiResponse.success(data = repository.sendNotificationFeatureNameReq(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
+
+
+    fun getPurchaseHistoryRequest(req: KitPurchaseHistoryRequest) = liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.getPurchaseHistoryRequest(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
+
+
+    fun savePurchaseHistoryDataOnSuccessPG(req: KitPurchasePlanSaveRequest) = liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.savePurchaseKitPlan(req)))
         }
         catch (exception: Exception) {
             emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
@@ -544,8 +603,6 @@ class AuthenticationViewModel (private val repository: AuthRepository):ViewModel
         }
     }
 
-
-
     fun MakePaymentAdminReportRequest(req: MakePaymentAdminReportRequest) = liveData(Dispatchers.IO) {
         emit(ApiResponse.loading(data = null))
         try {
@@ -557,10 +614,80 @@ class AuthenticationViewModel (private val repository: AuthRepository):ViewModel
     }
 
 
+
+    fun kitPlanTopUpRequest(req: KitPlanRequest) = liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.kitPlanTopUpRequest(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
+
     fun getRequestKitOption(req: KitOptionRequest) = liveData(Dispatchers.IO) {
         emit(ApiResponse.loading(data = null))
         try {
             emit(ApiResponse.success(data = repository.getRequestKitOption(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
+
+    fun getKitCustomerLocation(req: GetKitCustomerLocation) = liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.getKitCustomerLocation(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
+
+    fun getRetailerDeviceActionToCustomerRequest(req: RetailerSaveDeviceActionRequest) = liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.getRetailerDeviceActionToCustomerRequest(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
+
+
+    fun sendRetailerNotificationToCustomerRequest(req: RetailerSendNotificationToCustomerReq) = liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.sendRetailerNotificationToCustomerRequest(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
+
+
+    fun getPendingDeviceActionRequest(req: GetPendingDeviceActionReq) = liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.getPendingDeviceActionRequest(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
+
+
+    fun getActiveDeviceActionRequest(req: GetPendingDeviceActionReq) = liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.getActiveDeviceActionRequest(req)))
         }
         catch (exception: Exception) {
             emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))

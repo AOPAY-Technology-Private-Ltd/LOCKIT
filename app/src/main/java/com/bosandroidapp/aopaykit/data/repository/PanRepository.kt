@@ -29,4 +29,6 @@ class PanRepository(private val apiInterface: ApiInterface) {
 
     suspend fun getPGRequestCall(req: PGRequestCall) = apiInterface.callPG(req)
 
+    suspend fun getKitPGRequestCall(req: PGRequestCall) = apiInterface.kitCallPG(req)
+
 }

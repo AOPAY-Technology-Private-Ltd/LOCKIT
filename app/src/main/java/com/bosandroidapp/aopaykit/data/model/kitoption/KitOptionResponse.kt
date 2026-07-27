@@ -14,6 +14,7 @@ data class KitOptionResponse(
 	val status: String? = null
 )
 
+
 data class DataItem(
 
 	@field:SerializedName("availableOnlineBalance")

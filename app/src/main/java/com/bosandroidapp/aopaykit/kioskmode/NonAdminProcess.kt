@@ -22,7 +22,7 @@ lateinit var admin: ComponentName
 
 fun Activity.showExitPinDialog() {
     val view = layoutInflater.inflate(R.layout.dialog_pin, null)
-    val input = view.findViewById<TextView>(R.id.etPin)
+   /* val input = view.findViewById<TextView>(R.id.etPin)
 
     AlertDialog.Builder(this)
         .setTitle("Exit Kiosk")
@@ -40,7 +40,7 @@ fun Activity.showExitPinDialog() {
         }
         .setNegativeButton("Cancel", null)
         .setCancelable(false)
-        .show()
+        .show()*/
 }
 
 

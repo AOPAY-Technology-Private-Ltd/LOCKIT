@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -13,15 +13,19 @@
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnUninstall"
         tools:itemCount="5"
+        android:paddingBottom="@dimen/_10sdp"
         tools:listitem="@layout/item_customer_action" />
 
     <TextView
         android:id="@+id/btnUninstall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
         android:background="@drawable/bg_uninstall_button"
         android:gravity="center"
         android:paddingVertical="@dimen/_12sdp"
@@ -29,6 +33,9 @@
         android:textColor="@color/white"
         android:textSize="@dimen/_13ssp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvCustomerActions" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

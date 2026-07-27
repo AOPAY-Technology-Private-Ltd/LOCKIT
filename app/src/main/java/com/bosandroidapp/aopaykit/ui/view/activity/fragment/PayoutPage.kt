@@ -442,7 +442,7 @@ class PayoutPage : Fragment() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(requireContext())
+                        ConstantClass.OpenLoader(requireContext())
                     }
                 }
             }
@@ -629,7 +629,7 @@ class PayoutPage : Fragment() {
                }
 
                ApiStatus.LOADING -> {
-                   ConstantClass.OpenPopUpForVeryfyOTP(requireContext())
+                   ConstantClass.OpenLoader(requireContext())
                }
            }
        }
@@ -795,7 +795,7 @@ class PayoutPage : Fragment() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(requireContext())
+                        ConstantClass.OpenLoader(requireContext())
                     }
 
                 }

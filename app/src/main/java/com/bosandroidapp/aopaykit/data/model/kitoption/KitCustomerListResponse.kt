@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class KitCustomerListResponse(
 
 	@field:SerializedName("customerCode")
-	val customerCode: Any? = null,
+	val customerCode: String? = null,
 
 	@field:SerializedName("customerList")
 	val customerList: List<CustomerListItem?>? = null,
@@ -278,5 +278,18 @@ data class CustomerListItem(
 	val custAadharPhotoPath: String? = null,
 
 	@field:SerializedName("isrefKycVerified")
-	val isrefKycVerified: String? = null
+	val isrefKycVerified: String? = null,
+
+	@field:SerializedName("customerActiveStatus")
+	val customerActiveStatus: String? = null,
+
+	@field:SerializedName("devicePin")
+	val devicePin: String? = null,
+
+	@field:SerializedName("isDeviceLocked")
+	val isDeviceLocked: Boolean? = null,
+
+	@field:SerializedName("serialNumber")
+	val serialNumber: String? = null
+
 )

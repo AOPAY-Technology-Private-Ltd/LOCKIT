@@ -166,7 +166,7 @@ class DuesEMIPage : AppCompatActivity() {
 
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }

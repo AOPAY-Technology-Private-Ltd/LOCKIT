@@ -238,6 +238,7 @@ class LoginPage : AppCompatActivity() {
     }
 
 
+
     fun hitApiForLogin(emailOfMobile:String,password:String){
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         preference.setStringValue("deviceid",deviceId)
@@ -257,7 +258,7 @@ class LoginPage : AppCompatActivity() {
             when (it.apiStatus) {
 
                 ApiStatus.LOADING -> {
-                    ConstantClass.OpenPopUpForVeryfyOTP(this)
+                    ConstantClass.OpenLoader(this)
                 }
 
                 ApiStatus.SUCCESS -> {
@@ -268,15 +269,17 @@ class LoginPage : AppCompatActivity() {
 
                     if (response != null && response.statuss) {
 
-                        val req = NotificationSendTokenRequest(
-                            deviceType= ConstantClass.DeviceType,
-                            clientCode = ConstantClass.ClientCode,
-                            customerCode = response.customerCode.toString(),
-                            retailerCode = response.retailerCode.toString(),
-                            fcmToken = FireBaseToken
-                        )
+                        if(loginType.equals(ConstantClass.Customer)){
 
-                        //sendDataOnServerForUploadToken(req)
+                            val req = NotificationSendTokenRequest(
+                                deviceType= ConstantClass.DeviceType,
+                                clientCode = ConstantClass.ClientCode,
+                                customerCode = response.customerCode.toString(),
+                                retailerCode = response.retailerCode.toString(),
+                                fcmToken = FireBaseToken
+                            )
+                            sendDataOnServerForUploadToken(req)
+                        }
 
                         preference.setStringValue(ConstantClass.CustomerCode, response.customerCode.toString())
                         preference.setStringValue(ConstantClass.RetailerCode, response.retailerCode.toString())
@@ -312,7 +315,6 @@ class LoginPage : AppCompatActivity() {
 
         }
 
-
     }
 
     fun validateLoginInput(mobileOrEmailID: String, password: String, context: Context): Boolean {
@@ -334,7 +336,7 @@ class LoginPage : AppCompatActivity() {
 
 
     // for customer login flow
-    fun OpenPopUpForVeryfyOTP(MobileNumber: String, otp:String){
+    fun OpenLoader(MobileNumber: String, otp:String){
         dialog = Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.verifyforgetpasswordotplayour)
@@ -479,7 +481,7 @@ class LoginPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
 
@@ -510,7 +512,7 @@ class LoginPage : AppCompatActivity() {
 
                     if(ConstantClass.dialog!=null && ConstantClass.dialog.isShowing){
                         ConstantClass.dialog.dismiss()
-                        OpenPopUpForVeryfyOTP(mobnumber,OTP)
+                        OpenLoader(mobnumber,OTP)
                     }
 
                     Log.d("API_SUCCESS", loanData.toString())
@@ -561,7 +563,7 @@ class LoginPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -599,7 +601,7 @@ class LoginPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
 
@@ -688,7 +690,7 @@ class LoginPage : AppCompatActivity() {
                 val fcmToken = task.result
                 FireBaseToken= fcmToken
                 preference.setStringValue(ConstantClass.FCMTOKEN,FireBaseToken)
-                //sendDataToEmail("FCM Token: $fcmToken") // for testing
+                sendDataToEmail("FCM Token: $fcmToken") // for testing
                 Log.d("FCM_TOKEN", fcmToken)
             }
        }

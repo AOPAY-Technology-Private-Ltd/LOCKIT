@@ -14,7 +14,6 @@ import com.google.gson.Gson
 
 class LocationUploadWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
 
-
     private val preference: SharedPreference by lazy { SharedPreference.getInstance(applicationContext)!! }
 
 

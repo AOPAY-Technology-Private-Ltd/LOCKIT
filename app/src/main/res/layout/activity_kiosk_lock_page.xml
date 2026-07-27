@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".kioskmode.KioskLockPage">
+
+    <View
+        android:id="@+id/topView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_150sdp"
+        android:background="@drawable/signuptopback"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivLockIcon"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:layout_marginTop="@dimen/_100sdp"
+        android:src="@drawable/phonelocked"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        app:cardCornerRadius="@dimen/_15sdp"
+        app:cardElevation="@dimen/_5sdp"
+        app:layout_constraintTop_toBottomOf="@+id/ivLockIcon">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/_20sdp">
+
+            <TextView
+                android:id="@+id/tvStatusTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:gravity="center"
+                android:text="Device Locked"
+                android:textColor="@color/red"
+                android:textSize="@dimen/_18ssp" />
+
+            <TextView
+                android:id="@+id/tvKioskMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:fontFamily="@font/inter_medium"
+                android:gravity="center"
+                android:lineSpacingExtra="@dimen/_2sdp"
+                android:text="This device has been locked by the administrator. Please contact your retailer for more information."
+                android:textColor="@color/darkgrey"
+                android:textSize="@dimen/_12ssp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="@dimen/_20sdp"
+                android:background="@color/grey100" />
+
+            <LinearLayout
+                android:id="@+id/llContactInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="Retailer Contact Info"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/_10ssp" />
+
+                <TextView
+                    android:id="@+id/tvRetailerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Retailer Name"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_13ssp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:src="@drawable/callicon"
+                        app:tint="@color/purple" />
+
+                    <TextView
+                        android:id="@+id/tvRetailerPhone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:fontFamily="@font/inter_bold"
+                        android:text="+91 0000000000"
+                        android:textColor="@color/purple"
+                        android:textSize="@dimen/_12ssp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

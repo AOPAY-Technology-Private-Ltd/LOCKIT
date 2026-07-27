@@ -93,6 +93,7 @@ import com.bosandroidapp.aopaykit.constant.ConstantClass.LoanStartDate
 import com.bosandroidapp.aopaykit.constant.ConstantClass.ModelColor
 import com.bosandroidapp.aopaykit.constant.ConstantClass.ModelName
 import com.bosandroidapp.aopaykit.constant.ConstantClass.ModelVarient
+import com.bosandroidapp.aopaykit.constant.ConstantClass.OTPTYPE
 import com.bosandroidapp.aopaykit.constant.ConstantClass.PENNYDROP_REGISTRATION_ID
 import com.bosandroidapp.aopaykit.constant.ConstantClass.PanFrontImageUri
 import com.bosandroidapp.aopaykit.constant.ConstantClass.PanNumber
@@ -125,6 +126,7 @@ import com.bosandroidapp.aopaykit.data.model.RaiseMakePaymentReq
 import com.bosandroidapp.aopaykit.data.model.SessionOutReq
 import com.bosandroidapp.aopaykit.data.model.ValidateAccessKeyReq
 import com.bosandroidapp.aopaykit.data.model.ValidateSessionRequest
+import com.bosandroidapp.aopaykit.data.model.VerifyCustomerReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.GetIsEligibleLoanReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.LoanCreatedReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.LogoutReq
@@ -239,7 +241,7 @@ class QRCodePage : AppCompatActivity() {
             LoanEndDate=""
             loancreatedreq = null
             if (isInternetAvailable(this@QRCodePage)) {
-                ConstantClass.OpenPopUpForVeryfyOTP(this)
+
                 binding.nextlayout.isEnabled= false
                 hitApiForCustomerRegister()
             }
@@ -339,18 +341,21 @@ class QRCodePage : AppCompatActivity() {
     fun hitApiForCustomerRegister() {
 
         val custPhotoPart = createMultipartFromUri(this, CustPhotoPath, "CustPhoto_File", "CustomerPhoto")
+
         val imei1SealPart = createMultipartFromUri(
             this,
             ImeiNumber1SealPhotoPath,
             "IMEINumber1_SealPhotoFile",
             "IMEINumber1Image"
         )
+
         val imei2SealPart = createMultipartFromUri(
             this,
             ImeiNumber2SealPhotoPath,
             "IMEINumber2_SealPhotoFile",
             "IMEINumber2Image"
         )
+
         val imeiPhotoPart = createMultipartFromUri(
             this,
             ImeiNumberPhotoPath,
@@ -372,7 +377,6 @@ class QRCodePage : AppCompatActivity() {
         )
         val PanFrontPart = createMultipartFromUri(this, PanFrontImageUri, "CustPanNumberPhoto_File", "PanFrontImage")
 
-
         val firstName = preference.getStringValue(ConstantClass.FirstName, "").orEmpty()
         val lastName = preference.getStringValue(ConstantClass.LastName, "").orEmpty()
         val safeLastName = if (!lastName.isNullOrBlank() && lastName != "null") lastName else ""
@@ -385,139 +389,10 @@ class QRCodePage : AppCompatActivity() {
 
         if(ConstantClass.CheckOnlineOrOffline.equals(ConstantClass.kit)){
 
-            val custPhotoPart = CustPhotoPath?.let {
-                saveImageToCache(this, it, "CustomerPhoto")
-            }
-
-            val imei1SealPart = ImeiNumber1SealPhotoPath?.let {
-                saveImageToCache(this, it, "IMEINumber1Image")
-            }
-
-            val imei2SealPart = ImeiNumber2SealPhotoPath?.let {
-                saveImageToCache(this, it, "IMEINumber2Image")
-            }
-
-            val imeiPhotoPart = ImeiNumberPhotoPath?.let {
-                saveImageToCache(this, it, "IMEINumberImage")
-            }
-
-            val invoicePart = Invoive_Path?.let {
-                saveImageToCache(this, it, "InvoiceImage")
-            }
-
-            val aadharFrontPart = AadharFrontImageUri?.let {
-                saveImageToCache(this, it, "AadharFrontImage")
-            }
-
-            val aadharBackPart = AadharBackImageUri?.let {
-                saveImageToCache(this, it, "AadharBackImage")
-            }
-
-            val PanFrontPart = PanFrontImageUri?.let {
-                saveImageToCache(this, it, "PanFrontImage")
-            }
-
-
-            var registationRequest = CustomerKitRequest(
-                mode = "INSERT",
-                firstName = CustFirstName ?: "",
-                middleName = CustMiddleName ?: "",
-                lastName = CustLastName ?: "",
-                primaryMobileNumber = CustPrimaryMobileNumber ?: "",
-                primaryOTP = CustPrimaryOTP ?: "",
-                primaryMobileVerified = CustPrimaryMobileVerified ?: "",
-                alternateMobileNumber = CustAlternateMobileNumber ?: "",
-                alternateMobileOTP = CustAlternateMobileOTP ?: "",
-                pAlternateMobileVerified = CustAlternateMobileVerified ?: "",
-                eMailID = CusteMailID ?: "",
-                flatNo = CustFlatNo ?: "",
-                aearSector = CustAreaSector ?: "",
-                pinCode = CustPinCode ?: "",
-                currentAddress = CustCurrentAddress ?: "",
-                stateName = CustStateName ?: "",
-                cityName = CustCityName ?: "",
-                country = CustCountry ?: "India",
-                aadharNumber = AadharNumber ?: "",
-                aadharNumberVerified = AadharVerified ?: "",
-                panNumber = PanNumber ?: "",
-                panNumberVerified = PanNumberVerified ?: "",
-                brandName = BrandName ?: "",
-                modelName = ModelName ?: "",
-                modelVariant = ModelVarient ?: "",
-                color = ModelColor ?: "",
-                sellingPrice = ConstantClass.SellingPrice ?: "",
-                downPayment = downPayment,
-                tenure = Tenure ?: "",
-                emiAmount = EmiAmount ?: "",
-                imeiNumber1 = ImeiNumber1 ?: "",
-                imeiNumber2 = ImeiNumber2 ?: "",
-                accountNumber = AccountNumber ?: "",
-                bankIFSCCode = BankIFSCCode ?: "",
-                bankName = BankName ?: "",
-                accountType = AccountType ?: "",
-                branchName = BranchName ?: "",
-                refName = RefName ?: "",
-                refRelationShip = RefRelationShip ?: "",
-                refmobileNo = RefmobileNo ?: "",
-                refAddress = RefAddress ?: "",
-                debitOrCreditCard = "",
-                upiMandate = "yes",
-                createdBy = createdBy,
-                membershipfees = membershipAmt,
-                retailercode = retailercode,
-                cibilScore = userScore.toString(),
-                isAggrementVerified = isAggrementVerified,
-                IsRetailerAggrementVerified = IsRetailerAggrementVerified,
-                custPhoto_File = custPhotoPart!!?: null,
-                imeiNumber1_SealPhotoPath = imei1SealPart!!?: null,
-                imeiNumber2_SealPhotoPath = imei2SealPart!!?: null,
-                imeiNumber_PhotoPath = imeiPhotoPart!!?: null,
-                invoive_Path = invoicePart!!?: null,
-                aadharFront_Path = aadharFrontPart!!?: null,
-                aadharBack_Path = aadharBackPart!!?: null,
-                panFront_Path = PanFrontPart!!?: null
-            )
-
-            Log.d("RegistationRequest", Gson().toJson(registationRequest))
-            viewModel.getCustomerKitRequest(registationRequest).observe(this) { resources ->
-                    resources.let {
-                        when (it.apiStatus) {
-                            ApiStatus.SUCCESS -> {
-                                it.data.let { users ->
-                                    users!!.body().let { response ->
-                                        ConstantClass.dialog.dismiss()
-                                        if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
-                                            Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
-                                            customerCode = response.customerCode!!
-                                            binding.validateKeyLayout.visibility = View.VISIBLE
-                                            binding.nextlayout.visibility = View.GONE
-                                        }
-                                        else {
-                                            binding.validateKeyLayout.visibility = View.VISIBLE
-                                            binding.nextlayout.visibility = View.GONE
-                                            Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-
-                            ApiStatus.ERROR -> {
-                                ConstantClass.dialog.dismiss()
-                            }
-
-                            ApiStatus.LOADING -> {
-                                ConstantClass.OpenPopUpForVeryfyOTP(this)
-                            }
-
-                        }
-                    }
-                }
-
+           VeryfyKitCustomer()
         }
         else{
+            ConstantClass.OpenLoader(this)
             if (ConstantClass.ClickOnCardLowCibilScore.equals(CardType)) {
                 // Map safely (avoid !!)
                 val requestMap = hashMapOf(
@@ -1309,6 +1184,221 @@ class QRCodePage : AppCompatActivity() {
         }
 
 
+    }
+
+    fun VeryfyKitCustomer(){
+        var sendOtpReq = VerifyCustomerReq(
+            primaryMobileNumber = CustPrimaryMobileNumber.toString().trim()
+        )
+        Log.d("verifyKitcustomerreq", Gson().toJson(sendOtpReq))
+        viewModel.verifyKitcustomerReq(sendOtpReq).observe(this) { resources ->
+            resources.let {
+                when (it.apiStatus) {
+                    ApiStatus.SUCCESS -> {
+                        it.data?.let { users ->
+                            users.body()?.let { response ->
+                                Log.d("verifycustomerresp", Gson().toJson(response))
+                                ConstantClass.dialog.dismiss()
+
+                                if(response.statuss!!.toLowerCase().equals("true", ignoreCase = true)){
+                                    hitApiForKitCustomerRegister()
+                                }
+                                else{
+                                    // if customer exist
+                                    haskitCustomerRegisterPopUp()
+
+                                }
+                            }
+                        }
+                    }
+
+                    ApiStatus.ERROR -> {
+                        ConstantClass.dialog.dismiss()
+                    }
+
+                    ApiStatus.LOADING -> {
+                        ConstantClass.OpenLoader(this)
+                    }
+
+                }
+            }
+        }
+    }
+
+    fun haskitCustomerRegisterPopUp(){
+        dialog = Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.signoutalert)
+
+
+        dialog.window?.apply {
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        }
+
+
+        dialog.setCanceledOnTouchOutside(false)
+
+        val cancel = dialog.findViewById<Button>(R.id.btnCancel)
+        val done = dialog.findViewById<Button>(R.id.btnLogout)
+        val txt = dialog.findViewById<TextView>(R.id.dialog_message)
+        val image = dialog.findViewById<ImageView>(R.id.imageview)
+
+        image.visibility = View.VISIBLE
+        cancel.visibility =View.GONE
+
+        done.text = "OK"
+
+        txt.text = "The customer already exists with the same number ${CustPrimaryMobileNumber} and has already installed the kit."
+
+        done.setOnClickListener {
+            dialog.dismiss()
+            hitApiForKitCustomerRegister()
+        }
+
+
+        dialog.show()
+    }
+
+
+    fun hitApiForKitCustomerRegister(){
+        val firstName = preference.getStringValue(ConstantClass.FirstName, "").orEmpty()
+        val lastName = preference.getStringValue(ConstantClass.LastName, "").orEmpty()
+        val safeLastName = if (!lastName.isNullOrBlank() && lastName != "null") lastName else ""
+        var createdBy = firstName.plus(" ").plus(safeLastName)
+        var retailercode = preference.getStringValue(ConstantClass.RetailerCode, "")
+
+        val custPhotoPart = CustPhotoPath?.let {
+            saveImageToCache(this, it, "CustomerPhoto")
+        }
+
+        val imei1SealPart = ImeiNumber1SealPhotoPath?.let {
+            saveImageToCache(this, it, "IMEINumber1Image")
+        }
+
+        val imei2SealPart = ImeiNumber2SealPhotoPath?.let {
+            saveImageToCache(this, it, "IMEINumber2Image")
+        }
+
+        val imeiPhotoPart = ImeiNumberPhotoPath?.let {
+            saveImageToCache(this, it, "IMEINumberImage")
+        }
+
+        val invoicePart = Invoive_Path?.let {
+            saveImageToCache(this, it, "InvoiceImage")
+        }
+
+        val aadharFrontPart = AadharFrontImageUri?.let {
+            saveImageToCache(this, it, "AadharFrontImage")
+        }
+
+        val aadharBackPart = AadharBackImageUri?.let {
+            saveImageToCache(this, it, "AadharBackImage")
+        }
+
+        val PanFrontPart = PanFrontImageUri?.let {
+            saveImageToCache(this, it, "PanFrontImage")
+        }
+
+
+        var registationRequest = CustomerKitRequest(
+            mode = "INSERT",
+            firstName = CustFirstName ?: "",
+            middleName = CustMiddleName ?: "",
+            lastName = CustLastName ?: "",
+            primaryMobileNumber = CustPrimaryMobileNumber ?: "",
+            primaryOTP = CustPrimaryOTP ?: "",
+            primaryMobileVerified = CustPrimaryMobileVerified ?: "",
+            alternateMobileNumber = CustAlternateMobileNumber ?: "",
+            alternateMobileOTP = CustAlternateMobileOTP ?: "",
+            pAlternateMobileVerified = CustAlternateMobileVerified ?: "",
+            eMailID = CusteMailID ?: "",
+            flatNo = CustFlatNo ?: "",
+            aearSector = CustAreaSector ?: "",
+            pinCode = CustPinCode ?: "",
+            currentAddress = CustCurrentAddress ?: "",
+            stateName = CustStateName ?: "",
+            cityName = CustCityName ?: "",
+            country = CustCountry ?: "India",
+            aadharNumber = AadharNumber ?: "",
+            aadharNumberVerified = AadharVerified ?: "",
+            panNumber = PanNumber ?: "",
+            panNumberVerified = PanNumberVerified ?: "",
+            brandName = BrandName ?: "",
+            modelName = ModelName ?: "",
+            modelVariant = ModelVarient ?: "",
+            color = ModelColor ?: "",
+            sellingPrice = ConstantClass.SellingPrice ?: "",
+            downPayment = downPayment,
+            tenure = Tenure ?: "",
+            emiAmount = EmiAmount ?: "",
+            imeiNumber1 = ImeiNumber1 ?: "",
+            imeiNumber2 = ImeiNumber2 ?: "",
+            accountNumber = AccountNumber ?: "",
+            bankIFSCCode = BankIFSCCode ?: "",
+            bankName = BankName ?: "",
+            accountType = AccountType ?: "",
+            branchName = BranchName ?: "",
+            refName = RefName ?: "",
+            refRelationShip = RefRelationShip ?: "",
+            refmobileNo = RefmobileNo ?: "",
+            refAddress = RefAddress ?: "",
+            debitOrCreditCard = "",
+            upiMandate = "yes",
+            createdBy = createdBy,
+            membershipfees = membershipAmt,
+            retailercode = retailercode,
+            cibilScore = userScore.toString(),
+            isAggrementVerified = isAggrementVerified,
+            IsRetailerAggrementVerified = IsRetailerAggrementVerified,
+            custPhoto_File = custPhotoPart?: null,
+            imeiNumber1_SealPhotoPath = imei1SealPart?: null,
+            imeiNumber2_SealPhotoPath = imei2SealPart?: null,
+            imeiNumber_PhotoPath = imeiPhotoPart?: null,
+            invoive_Path = invoicePart?: null,
+            aadharFront_Path = aadharFrontPart?: null,
+            aadharBack_Path = aadharBackPart?: null,
+            panFront_Path = PanFrontPart?: null
+        )
+
+        Log.d("RegistationRequest", Gson().toJson(registationRequest))
+        viewModel.getCustomerKitRequest(registationRequest).observe(this) { resources ->
+            resources.let {
+                when (it.apiStatus) {
+                    ApiStatus.SUCCESS -> {
+                        it.data.let { users ->
+                            users!!.body().let { response ->
+                                ConstantClass.dialog.dismiss()
+                                if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
+                                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                                    customerCode = response.customerCode!!
+                                    binding.validateKeyLayout.visibility = View.VISIBLE
+                                    binding.nextlayout.visibility = View.GONE
+                                }
+                                else {
+                                    binding.validateKeyLayout.visibility = View.VISIBLE
+                                    binding.nextlayout.visibility = View.GONE
+                                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    ApiStatus.ERROR -> {
+                        ConstantClass.dialog.dismiss()
+                    }
+
+                    ApiStatus.LOADING -> {
+                        ConstantClass.OpenLoader(this)
+                    }
+
+                }
+            }
+        }
 
     }
 
@@ -1566,7 +1656,7 @@ class QRCodePage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
                 }
             }
@@ -1827,7 +1917,7 @@ class QRCodePage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
                 }
 
@@ -1903,7 +1993,7 @@ class QRCodePage : AppCompatActivity() {
 
                     ApiStatus.LOADING -> {
                        if(check){
-                           ConstantClass.OpenPopUpForVeryfyOTP(this)
+                           ConstantClass.OpenLoader(this)
                        }
                     }
 
@@ -1954,7 +2044,7 @@ class QRCodePage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }

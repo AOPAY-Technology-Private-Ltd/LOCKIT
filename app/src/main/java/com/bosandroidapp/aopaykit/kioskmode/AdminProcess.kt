@@ -235,7 +235,7 @@ fun Activity.enterImmersiveMode() {
 
 
 fun Activity.showExitPinAdminDialog() {
-    val view = layoutInflater.inflate(R.layout.dialog_pin, null)
+   /* val view = layoutInflater.inflate(R.layout.dialog_pin, null)
     val input = view.findViewById<TextView>(R.id.etPin)
 
     AlertDialog.Builder(this)
@@ -255,5 +255,5 @@ fun Activity.showExitPinAdminDialog() {
         }
         .setNegativeButton("Cancel", null)
         .setCancelable(false)
-        .show()
+        .show()*/
 }

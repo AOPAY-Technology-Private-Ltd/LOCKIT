@@ -1,5 +1,17 @@
 package com.bos.payment.appName.network
 
+import com.bosandroidapp.aopaykit.data.customeraction.GetKitCustomerLocation
+import com.bosandroidapp.aopaykit.data.customeraction.GetKitCustomerLocationResponse
+import com.bosandroidapp.aopaykit.data.customeraction.GetPendingDeviceActionReq
+import com.bosandroidapp.aopaykit.data.customeraction.GetPendingDeviceActionResponse
+import com.bosandroidapp.aopaykit.data.customeraction.RetailerSaveDeviceActionRequest
+import com.bosandroidapp.aopaykit.data.customeraction.RetailerSaveDeviceActionResponse
+import com.bosandroidapp.aopaykit.data.customeraction.RetailerSendNotificationToCustomerReq
+import com.bosandroidapp.aopaykit.data.customeraction.RetailerSendNotificationToCustomerResponse
+import com.bosandroidapp.aopaykit.data.customeraction.UpdateCustomerDeviceActionRequest
+import com.bosandroidapp.aopaykit.data.customeraction.UpdateCustomerDeviceActionResponse
+import com.bosandroidapp.aopaykit.data.customeraction.UploadCustomerLocationRequest
+import com.bosandroidapp.aopaykit.data.customeraction.UploadCustomerLocationResponse
 import com.bosandroidapp.bosmobilefinance.ui.slideshow.data.model.loginsignup.cibilscore.CibilScoreReq
 import com.bosandroidapp.aopaykit.data.enach.EMandateRequest
 import com.bosandroidapp.aopaykit.data.enach.EMandateResponse
@@ -45,8 +57,16 @@ import com.bosandroidapp.aopaykit.data.model.ValidateSessionResp
 import com.bosandroidapp.aopaykit.data.model.VerifyCustomerReq
 import com.bosandroidapp.aopaykit.data.model.VerifyCustomerResp
 import com.bosandroidapp.aopaykit.data.model.cibilscore.CibilScroeResp
+import com.bosandroidapp.aopaykit.data.model.kitoption.ActiveDeviceActionResponse
+import com.bosandroidapp.aopaykit.data.model.kitoption.KitCustomerListResponse
 import com.bosandroidapp.aopaykit.data.model.kitoption.KitOptionRequest
 import com.bosandroidapp.aopaykit.data.model.kitoption.KitOptionResponse
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPlanRequest
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPlanResponse
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPurchaseHistoryRequest
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPurchaseHistoryResponse
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPurchasePlanSaveRequest
+import com.bosandroidapp.aopaykit.data.model.kitplan.KitPurchasePlanSaveResponse
 import com.bosandroidapp.aopaykit.data.model.loginsignup.CustomerMakePaymentResp
 import com.bosandroidapp.aopaykit.data.model.loginsignup.EligibleLoanResp
 import com.bosandroidapp.aopaykit.data.model.loginsignup.EmiSplitRes
@@ -161,6 +181,7 @@ interface ApiInterface {
         ):Response<RegistrationRes>
 
 
+
     @POST("api/V1/AopayFinance/Login")
     suspend fun login(@Body req: LoginReq): Response<RegistrationRes>?
 
@@ -196,6 +217,12 @@ interface ApiInterface {
     //  customer mobile verification api
     @POST("api/V1/AopayFinance/VerifyCustomer")
     suspend fun verifycustomerReq(@Body req : VerifyCustomerReq): Response<VerifyCustomerResp>?
+
+
+
+    //  customer mobile verification api
+    @POST("api/V1/AopayFinance/KitVerifyCustomer")
+    suspend fun verifyKitcustomerReq(@Body req : VerifyCustomerReq): Response<VerifyCustomerResp>?
 
 
     @POST("api/V1/AopayFinance/ManageLoan")
@@ -458,8 +485,7 @@ interface ApiInterface {
         @Part aadharFront_Path: MultipartBody.Part?,
         @Part aadharBack_Path: MultipartBody.Part?,
         @Part panFront_Path: MultipartBody.Part?
-    ): Response<RegisterCustomerResp>
-
+    ): Response<KitCustomerListResponse>
 
 
 
@@ -512,7 +538,6 @@ interface ApiInterface {
     // for customer.....................................................
     @POST("api/V1/AopayFinance/GetLoanDetailsCustomerWise") // for view retailer
     suspend fun getCustomerLoanDetailsList(@Body req : GetCustomerLoanDetailsReq): Response<com.bosandroidapp.aopaykit.data.model.loginsignup.CustomerLoanEmiResp>?
-
 
 
     // retailer trasaction history...................................................
@@ -639,6 +664,7 @@ interface ApiInterface {
     @POST("api/AOP/Enach/V1/eMandate/getStatus")
     suspend fun geteMandateSatusRequest(@Body req: ENachStatusReq): Response<ENachStatusResp>?
 
+
     // loan charge for each loan retailer
     @POST("api/Customer/LoanApplyCharges")
     suspend fun loanApplyChargesReq(@Body req: LoanChargeReq): Response<LoanChargeResp>?
@@ -654,9 +680,6 @@ interface ApiInterface {
     @POST("api/V1/AopayFinance/UpdateEmandateDetails")
     suspend fun UpdateEmandateDetails(@Body req : EnachDateUploadReq): Response<EnachDateUploadResp>?
 
-
-    @POST("api/notification/save-token")
-    suspend fun sendTokenViaNotificationReq(@Body req : NotificationSendTokenRequest): Response<NotificationSendTokenResponse>?
 
 
     @POST("api/notification/send")
@@ -698,15 +721,63 @@ interface ApiInterface {
 
 
 
+    @POST("api/AOPay/Finance/LockKit/V1/PaymentGateway")
+    suspend fun kitCallPG(@Body req : PGRequestCall) : Response<PGRequestResponse>?
+
+
+
     @POST("api/V1/AopayFinance/GetRetailerMakePaymentList")
     suspend fun getMakePaymentReportReq(@Body req : MakePaymentAdminReportRequest) : Response<MakePaymentAdminReportResponse>?
 
 
+    @POST("api/V1/AopayFinance/GetRetailerKitPlans")
+    suspend fun kitPlanTopUpRequest(@Body req : KitPlanRequest) : Response<KitPlanResponse>?
 
 
     //retailer kit option
     @POST("api/V1/AopayFinance/GetRetailerLoanModeDetails")
     suspend fun getRequestKitOption(@Body req : KitOptionRequest) : Response<KitOptionResponse>?
 
+    @POST("api/V1/AopayFinance/GetCustomerLatestLocationKit")
+    suspend fun getKitCustomerLocation(@Body req : GetKitCustomerLocation) : Response<GetKitCustomerLocationResponse>?
+
+
+    // customer action related app via notification
+
+    @POST("api/notification/SaveDeviceAction")
+    suspend fun getRetailerDeviceActionToCustomerRequest(@Body req : RetailerSaveDeviceActionRequest) : Response<RetailerSaveDeviceActionResponse>?
+
+
+    @POST("api/notification/SendDeviceNotification")
+    suspend fun sendRetailerNotificationToCustomerRequest(@Body req : RetailerSendNotificationToCustomerReq) : Response<RetailerSendNotificationToCustomerResponse>?
+
+
+    @POST("api/notification/GetSuccessDeviceActions")
+    suspend fun getActiveDeviceActionRequest(@Body req : GetPendingDeviceActionReq) : Response<ActiveDeviceActionResponse>?
+
+
+    @POST("api/notification/GetPendingDeviceActions")
+    suspend fun getPendingDeviceActionRequest(@Body req : GetPendingDeviceActionReq) : Response<GetPendingDeviceActionResponse>?
+
+
+    //hit api for customer
+    @POST("api/notification/save-token")
+    suspend fun sendTokenViaNotificationReq(@Body req : NotificationSendTokenRequest): Response<NotificationSendTokenResponse>?
+
+
+    @POST("api/notification/UpdateDeviceActionStatus")
+    suspend fun updateActionFromCustomerDevice(@Body req : UpdateCustomerDeviceActionRequest) : Response<UpdateCustomerDeviceActionResponse>?
+
+
+    @POST("api/V1/AopayFinance/SaveCustomerLocationKit")
+    suspend fun uploadKitCustomerLocationRequest(@Body req : UploadCustomerLocationRequest) : Response<UploadCustomerLocationResponse>?
+
+
+    @POST("api/V1/AopayFinance/GetPurchaseHistory")
+    suspend fun getPurchaseHistoryRequest(@Body req : KitPurchaseHistoryRequest) : Response<KitPurchaseHistoryResponse>?
+
+
+    @POST("api/V1/AopayFinance/SavePurchaseHistory")
+    suspend fun savePurchaseKitPlan(@Body req : KitPurchasePlanSaveRequest) : Response<KitPurchasePlanSaveResponse>?
 
 }

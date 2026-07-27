@@ -26,5 +26,8 @@ data class PGRequestCall(
 	val payCustomerName: String? = null,
 
 	@field:SerializedName("LoanCode")
-	val loanCode: String? = null
+	val loanCode: String? = null,
+
+	@field:SerializedName("RetailerCode")
+	val retailerCode: String? = null
 )

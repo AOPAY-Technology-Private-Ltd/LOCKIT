@@ -6,13 +6,13 @@ plugins {
 
 android {
     namespace = "com.bosandroidapp.aopaykit"
-    compileSdk = 34
+    compileSdk = 35
 
 
     defaultConfig {
         applicationId = "com.bosandroidapp.aopaykit"
         minSdk = 28
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -26,12 +26,16 @@ android {
 
     buildTypes {
         release {
+            isDebuggable = true
             isMinifyEnabled = false
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+
+
     }
 
 
@@ -93,7 +97,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     // for qrcode...................................
     implementation(libs.core)
-
+    implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
     // google map..................................
     implementation(libs.play.services.maps)
     implementation(libs.maps.ktx)
@@ -114,7 +118,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
 
     implementation(libs.play.services.auth)
 

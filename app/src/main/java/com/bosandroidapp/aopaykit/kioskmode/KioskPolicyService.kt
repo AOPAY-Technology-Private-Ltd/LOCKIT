@@ -7,11 +7,15 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.app.admin.DevicePolicyManager
+import android.app.admin.FactoryResetProtectionPolicy
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.UserManager
+import android.telephony.SubscriptionManager
+import android.telephony.TelephonyManager
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -19,6 +23,7 @@ import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.bosandroidapp.aopaykit.R
+import com.bosandroidapp.aopaykit.constant.ConstantClass.CheckCompleteEmiStatus
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -29,10 +34,10 @@ class KioskPolicyService : Service() {
 
     private lateinit var fusedClient: FusedLocationProviderClient
 
-
     @RequiresApi(Build.VERSION_CODES.R)
     @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
     @SuppressLint("ForegroundServiceType")
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         startForeground(1, createNotification()) // required
@@ -41,13 +46,13 @@ class KioskPolicyService : Service() {
 
         val admin = ComponentName(this, KioskDeviceAdminReceiver::class.java)
 
-        /* val action = intent?.getStringExtra("action")*/
+         val action = intent?.getStringExtra("action")
 
         if (dpm.isDeviceOwnerApp(packageName) && dpm.isAdminActive(admin)) {
            // dpm.setCameraDisabled(admin, true)
             Toast.makeText(this, "Admin active", Toast.LENGTH_LONG).show()
 
-            /*when (action) {
+            when (action) {
 
                 // camera feature
                 "DISABLE_CAMERA" -> {
@@ -114,7 +119,7 @@ class KioskPolicyService : Service() {
                     dpm.addUserRestriction(admin, UserManager.DISALLOW_BLUETOOTH)
                 }
 
-                "SIM_INFO" -> {
+             /*   "SIM_INFO" -> {
                          dpm.setPermissionGrantState(
                 admin,
                 packageName,
@@ -137,8 +142,7 @@ class KioskPolicyService : Service() {
             val countryIso = telephonyManager.simCountryIso
             val simList = subscriptionManager.activeSubscriptionInfoList
 
-
-                }
+                }*/
 
                 "FETCH_LOCATION" ->{
 
@@ -174,7 +178,7 @@ class KioskPolicyService : Service() {
                     }
                 }
 
-            }*/
+            }
 
 
         }
@@ -240,6 +244,10 @@ class KioskPolicyService : Service() {
                     }
             }
         }
+    }
+
+    fun hitApiForUpdateAction(){
+        //updateActionFromCustomerDevice
     }
 
 }

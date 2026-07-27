@@ -131,7 +131,7 @@ class ForgetPasswordPage : AppCompatActivity() {
                             Log.d("SendRes",Gson().toJson(response) )
 
                             if(response.statuss.equals("True")){
-                                OpenPopUpForVeryfyOTP(mailidormobile)
+                                OpenLoader(mailidormobile)
                                 Toast.makeText(this,response.message,Toast.LENGTH_SHORT).show()
                             }
                             else{
@@ -147,7 +147,7 @@ class ForgetPasswordPage : AppCompatActivity() {
                 }
 
                 ApiStatus.LOADING -> {
-                    ConstantClass.OpenPopUpForVeryfyOTP(this)
+                    ConstantClass.OpenLoader(this)
                 }
 
              }
@@ -182,7 +182,7 @@ class ForgetPasswordPage : AppCompatActivity() {
                 }
 
                 ApiStatus.LOADING -> {
-                    ConstantClass.OpenPopUpForVeryfyOTP(this)
+                    ConstantClass.OpenLoader(this)
                 }
             }
           }
@@ -190,7 +190,7 @@ class ForgetPasswordPage : AppCompatActivity() {
     }
 
 
-    fun OpenPopUpForVeryfyOTP(mobileOrEmailID: String){
+    fun OpenLoader(mobileOrEmailID: String){
         dialog = Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.verifyforgetpasswordotplayour)
@@ -286,7 +286,7 @@ class ForgetPasswordPage : AppCompatActivity() {
                 }
 
                 ApiStatus.LOADING -> {
-                    ConstantClass.OpenPopUpForVeryfyOTP(this)
+                    ConstantClass.OpenLoader(this)
                 }
 
 
@@ -331,7 +331,7 @@ class ForgetPasswordPage : AppCompatActivity() {
                 }
 
                 ApiStatus.LOADING -> {
-                    ConstantClass.OpenPopUpForVeryfyOTP(this)
+                    ConstantClass.OpenLoader(this)
                 }
 
             }

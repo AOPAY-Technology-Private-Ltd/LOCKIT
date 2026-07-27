@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.view.activity.retailer.lockkit.KitPurchaseHistoryList">
+
+    <RelativeLayout
+        android:id="@+id/headlayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_100sdp"
+        android:background="@drawable/signuptopback"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:src="@drawable/back"
+            app:tint="@color/darkgrey" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/inter_bold"
+            android:text="Key Purchase History "
+            android:textColor="@color/darkgrey"
+            android:textSize="@dimen/_16ssp" />
+
+        <ImageView
+            android:id="@+id/home"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:src="@drawable/homeicon"
+            app:tint="@color/darkgrey" />
+
+    </RelativeLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/history_list_show"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/headlayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:listitem="@layout/kit_plan_history_itemlayout" />
+
+    <ImageView
+        android:id="@+id/notfoundimage"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:visibility="visible"
+        android:src="@drawable/notfoundimage"
+        app:layout_constraintTop_toBottomOf="@+id/headlayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

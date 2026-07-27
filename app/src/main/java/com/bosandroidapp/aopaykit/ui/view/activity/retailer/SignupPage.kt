@@ -542,6 +542,7 @@ class SignupPage : AppCompatActivity() {
                             users.body()?.let { response ->
                                 ConstantClass.dialog.dismiss()
                                 Log.d("AirPortListResponse", Gson().toJson(response))
+
                                 if(response.statuss){
                                     preference.setStringValue(ConstantClass.CustomerCode, response.customerCode.toString())
                                     preference.setStringValue(ConstantClass.CustomerMobileNumber, response.mobileNumber.toString())
@@ -557,6 +558,7 @@ class SignupPage : AppCompatActivity() {
                                     Toast.makeText(this, response?.message, Toast.LENGTH_LONG).show()
                                 }
 
+
                             }
                         }
                     }
@@ -566,7 +568,7 @@ class SignupPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }

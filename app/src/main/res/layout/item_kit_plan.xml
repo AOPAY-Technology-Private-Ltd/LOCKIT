@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_5sdp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:background="@drawable/bg_plan_item"
+        android:padding="@dimen/_15sdp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvKitCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_bold"
+            android:text="10"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_18ssp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvKitsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:fontFamily="@font/inter_regular"
+            android:text="kits"
+            android:textColor="@color/grey"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvKitCount"
+            app:layout_constraintStart_toEndOf="@+id/tvKitCount"
+            app:layout_constraintTop_toTopOf="@+id/tvKitCount" />
+
+        <TextView
+            android:id="@+id/tvTotalPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/inter_bold"
+            android:text="₹4,999"
+            android:textColor="#3461FF"
+            android:textSize="@dimen/_16ssp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvKitCount" />
+
+        <TextView
+            android:id="@+id/tvPerKitPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:fontFamily="@font/inter_regular"
+            android:text="₹499 / kits"
+            android:textColor="@color/grey"
+            android:textSize="@dimen/_9ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTotalPrice"
+            app:layout_constraintStart_toEndOf="@+id/tvTotalPrice"
+            app:layout_constraintTop_toTopOf="@+id/tvTotalPrice" />
+
+        <TextView
+            android:id="@+id/tvSaveTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_save_tag"
+            android:paddingHorizontal="@dimen/_8sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="Save 6%"
+            android:textColor="@color/green"
+            android:textSize="@dimen/_8ssp"
+            android:fontFamily="@font/inter_bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tvPopularTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_popular_tag"
+        android:fontFamily="@font/inter_bold"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        android:text="Most Popular"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_7ssp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/clMain"
+        app:layout_constraintStart_toStartOf="@+id/clMain"
+        app:layout_constraintTop_toTopOf="@+id/clMain"
+        app:layout_constraintVertical_bias="0.5"
+        android:layout_marginStart="@dimen/_10sdp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

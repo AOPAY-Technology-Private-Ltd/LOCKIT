@@ -437,7 +437,6 @@ class RetailerProfilePage : AppCompatActivity() {
                                     preference.setStringValue(ConstantClass.LastName, response.lastName.toString())
                                     preference.setStringValue(ConstantClass.CustomerMobileNumber, response.mobileNo.toString())
                                     preference.setStringValue(ConstantClass.CustomerEmailID, response.emailid.toString())
-                                    preference.setStringValue(ConstantClass.CustomerCode, response.customerCode.toString())
                                     setDisableField()
                                 }
                                 else {
@@ -462,7 +461,7 @@ class RetailerProfilePage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
                 }
             }
@@ -533,7 +532,7 @@ class RetailerProfilePage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
                 }
             }
@@ -596,7 +595,7 @@ class RetailerProfilePage : AppCompatActivity() {
                                         ConstantClass.dialog.dismiss()
                                         Toast.makeText(this, response.message, Toast.LENGTH_SHORT)
                                             .show()
-                                        OpenPopUpForVeryfyOTP(mailidormobile, "")
+                                        OpenLoader(mailidormobile, "")
                                     }
                                 }
                                 else{
@@ -612,7 +611,7 @@ class RetailerProfilePage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
 
@@ -647,7 +646,7 @@ class RetailerProfilePage : AppCompatActivity() {
 
                     if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
                         ConstantClass.dialog.dismiss()
-                        OpenPopUpForVeryfyOTP(mobnumber, OTP)
+                        OpenLoader(mobnumber, OTP)
                     }
 
                     Log.d("API_SUCCESS", loanData.toString())
@@ -662,7 +661,7 @@ class RetailerProfilePage : AppCompatActivity() {
     }
 
 
-    fun OpenPopUpForVeryfyOTP(EmailID: String, otp: String) {
+    fun OpenLoader(EmailID: String, otp: String) {
         dialog = Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.verifyforgetpasswordotplayour)
@@ -845,7 +844,7 @@ class RetailerProfilePage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -899,7 +898,7 @@ class RetailerProfilePage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
 

@@ -613,7 +613,13 @@ class NewCustomerRegistrationPage : AppCompatActivity() {
 
             if (validateLoginInput(mobnumber, this) && !binding.firstName.text.toString().isNullOrBlank() && !binding.lastName.text.toString().isNullOrBlank()) {
                 if (isInternetAvailable(this@NewCustomerRegistrationPage)) {
-                    hitApiForVerifyCustomer()
+                    if(ConstantClass.CheckOnlineOrOffline.equals(ConstantClass.kit)){
+                        hitApiForSendOTP(binding.mobileNumber.text.toString().trim(), OTPTYPE) //"Mobile"
+
+                    }else{
+                        hitApiForVerifyCustomer()
+                    }
+
                 } else {
                     Toast.makeText(this, "Please check your internet connection!!", Toast.LENGTH_SHORT).show()
                 }
@@ -785,7 +791,7 @@ class NewCustomerRegistrationPage : AppCompatActivity() {
     }
 
 
-    fun OpenPopUpForVeryfyOTP(EmailID: String, otp: String) {
+    fun OpenLoader(EmailID: String, otp: String) {
         dialog = Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.verifyforgetpasswordotplayour)
@@ -960,7 +966,7 @@ class NewCustomerRegistrationPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -998,7 +1004,7 @@ class NewCustomerRegistrationPage : AppCompatActivity() {
                                     if (clickemailId) {
                                         ConstantClass.dialog.dismiss()
                                         Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
-                                        OpenPopUpForVeryfyOTP(mailidormobile, "")
+                                        OpenLoader(mailidormobile, "")
                                     }
                                 }
                                 else{
@@ -1014,7 +1020,7 @@ class NewCustomerRegistrationPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
 
@@ -1085,7 +1091,7 @@ class NewCustomerRegistrationPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -1393,7 +1399,7 @@ class NewCustomerRegistrationPage : AppCompatActivity() {
 
                     if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
                         ConstantClass.dialog.dismiss()
-                        OpenPopUpForVeryfyOTP(mobnumber, OTP)
+                        OpenLoader(mobnumber, OTP)
                     }
 
                     Log.d("API_SUCCESS", loanData.toString())
@@ -1801,7 +1807,7 @@ class NewCustomerRegistrationPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
 
@@ -1918,7 +1924,7 @@ class NewCustomerRegistrationPage : AppCompatActivity() {
 
 
     fun hitApiForCustomerRegister(cibilScoremsg: String, title: String) {
-        ConstantClass.OpenPopUpForVeryfyOTP(this)
+        ConstantClass.OpenLoader(this)
         var retailercode = preference.getStringValue(ConstantClass.RetailerCode, "")
         // Safely create multipart parts (won’t crash if null)
         val custPhotoPart = CustPhotoPath?.let { createMultipartFromUri(this, it, "CustPhoto_File", "CustomerPhoto") }
@@ -2176,7 +2182,7 @@ class NewCustomerRegistrationPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        ConstantClass.OpenLoader(this)
                     }
 
                 }
@@ -2249,7 +2255,7 @@ class NewCustomerRegistrationPage : AppCompatActivity() {
                     }
 
                     ApiStatus.LOADING -> {
-                        // ConstantClass.OpenPopUpForVeryfyOTP(this)
+                        // ConstantClass.OpenLoader(this)
                     }
 
                 }

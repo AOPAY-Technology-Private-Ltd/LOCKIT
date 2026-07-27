@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature
@@ -330,6 +331,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".kioskmode.KioskLockPage"
+            android:enabled="true"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:taskAffinity="" />
 
         <service
             android:name=".kioskmode.MyAccessibilityService"
@@ -353,7 +362,8 @@
         <service
             android:name=".kioskmode.KioskPolicyService"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="specialUse"
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name=".phonestatereceiver.SimStateReceiver"
@@ -374,6 +384,16 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.view.activity.retailer.lockkit.LockKitCustomerDetailsInfoPage"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.view.activity.retailer.lockkit.LockKitPackageTopUpPage"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.view.activity.retailer.lockkit.KitPurchaseHistoryList"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
