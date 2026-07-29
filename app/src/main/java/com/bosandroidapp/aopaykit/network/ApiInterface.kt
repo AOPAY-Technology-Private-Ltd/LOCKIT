@@ -141,15 +141,18 @@ interface ApiInterface {
     @POST("api/AOP/V1/Validation/AadhaarValidateUrl")
     suspend fun getAadharVarification(@Body req : AadharVerificationReq): Response<AadharVerificationResp>?
 
+
     // Adhar details
     @POST("api/AOP/V1/Fetch/Digilocker/TransactionID")
     suspend fun getAadharDetails(@Body req : AAdhaarDetailesReq): Response<AadhaarDetailsResponse>?
+
 
 
     // cibil api for getting cibil score...............
 
     @POST("api/AOP/CreditAnalytics/Report")
     suspend fun getcibilscore(@Body req : CibilScoreReq): Response<CibilScroeResp>?
+
 
 
     // low cibil score customer report ....................

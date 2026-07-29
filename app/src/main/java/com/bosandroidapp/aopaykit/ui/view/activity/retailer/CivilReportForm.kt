@@ -47,6 +47,7 @@ import com.bosandroidapp.aopaykit.data.repository.CibilRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CibilViewModelFactory
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityCivilReportFormBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
@@ -57,7 +58,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class CivilReportForm : AppCompatActivity() {
+class CivilReportForm : BaseActivity() {
 
     lateinit var binding : ActivityCivilReportFormBinding
     lateinit var dialog: Dialog

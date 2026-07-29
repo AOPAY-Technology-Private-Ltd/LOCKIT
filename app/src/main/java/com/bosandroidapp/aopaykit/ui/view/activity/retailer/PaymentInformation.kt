@@ -65,6 +65,7 @@ import com.bosandroidapp.aopaykit.data.pennydrop.PennyDropRequest
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.repository.PanRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
@@ -77,7 +78,7 @@ import kotlinx.coroutines.launch
 import kotlin.text.clear
 import kotlin.text.equals
 
-class PaymentInformation : AppCompatActivity() {
+class PaymentInformation : BaseActivity() {
     lateinit var  binding : ActivityPaymentInformationBinding
     lateinit var viewModel: AuthenticationViewModel
     lateinit var api: ApiInterface

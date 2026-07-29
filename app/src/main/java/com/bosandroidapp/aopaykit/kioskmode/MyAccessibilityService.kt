@@ -13,6 +13,9 @@ import android.view.accessibility.AccessibilityNodeInfo
 import com.bosandroidapp.aopaykit.constant.ConstantClass
 import com.bosandroidapp.aopaykit.constant.ConstantClass.SETTINGS_PKG
 import com.bosandroidapp.aopaykit.constant.ConstantClass.gpsSettingsOpened
+import com.bosandroidapp.aopaykit.constant.ConstantClass.internetSettingsOpened
+import com.bosandroidapp.aopaykit.constant.ConstantClass.isInternetAvailable
+import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.utils.ACCESSIBILITYTAG
 import com.bosandroidapp.aopaykit.utils.Logger
 import com.bosandroidapp.aopaykit.utils.syncEmis
@@ -23,11 +26,15 @@ import kotlinx.coroutines.launch
 
 class MyAccessibilityService : AccessibilityService() {
 
+    private val preference: SharedPreference by lazy { SharedPreference.getInstance(applicationContext)!! }
+
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
 
         CoroutineScope(Dispatchers.IO).launch {
-            syncEmis()
+            if(isInternetAvailable(this@MyAccessibilityService)){
+                syncEmis()
+            }
         }
 
         if (isMyAppInfoPage() && !isEMIsCompleted()) {
@@ -63,19 +70,32 @@ class MyAccessibilityService : AccessibilityService() {
             gpsSettingsOpened = false
         }
 
-        /*if (isGoogleLogin(event) && !isEMIsCompleted()) {
-            Logger.d(ACCESSIBILITYTAG, "On Google Login Page: Global Back")
-            performGlobalAction(GLOBAL_ACTION_BACK)
+
+       /* if(preference.getBoolanValue(ConstantClass.IS_KIOSK_ENABLED,false) && applicationContext !is KioskActivity)
+        {
+            val launchIntent = Intent(this, KioskLockPage::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
+            startActivity(launchIntent)
         }*/
 
 
-        /* if (isLocked()) {
-             Logger.d(ACCESSIBILITYTAG, "Phone Locked")
-             isMyAppMinimizedOrRemoved(event)
-         }*/
-
-
         if (isLocked()) {
+
+            if (!isInternetAvailable(this) && isInternetAlertSituationCompleted()) {
+                // Open Internet settings ONLY ONCE
+                if (!internetSettingsOpened) {
+                    internetSettingsOpened = true
+                    showToast("Please connect with internet")
+                    openInternetSettings()
+                    return
+                }
+                if (!currentPkg.contains(SETTINGS_PKG)) {
+                    openInternetSettings()   // FORCE BACK
+                }
+
+                return // STOP all other processing
+            }
 
             val packageName = event?.packageName?.toString()
 
@@ -95,7 +115,6 @@ class MyAccessibilityService : AccessibilityService() {
             if (isAllowedSystemPackage(packageName)) {
                 return
             }
-
 
             /*if (isActivityRunning(this, PGWebViewActivity::class.java)) {
                 return
@@ -132,7 +151,6 @@ class MyAccessibilityService : AccessibilityService() {
         else false
     }
 
-
     private fun isMyAppMinimizedOrRemoved(event: AccessibilityEvent?) {
         Log.d("Accessibility Package Name", "Package Name: ${event?.packageName}")
         if (!((event?.packageName?.equals("com.google.android.apps.nbu.paisa.user")) ?: false)
@@ -146,7 +164,7 @@ class MyAccessibilityService : AccessibilityService() {
             && !((event?.packageName?.equals("com.hdfcbank.payzapp")) ?: false)
             && !((event?.packageName?.equals("sbi.mobile.apps.in")) ?: false)
             && !((event?.packageName?.equals("in.amazon.mShop.android.shopping")) ?: false)
-            && !((event?.packageName?.equals("com.bosandroidapp.aopayfinance")) ?: false)
+            && !((event?.packageName?.equals("com.bosandroidapp.aopaykit")) ?: false)
             && !(event?.packageName == null) &&!isMyAppOnTop()&& /*!isActivityRunning(this, KioskActivity::class.java)*/  event?.packageName != null && !isPaymentAppRunning()) {
 
             Logger.d(ACCESSIBILITYTAG, "${event.packageName}")
@@ -162,7 +180,6 @@ class MyAccessibilityService : AccessibilityService() {
 
 
     }
-
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -180,7 +197,6 @@ class MyAccessibilityService : AccessibilityService() {
         setServiceInfo(info)
     }
 
-
     fun refreshService() {
         val info = getServiceInfo()
         if (info != null) {
@@ -188,7 +204,6 @@ class MyAccessibilityService : AccessibilityService() {
             setServiceInfo(info)
         }
     }
-
 
     // changes by me
     private fun isMyAppOnTop(): Boolean {
@@ -256,6 +271,12 @@ class MyAccessibilityService : AccessibilityService() {
         return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
     }
 
+    fun openInternetSettings() {
+        val intent = Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+    }
+
 
     private fun openGpsSettings() {
         val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
@@ -294,7 +315,7 @@ class MyAccessibilityService : AccessibilityService() {
                 packageName.equals("com.android.permissioncontroller", true) ||
 
                 // Your App
-                packageName.equals("com.bosandroidapp.aopayfinance", true) ||
+                packageName.equals("com.bosandroidapp.aopaykit", true) ||
 
                 // Payment Apps
                 packageName.equals("sbi.mobile.apps.in", true) ||
@@ -350,11 +371,9 @@ class MyAccessibilityService : AccessibilityService() {
                 // Nothing
                 packageName.equals("com.nothing.smartcenter", true)||
 
-                packageName.equals("com.bosandroidapp.aopayfinance", true)
+                packageName.equals("com.bosandroidapp.aopaykit", true)
 
     }
-
-
 
 
 }

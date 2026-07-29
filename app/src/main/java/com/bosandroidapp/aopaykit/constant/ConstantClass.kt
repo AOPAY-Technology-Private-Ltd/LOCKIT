@@ -1,6 +1,7 @@
 package com.bosandroidapp.aopaykit.constant
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -43,6 +44,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import  com.bosandroidapp.aopaykit.R
+import com.bosandroidapp.aopaykit.internetchecker.NetworkMonitor
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.workmanager.LocationUploadWorker
@@ -164,6 +166,7 @@ object ConstantClass {
      const val CustomerLoanStatusApproved = "Approved"
      const val CustomerLoanStatusPending = "Pending"
      const val Exit = "Exit"
+     const val IS_KIOSK_ENABLED = "is_kiosk_enabled"
 
      const val Due = "TodayDue"
      const val Overdue = "OverDue"
@@ -419,7 +422,29 @@ object ConstantClass {
 
     var subApp: MutableList<String> = mutableListOf()
 
+    var internetSettingsOpened = false
 
+    private var noInternetDialog: AlertDialog? = null
+
+    fun showNoInternetDialog(context: Context) {
+        if (noInternetDialog?.isShowing == true) return
+
+        noInternetDialog = AlertDialog.Builder(context)
+            .setTitle("No Internet")
+            .setMessage("Please check your Wi-Fi or mobile data connection.")
+            .setCancelable(false)
+            .setPositiveButton("Open Settings") { _, _ ->
+                if (NetworkMonitor(context).isConnected()) noInternetDialog?.dismiss() else {
+                    val intent = Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(intent)
+                }
+
+            }
+            .create()
+
+        noInternetDialog?.show()
+    }
 
 
     fun isInternetAvailable(context: Context): Boolean {

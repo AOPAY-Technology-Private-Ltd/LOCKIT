@@ -36,6 +36,7 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.CustomerLoanEmiReceiveR
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityPgwebViewBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
@@ -45,7 +46,7 @@ import com.google.gson.Gson
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class PGWebViewActivity : AppCompatActivity() {
+class PGWebViewActivity : BaseActivity() {
     lateinit var binding : ActivityPgwebViewBinding
     lateinit var dialog: Dialog
     lateinit var preference : SharedPreference

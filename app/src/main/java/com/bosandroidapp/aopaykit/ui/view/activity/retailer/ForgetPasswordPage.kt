@@ -34,13 +34,14 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.verification.SendOtpReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.VerifyOTPReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.slideshow.activity.LoginPage
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
 
-class ForgetPasswordPage : AppCompatActivity() {
+class ForgetPasswordPage : BaseActivity() {
     lateinit var binding : ActivityForgetPasswordPageBinding
     lateinit var viewModel: AuthenticationViewModel
     lateinit var preference : SharedPreference

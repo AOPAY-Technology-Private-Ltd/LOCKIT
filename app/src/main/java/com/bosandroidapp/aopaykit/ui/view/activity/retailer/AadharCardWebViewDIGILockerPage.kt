@@ -26,6 +26,7 @@ import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.repository.CibilRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CibilViewModelFactory
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
@@ -36,7 +37,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class AadharCardWebViewDIGILockerPage : AppCompatActivity() {
+class AadharCardWebViewDIGILockerPage : BaseActivity() {
     lateinit var binding: ActivityAadharCardWebViewDigilockerPageBinding
     lateinit var viewModel: AuthenticationViewModel
     private lateinit var viewCibilModel: CibilViewModel

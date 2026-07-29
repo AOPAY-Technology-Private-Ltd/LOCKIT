@@ -60,6 +60,27 @@ fun Context.setEMINotCompleted() {
     editor.apply()
 }
 
+fun Context.startInternetAlertSituation() {
+    val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+    val editor = sharedPref.edit()
+    editor.putBoolean("isInternet", true) // key: isLoggedIn, value: true
+    editor.apply()
+}
+
+fun Context.stopInternetAlertSituation() {
+    val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+    val editor = sharedPref.edit()
+    editor.putBoolean("isInternet", false) // key: isLoggedIn, value: true
+    editor.apply()
+}
+
+
+fun Context.isInternetAlertSituationCompleted(): Boolean {
+    val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+    return sharedPref.getBoolean("isInternet", true)
+}
+
+
 fun Context.showToast(message: String) {
     Handler(Looper.getMainLooper()).post {
         Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()

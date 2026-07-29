@@ -98,6 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:text="FRP"
+            android:visibility="gone"
             android:textColor="@color/darkgrey"
             android:textSize="@dimen/_11ssp"
             app:layout_constraintEnd_toStartOf="@+id/glLabel"
@@ -108,6 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=":"
+            android:visibility="gone"
             android:textColor="@color/darkgrey"
             app:layout_constraintStart_toStartOf="@+id/glLabel"
             app:layout_constraintTop_toTopOf="@+id/lblFrp" />
@@ -115,6 +117,7 @@
         <TextView
             android:id="@+id/tvFrp"
             android:layout_width="0dp"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:text="it@oqsolution.in"
             android:textColor="@color/darkgrey"

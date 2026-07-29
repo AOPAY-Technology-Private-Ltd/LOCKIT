@@ -4,12 +4,13 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import com.bos.payment.appName.network.ApiInterface
 import com.bosandroidapp.aopaykit.databinding.ActivityMakePaymentPageBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.model.MakePaymentDataModel
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.MonthsAndPayables
 
-class MakePaymentPage : AppCompatActivity() {
+class MakePaymentPage : BaseActivity() {
     lateinit var binding : ActivityMakePaymentPageBinding
     private val CAMERA_REQUEST_CODE_FRONT = 1001
     private var photoUri: Uri? = null

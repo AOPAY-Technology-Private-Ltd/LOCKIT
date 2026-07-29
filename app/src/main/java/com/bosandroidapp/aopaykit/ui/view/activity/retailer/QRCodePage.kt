@@ -133,6 +133,7 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.LogoutReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.repository.PanRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
@@ -153,7 +154,7 @@ import java.io.File
 import kotlin.math.roundToInt
 import kotlin.text.trim
 
-class QRCodePage : AppCompatActivity() {
+class QRCodePage : BaseActivity() {
     lateinit var binding: ActivityQrcodePageBinding
     lateinit var viewModel: AuthenticationViewModel
     lateinit var panViewModel: PanViewModel
@@ -241,7 +242,6 @@ class QRCodePage : AppCompatActivity() {
             LoanEndDate=""
             loancreatedreq = null
             if (isInternetAvailable(this@QRCodePage)) {
-
                 binding.nextlayout.isEnabled= false
                 hitApiForCustomerRegister()
             }
@@ -388,8 +388,7 @@ class QRCodePage : AppCompatActivity() {
         }
 
         if(ConstantClass.CheckOnlineOrOffline.equals(ConstantClass.kit)){
-
-           VeryfyKitCustomer()
+            VeryfyKitCustomer()
         }
         else{
             ConstantClass.OpenLoader(this)

@@ -46,6 +46,7 @@ import com.bosandroidapp.aopaykit.data.notification.NotificationSendTokenRequest
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityLoginPageBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.ForgetPasswordPage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.SignupPage
@@ -55,7 +56,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
-class LoginPage : AppCompatActivity() {
+class LoginPage : BaseActivity() {
     lateinit var binding: ActivityLoginPageBinding
     private lateinit var viewModel: AuthenticationViewModel
     lateinit var preference : SharedPreference
@@ -690,7 +691,7 @@ class LoginPage : AppCompatActivity() {
                 val fcmToken = task.result
                 FireBaseToken= fcmToken
                 preference.setStringValue(ConstantClass.FCMTOKEN,FireBaseToken)
-                sendDataToEmail("FCM Token: $fcmToken") // for testing
+               // sendDataToEmail("FCM Token: $fcmToken") // for testing
                 Log.d("FCM_TOKEN", fcmToken)
             }
        }

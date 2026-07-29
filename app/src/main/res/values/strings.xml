@@ -25,7 +25,7 @@
 
     <string name="emi">EMI</string>
     <string name="product">Product</string>
-    <string name="customer">Customer</string>
+    <string name="customer">Add Customer</string>
     <string name="credit">Report</string>
     <string name="emicalculation">Select Mobile</string>
     <string name="emidetails">EMI Details</string>
@@ -279,7 +279,7 @@
     <string name="edit">Edit Profile</string>
     <string name="cancel">Cancel</string>
     <string name="profile_retaler">Profile</string>
-    <string name="lock_customer">Lock Kit Customer</string>
+    <string name="lock_customer">LocKit Customer</string>
     <string name="fname">First Name</string>
     <string name="lname">Last Name</string>
     <!-- TODO: Remove or change this placeholder text -->

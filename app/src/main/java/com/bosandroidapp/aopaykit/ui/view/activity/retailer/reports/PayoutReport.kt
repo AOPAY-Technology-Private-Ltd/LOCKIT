@@ -17,13 +17,14 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.reports.PayoutReportReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityPayoutReportBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.adapter.PayoutReportAdapter
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
 
-class PayoutReport : AppCompatActivity() {
+class PayoutReport : BaseActivity() {
     lateinit var binding: ActivityPayoutReportBinding
     lateinit var viewModel: AuthenticationViewModel
     lateinit var preference: SharedPreference

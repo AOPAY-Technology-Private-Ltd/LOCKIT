@@ -6,8 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bosandroidapp.aopaykit.databinding.ActivityReportSelectionPageBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 
-class ReportSelectionPage : AppCompatActivity() {
+class ReportSelectionPage : BaseActivity(){
 
     lateinit var binding : ActivityReportSelectionPageBinding
 

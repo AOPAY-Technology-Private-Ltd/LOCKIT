@@ -19,6 +19,7 @@ import com.bosandroidapp.aopaykit.data.model.LowCibilCustomerReportReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityLowCibilScoreCustomerReportsBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.slideshow.adapter.LowCibilScoreCustomerReportListAdapter
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
@@ -29,7 +30,7 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
 
-class LowCibilScoreCustomerReports : AppCompatActivity() {
+class LowCibilScoreCustomerReports : BaseActivity(){
     lateinit var binding: ActivityLowCibilScoreCustomerReportsBinding
     lateinit var viewModel: AuthenticationViewModel
     lateinit var preference: SharedPreference

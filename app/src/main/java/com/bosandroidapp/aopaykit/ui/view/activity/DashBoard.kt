@@ -77,6 +77,7 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.LogoutReq
 import com.bosandroidapp.aopaykit.data.notification.SendNotificationFeatureNameRequest
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.kioskmode.initiateBlocking
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
@@ -118,7 +119,7 @@ import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 
 
-class DashBoard : AppCompatActivity() {
+class DashBoard : BaseActivity() {
     private lateinit var binding: ActivityDashBoardBinding
     private lateinit var headerBinding: NavHeaderDashBoardBinding
     lateinit var preference: SharedPreference
@@ -285,6 +286,11 @@ class DashBoard : AppCompatActivity() {
     }
 
     fun hitApiForKitOption(){
+        binding.appBarDashBoard.deskdesign.onlinekitlayout.visibility =  View.GONE
+        binding.appBarDashBoard.deskdesign.viewonline.visibility = View.GONE
+        binding.appBarDashBoard.deskdesign.offlinekitlayout.visibility =  View.GONE
+        binding.appBarDashBoard.deskdesign.viewoffline.visibility =  View.GONE
+        binding.appBarDashBoard.deskdesign.kitlayout.visibility =  View.GONE
 
         var request = KitOptionRequest(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode,"")
@@ -352,11 +358,7 @@ class DashBoard : AppCompatActivity() {
     }
 
 
-    private fun updateWeight(
-        view: View,
-        isVisible: Boolean,
-        visibleCount: Int
-    ) {
+    private fun updateWeight(view: View, isVisible: Boolean, visibleCount: Int) {
         val params = view.layoutParams as LinearLayout.LayoutParams
 
         if (isVisible) {
@@ -402,7 +404,8 @@ class DashBoard : AppCompatActivity() {
              binding.navAddaccount.visibility = View.VISIBLE
             binding.appBarDashBoard.deskdesign.subtitle.text = "One Tap to Your Next Loan"
 
-        } else {
+        }
+        else {
             binding.navWallet.visibility = View.GONE
             binding.navAddaccount.visibility = View.GONE
             binding.appBarDashBoard.deskdesign.retailersDashboard.visibility = View.GONE

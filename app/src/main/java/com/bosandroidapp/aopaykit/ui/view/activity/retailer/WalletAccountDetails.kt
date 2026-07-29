@@ -22,6 +22,7 @@ import com.bosandroidapp.aopaykit.data.model.ValidateSessionRequest
 import com.bosandroidapp.aopaykit.data.model.loginsignup.LogoutReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.ui.view.activity.fragment.PayoutPage.Companion.CheckActiveStatus
@@ -34,7 +35,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
 
-class WalletAccountDetails : AppCompatActivity() {
+class WalletAccountDetails : BaseActivity() {
     lateinit var binding : ActivityWalletAccountDetailsBinding
     lateinit var viewModel: AuthenticationViewModel
     lateinit var preference : SharedPreference

@@ -24,6 +24,7 @@ import com.bosandroidapp.aopaykit.data.repository.CibilRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CibilViewModelFactory
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityReferenceAadharCardWebViewDigilockerPageBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.PaymentInformation.Companion.checkKYC
@@ -32,7 +33,7 @@ import com.bosandroidapp.aopaykit.ui.viewmodel.CibilViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
 
-class AadharCardReferenceWebViewDIGILockerPage : AppCompatActivity() {
+class AadharCardReferenceWebViewDIGILockerPage : BaseActivity() {
     lateinit var binding: ActivityReferenceAadharCardWebViewDigilockerPageBinding
     lateinit var viewModel: AuthenticationViewModel
     private lateinit var viewCibilModel: CibilViewModel

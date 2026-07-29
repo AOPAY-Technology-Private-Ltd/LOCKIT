@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -27,13 +28,18 @@ import com.bosandroidapp.aopaykit.data.customeraction.RetailerSaveDeviceActionRe
 import com.bosandroidapp.aopaykit.data.customeraction.RetailerSendNotificationToCustomer
 import com.bosandroidapp.aopaykit.data.customeraction.RetailerSendNotificationToCustomerReq
 import com.bosandroidapp.aopaykit.data.model.CustomerKitRequest
+import com.bosandroidapp.aopaykit.data.model.SessionOutReq
+import com.bosandroidapp.aopaykit.data.model.ValidateSessionRequest
 import com.bosandroidapp.aopaykit.data.model.kitoption.CustomerListItem
+import com.bosandroidapp.aopaykit.data.model.loginsignup.LogoutReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityLockKitCustomerDetailsInfoPageBinding
 import com.bosandroidapp.aopaykit.databinding.DialogPinBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
+import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.MapActivity
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.MapActivity.Companion.lattitude
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.MapActivity.Companion.longitude
@@ -50,7 +56,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class LockKitCustomerDetailsInfoPage : AppCompatActivity() {
+class LockKitCustomerDetailsInfoPage : BaseActivity() {
     lateinit var binding : ActivityLockKitCustomerDetailsInfoPageBinding
     private lateinit var tabAdapter: InfoTabAdapter
     lateinit var preference: SharedPreference
@@ -58,6 +64,7 @@ class LockKitCustomerDetailsInfoPage : AppCompatActivity() {
     var clickLocation = false
 
     var devicePin: String =""
+
 
     companion object{
         lateinit var kitcustomerData : CustomerListItem
@@ -126,10 +133,12 @@ class LockKitCustomerDetailsInfoPage : AppCompatActivity() {
     }*/
 
 
+
     override fun onResume() {
         super.onResume()
         clickLocation= false
         hitApiForUpdateActionStatus()
+        hitApiForLogin()
     }
 
 
@@ -332,14 +341,13 @@ class LockKitCustomerDetailsInfoPage : AppCompatActivity() {
                         it.data.let { users ->
                             users!!.body().let { response ->
                                 Log.d("notificationResponse",Gson().toJson(response))
-                                if (response!!.status == true) {
 
+                                if (response!!.status == true) {
                                     if(notificationCode.equals(ConstantClass.DevicePin)){
                                          ConstantClass.dialog.dismiss()
                                          hitApiForDoActionNotification(ConstantClass.Lock,true)
                                          return@observe
                                     }
-
                                     lifecycleScope.launch {
                                         delay(3000)
                                         ConstantClass.dialog.dismiss()
@@ -347,9 +355,10 @@ class LockKitCustomerDetailsInfoPage : AppCompatActivity() {
                                         AuthRepository.notifyCustomerListChanged()
                                     }
 
-                                    Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show()
+                                   // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show()
                                 }
                                 else {
+                                    ConstantClass.dialog.dismiss()
                                     Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show()
                                 }
 
@@ -382,7 +391,7 @@ class LockKitCustomerDetailsInfoPage : AppCompatActivity() {
                     ApiStatus.SUCCESS -> {
                         it.data?.let { users ->
                             users.body()?.let { response ->
-                                ConstantClass.dialog.dismiss()
+
                                 Log.d("notificationResponse", Gson().toJson(response))
                                 if (response.status == true && response.data != null) {
 
@@ -408,6 +417,7 @@ class LockKitCustomerDetailsInfoPage : AppCompatActivity() {
                                          }
 
                                         Log.d("notificationCodeCheck","${notificationCode}  ${ConstantClass.GETLOCATION}  ${clickLocation}")
+
                                         if(notificationCode==ConstantClass.GETLOCATION && clickLocation){
                                            getKitCustomerLocation()
                                          }
@@ -420,8 +430,9 @@ class LockKitCustomerDetailsInfoPage : AppCompatActivity() {
                             }
                         }
                     }
-                    ApiStatus.ERROR -> ConstantClass.dialog.dismiss()
-                    ApiStatus.LOADING -> ConstantClass.OpenLoader(this)
+                    ApiStatus.ERROR -> {}
+
+                    ApiStatus.LOADING -> {}
                 }
             }
         }
@@ -539,7 +550,7 @@ class LockKitCustomerDetailsInfoPage : AppCompatActivity() {
                     ApiStatus.SUCCESS -> {
                         it.data.let { users ->
                             users!!.body().let { response ->
-                                ConstantClass.dialog.dismiss()
+                               // ConstantClass.dialog.dismiss()
                                 // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show() // Optional: remove or keep
                                 if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
 
@@ -547,6 +558,14 @@ class LockKitCustomerDetailsInfoPage : AppCompatActivity() {
                                         val updatedItem = response.customerList.find { it?.customerCodes == kitcustomerData.customerCodes }
                                         if (updatedItem != null) {
                                             kitcustomerData = updatedItem
+
+                                            val currentFragment = supportFragmentManager
+                                                .findFragmentById(R.id.fragmentContainer)
+
+                                            if (currentFragment is CustomerDeviceFragment) {
+                                                // Current fragment is HomeFragment
+                                                currentFragment.refreshData()
+                                            }
                                             setDataOnView()
                                             // Optional: notify current fragment if needed, but since fragments use companion object it might be okay
                                         }
@@ -557,16 +576,127 @@ class LockKitCustomerDetailsInfoPage : AppCompatActivity() {
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                       // ConstantClass.dialog.dismiss()
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenLoader(this)
+                        //ConstantClass.OpenLoader(this)
                     }
 
                 }
             }
         }
+    }
+
+
+    fun hitApiForLogin() {
+
+        var deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        preference.setStringValue(ConstantClass.DEVICEID,deviceId)
+
+        var sessionOutReq = SessionOutReq(
+            retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+        )
+
+        Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
+
+        viewModel.getSessionReq(sessionOutReq).observe(this) { resources ->
+            resources.let {
+                when (it.apiStatus) {
+                    ApiStatus.SUCCESS -> {
+                        it.data?.let { users ->
+                            users.body()?.let { response ->
+                                Log.d("SessionOutResponse", Gson().toJson(response))
+                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                    ConstantClass.dialog.dismiss()
+                                }
+                                ConstantClass.checkActiveStatusAndLogout(this@LockKitCustomerDetailsInfoPage, response.status, preference)
+                            }
+                        }
+                    }
+
+                    ApiStatus.ERROR -> {
+
+                    }
+
+                    ApiStatus.LOADING -> {
+
+                    }
+                }
+            }
+        }
+
+
+        var request = ValidateSessionRequest(
+            preference.getStringValue(ConstantClass.RetailerCode, ""),
+            deviceId,
+            preference.getStringValue(ConstantClass.FCMTOKEN, "")
+        )
+
+        Log.d("validaterequest", Gson().toJson(request))
+        viewModel.getSessionExpiredReq(request).observe(this){resources ->
+            resources.let {
+                when (it.apiStatus) {
+                    ApiStatus.SUCCESS -> {
+                        it.data?.let { users ->
+                            users.body()?.let { response ->
+                                Log.d("validateresp", Gson().toJson(response))
+                                if(response.status==0){
+                                    hitApiForRetailerLogout()
+                                }
+                            }
+                        }
+                    }
+
+                    ApiStatus.ERROR -> {
+
+                    }
+
+                    ApiStatus.LOADING -> {
+
+                    }
+                }
+            }
+        }
+
+    }
+
+    fun hitApiForRetailerLogout() {
+        var loginRequest = LogoutReq(
+            retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+        )
+
+        Log.d("LogoutReq", Gson().toJson(loginRequest))
+
+        viewModel.getLogout(loginRequest).observe(this) { resources ->
+            resources.let {
+                when (it.apiStatus) {
+                    ApiStatus.SUCCESS -> {
+                        it.data?.let { users ->
+                            users.body()?.let { response ->
+                                Log.d("LogoutResponse", Gson().toJson(response))
+                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                                preference.setStringValue(ConstantClass.LoginType, "")
+                                ConstantClass.ClickOnCardDashboard = ""
+                                val intent = Intent(this@LockKitCustomerDetailsInfoPage, ChooseYourRolePage::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
+                    }
+
+                    ApiStatus.ERROR -> {
+
+                    }
+
+                    ApiStatus.LOADING -> {
+
+                    }
+                }
+            }
+        }
+
     }
 
 }

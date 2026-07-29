@@ -7,6 +7,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.bosandroidapp.aopaykit.R
 import com.bosandroidapp.aopaykit.constant.ConstantClass
 import com.bosandroidapp.aopaykit.databinding.ActivityMapBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -14,7 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
-class MapActivity : AppCompatActivity() ,OnMapReadyCallback{
+class MapActivity : BaseActivity() ,OnMapReadyCallback{
 
     lateinit var binding: ActivityMapBinding
     private lateinit var mMap: GoogleMap

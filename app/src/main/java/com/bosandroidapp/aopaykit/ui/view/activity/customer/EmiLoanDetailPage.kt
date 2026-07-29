@@ -66,6 +66,7 @@ import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.repository.PanRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.data.viewModelFactory.PanViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.view.activity.customer.PGWebViewActivity.Companion.emiList
@@ -84,7 +85,7 @@ import java.text.DecimalFormat
 import kotlin.text.equals
 import kotlin.toString
 
-class EmiLoanDetailPage : AppCompatActivity() {
+class EmiLoanDetailPage : BaseActivity() {
     lateinit var binding : ActivityEmiLoanDetailPageBinding
     lateinit var dialog : Dialog
     lateinit var viewModel: AuthenticationViewModel

@@ -2,6 +2,7 @@ package com.bosandroidapp.aopaykit.ui.view.activity.retailer.lockkit
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -9,8 +10,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.R
 import com.bosandroidapp.aopaykit.constant.ConstantClass
@@ -55,12 +58,17 @@ import com.bosandroidapp.aopaykit.constant.ConstantClass.RefmobileNo
 import com.bosandroidapp.aopaykit.constant.ConstantClass.Tenure
 import com.bosandroidapp.aopaykit.constant.ConstantClass.isAggrementVerified
 import com.bosandroidapp.aopaykit.data.model.CustomerKitRequest
+import com.bosandroidapp.aopaykit.data.model.SessionOutReq
+import com.bosandroidapp.aopaykit.data.model.ValidateSessionRequest
 import com.bosandroidapp.aopaykit.data.model.kitoption.CustomerListItem
+import com.bosandroidapp.aopaykit.data.model.loginsignup.LogoutReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityLockKitCustomerListPageBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
+import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.ui.view.adapter.LockKitCustomerListAdapter
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
@@ -69,13 +77,15 @@ import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class LockKitCustomerListPage : AppCompatActivity() {
+class LockKitCustomerListPage : BaseActivity() {
 
     lateinit var binding : ActivityLockKitCustomerListPageBinding
     lateinit var adapter : LockKitCustomerListAdapter
     lateinit var viewModel: AuthenticationViewModel
     lateinit var preference: SharedPreference
     var kitCustomerList : List<CustomerListItem?> ?= listOf()
+
+    var ischeckListUpdate : Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,19 +109,15 @@ class LockKitCustomerListPage : AppCompatActivity() {
 
         setOnClickListner()
 
-        // Observe global refresh events
-        lifecycleScope.launch {
-            AuthRepository.customerListUpdate.collectLatest {
-                getKitCustomerList()
-            }
-        }
 
     }
 
 
     override fun onResume() {
         super.onResume()
+
         getKitCustomerList()
+        hitApiForLogin()
     }
 
 
@@ -189,7 +195,7 @@ class LockKitCustomerListPage : AppCompatActivity() {
             refmobileNo = "",
             refAddress = "",
             debitOrCreditCard = "",
-            upiMandate = "yes",
+            upiMandate = "",
             createdBy = createdBy,
             membershipfees = "",
             retailercode = retailercode,
@@ -205,7 +211,9 @@ class LockKitCustomerListPage : AppCompatActivity() {
             aadharBack_Path =  null,
             panFront_Path =  null
         )
+
         Log.d("RegistationRequest", Gson().toJson(registationRequest))
+
         viewModel.getCustomerKitRequest(registationRequest).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
@@ -213,9 +221,10 @@ class LockKitCustomerListPage : AppCompatActivity() {
                         it.data.let { users ->
                             users!!.body().let { response ->
                                 ConstantClass.dialog.dismiss()
-                                Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show()
-                                if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
 
+                               // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show()
+                                if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
+                                    Log.d("RegistationResponse", Gson().toJson(response.customerList))
                                    if(response.customerList!!.size>0){
                                        kitCustomerList = response.customerList
                                        setDataInList(kitCustomerList)
@@ -245,11 +254,123 @@ class LockKitCustomerListPage : AppCompatActivity() {
 
                     ApiStatus.LOADING -> {
                         ConstantClass.OpenLoader(this)
+
                     }
 
                 }
             }
         }
+    }
+
+
+    fun hitApiForLogin() {
+
+        var deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        preference.setStringValue(ConstantClass.DEVICEID,deviceId)
+
+        var sessionOutReq = SessionOutReq(
+            retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+        )
+
+        Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
+
+        viewModel.getSessionReq(sessionOutReq).observe(this) { resources ->
+            resources.let {
+                when (it.apiStatus) {
+                    ApiStatus.SUCCESS -> {
+                        it.data?.let { users ->
+                            users.body()?.let { response ->
+                                Log.d("SessionOutResponse", Gson().toJson(response))
+                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                    ConstantClass.dialog.dismiss()
+                                }
+                                ConstantClass.checkActiveStatusAndLogout(this@LockKitCustomerListPage, response.status, preference)
+                            }
+                        }
+                    }
+
+                    ApiStatus.ERROR -> {
+
+                    }
+
+                    ApiStatus.LOADING -> {
+
+                    }
+                }
+            }
+        }
+
+
+        var request = ValidateSessionRequest(
+            preference.getStringValue(ConstantClass.RetailerCode, ""),
+            deviceId,
+            preference.getStringValue(ConstantClass.FCMTOKEN, "")
+        )
+
+        Log.d("validaterequest", Gson().toJson(request))
+        viewModel.getSessionExpiredReq(request).observe(this){resources ->
+            resources.let {
+                when (it.apiStatus) {
+                    ApiStatus.SUCCESS -> {
+                        it.data?.let { users ->
+                            users.body()?.let { response ->
+                                Log.d("validateresp", Gson().toJson(response))
+                                if(response.status==0){
+                                    hitApiForRetailerLogout()
+                                }
+                            }
+                        }
+                    }
+
+                    ApiStatus.ERROR -> {
+
+                    }
+
+                    ApiStatus.LOADING -> {
+
+                    }
+                }
+            }
+        }
+
+    }
+
+    fun hitApiForRetailerLogout() {
+        var loginRequest = LogoutReq(
+            retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+        )
+
+        Log.d("LogoutReq", Gson().toJson(loginRequest))
+
+        viewModel.getLogout(loginRequest).observe(this) { resources ->
+            resources.let {
+                when (it.apiStatus) {
+                    ApiStatus.SUCCESS -> {
+                        it.data?.let { users ->
+                            users.body()?.let { response ->
+                                Log.d("LogoutResponse", Gson().toJson(response))
+                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                                preference.setStringValue(ConstantClass.LoginType, "")
+                                ConstantClass.ClickOnCardDashboard = ""
+                                val intent = Intent(this@LockKitCustomerListPage, ChooseYourRolePage::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
+                    }
+
+                    ApiStatus.ERROR -> {
+
+                    }
+
+                    ApiStatus.LOADING -> {
+
+                    }
+                }
+            }
+        }
+
     }
 
 }

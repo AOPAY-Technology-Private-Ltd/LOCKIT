@@ -32,7 +32,6 @@
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/menuicon"/>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/retailersDashboard"
         android:layout_width="match_parent"

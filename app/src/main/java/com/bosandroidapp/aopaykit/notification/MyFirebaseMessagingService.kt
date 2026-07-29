@@ -10,6 +10,7 @@ import android.app.admin.FactoryResetProtectionPolicy
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.media.RingtoneManager
@@ -155,8 +156,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     handleSettingApps(dpm, admin, json)
                 }
 
+
                 ConstantClass.Reboot -> {
                     dpm.reboot(admin)
+
 
                     if(rid>-1){
                         hitApiForUpdateActionStatus("")
@@ -221,14 +224,29 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
                 ConstantClass.Kisok -> {
                     val actionStatus = json.optString(ConstantClass.JSONAction).toLowerCase().equals("enable", ignoreCase = true)
+
                     if (actionStatus) {
                         // Launch KioskLockPage when locked
+
+                        preference.setBooleanValue(ConstantClass.IS_KIOSK_ENABLED,true)
+
                         val intent = Intent(applicationContext, KioskLockPage::class.java).apply {
                             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         }
+                        val filter = IntentFilter(Intent.ACTION_MAIN).apply {
+                            addCategory(Intent.CATEGORY_HOME)
+                            addCategory(Intent.CATEGORY_DEFAULT)
+                        }
+                        val activity = ComponentName(this, KioskLockPage::class.java)
+                        dpm.addPersistentPreferredActivity(
+                            admin,
+                            filter,
+                            activity
+                        )
                         startActivity(intent)
                     }
                     else {
+                        preference.setBooleanValue(ConstantClass.IS_KIOSK_ENABLED,false)
                         val intent = Intent(applicationContext, KioskLockPage::class.java).apply {
                             action = "EXIT_KIOSK"
                             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -314,10 +332,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("MissingPermission")
     fun getSimIdentifiers(context: Context): List<SimInfo> {
+
         val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
 
         val simList = mutableListOf<SimInfo>()
-
         subscriptionManager.activeSubscriptionInfoList?.forEach { sim ->
             simList.add(
                 SimInfo(
@@ -326,7 +344,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     carrierName = sim.carrierName.toString(),
                     mcc = sim.mccString,
                     mnc = sim.mncString,
-                    slotIndex = sim.simSlotIndex
+                    slotIndex = sim.simSlotIndex,
+                    simNumber =   sim.number.toString()
                 )
             )
         }
@@ -341,7 +360,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val carrierName: String,
         val mcc: String?,
         val mnc: String?,
-        val slotIndex: Int
+        val slotIndex: Int,
+        val simNumber: String,
     )
 
 
@@ -421,46 +441,69 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     fun hitApiForUpdateActionSimRemoveLockStatus(dpm:DevicePolicyManager,admin:ComponentName) {
+
+        dpm.setPermissionGrantState(
+            admin,
+            packageName,
+            Manifest.permission.READ_PHONE_STATE,
+            DevicePolicyManager.PERMISSION_GRANT_STATE_GRANTED
+        )
+
+        dpm.setPermissionGrantState(
+            admin,
+            packageName,
+            Manifest.permission.READ_PHONE_NUMBERS,
+            DevicePolicyManager.PERMISSION_GRANT_STATE_GRANTED
+        )
+
+
+
         var simData = getSimIdentifiers(applicationContext)
         Log.d("simData", Gson().toJson(simData))
 
-        val updaterequest = UpdateCustomerDeviceActionRequest(
-            rid = rid,
-            updatedBy = preference.getStringValue(ConstantClass.CustomerCode, ""),
-            executionStatus = "Success",
-            failureReason = "",
-            devicePin= "",
-            iccid = simData.firstOrNull()?.iccId,
-            subscriptionId = simData.firstOrNull()?.subscriptionId,
-            carrierName = simData.firstOrNull()?.carrierName,
-            mcc = simData.firstOrNull()?.mcc,
-            mnc = simData.firstOrNull()?.mnc,
-            slotIndex = simData.firstOrNull()?.slotIndex,
-        )
-        runBlocking {
-            try {
-                val response = authRepository.updateActionFromCustomerDevice(updaterequest)
-                if (response?.isSuccessful == true) {
-                    if(response.body()?.status==true){
-                      // sim same
-                        dpm.clearUserRestriction(admin, UserManager.DISALLOW_OUTGOING_CALLS)
-                        dpm.clearUserRestriction(admin, UserManager.DISALLOW_SMS)
-                    }
-                    else {
-                        // sim change..........................
-                        val uri = Settings.System.DEFAULT_ALARM_ALERT_URI
-                        val ringtone = RingtoneManager.getRingtone(applicationContext, uri)
-                        ringtone.play()
-                        dpm.addUserRestriction(admin, UserManager.DISALLOW_OUTGOING_CALLS)
-                        dpm.addUserRestriction(admin, UserManager.DISALLOW_SMS)
+        if(simData.firstOrNull()?.iccId!!.isEmpty() || simData.firstOrNull()?.carrierName!!.isEmpty()){
+            dpm.clearUserRestriction(admin, UserManager.DISALLOW_OUTGOING_CALLS)
+            dpm.clearUserRestriction(admin, UserManager.DISALLOW_SMS)
+        }
+        else{
+            val updaterequest = UpdateCustomerDeviceActionRequest(
+                rid = rid,
+                updatedBy = preference.getStringValue(ConstantClass.CustomerCode, ""),
+                executionStatus = "Success",
+                failureReason = "",
+                devicePin= "",
+                iccid = simData.firstOrNull()?.iccId,
+                subscriptionId = simData.firstOrNull()?.subscriptionId,
+                carrierName = simData.firstOrNull()?.carrierName,
+                mcc = simData.firstOrNull()?.mcc,
+                mnc = simData.firstOrNull()?.mnc,
+                slotIndex = simData.firstOrNull()?.slotIndex,
+            )
+            runBlocking {
+                try {
+                    val response = authRepository.updateActionFromCustomerDevice(updaterequest)
+                    if (response?.isSuccessful == true) {
+                        if(response.body()?.status==true){
+                            // sim same
+                            dpm.clearUserRestriction(admin, UserManager.DISALLOW_OUTGOING_CALLS)
+                            dpm.clearUserRestriction(admin, UserManager.DISALLOW_SMS)
+                        }
+                        else {
+                            // sim change..........................
+                            val uri = Settings.System.DEFAULT_ALARM_ALERT_URI
+                            val ringtone = RingtoneManager.getRingtone(applicationContext, uri)
+                            ringtone.play()
+                            dpm.addUserRestriction(admin, UserManager.DISALLOW_OUTGOING_CALLS)
+                            dpm.addUserRestriction(admin, UserManager.DISALLOW_SMS)
+                        }
+                        Log.d("responseUpdate", Gson().toJson(response.body()))
                     }
 
-                    Log.d("responseUpdate", Gson().toJson(response.body()))
+                } catch (e: Exception) {
+                    Log.e("hitApiForUpdateStatus", "Error: ${e.message}")
                 }
-            } catch (e: Exception) {
-                Log.e("hitApiForUpdateStatus", "Error: ${e.message}")
+                Unit
             }
-            Unit
         }
 
     }
@@ -562,6 +605,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val action = action.toLowerCase().equals("enable", ignoreCase = true)
 
        when(appName){
+
            ConstantClass.Bluetooth ->  {
                var isapplied =false
                if(action){

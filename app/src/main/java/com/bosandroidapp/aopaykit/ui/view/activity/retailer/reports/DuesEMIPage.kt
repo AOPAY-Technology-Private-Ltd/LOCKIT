@@ -19,13 +19,14 @@ import com.bosandroidapp.aopaykit.data.model.OverdueDataItem
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityPendingEmisPageBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.slideshow.adapter.DueOverdueCustomerReports
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
 
-class DuesEMIPage : AppCompatActivity() {
+class DuesEMIPage : BaseActivity() {
     lateinit var binding : ActivityPendingEmisPageBinding
     lateinit var viewModel: AuthenticationViewModel
     lateinit var preference: SharedPreference

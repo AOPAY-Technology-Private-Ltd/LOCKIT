@@ -4,12 +4,16 @@ import android.app.Activity
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class ApplicationClass : Application() {
 
@@ -18,6 +22,11 @@ class ApplicationClass : Application() {
     lateinit var FcmToken: String
     lateinit var deviceId: String
     lateinit var retailerCode : String
+
+
+    companion object {
+        val isNetworkAvailable = MutableStateFlow(true)
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -40,10 +49,20 @@ class ApplicationClass : Application() {
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
             override fun onActivityDestroyed(activity: Activity) {}
         })
+
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        cm.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                isNetworkAvailable.value = true
+            }
+
+            override fun onLost(network: Network) {
+               isNetworkAvailable.value = false
+            }
+        })
+
     }
-
-
-
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -55,5 +74,7 @@ class ApplicationClass : Application() {
             manager.createNotificationChannel(channel)
         }
     }
+
+
 
 }

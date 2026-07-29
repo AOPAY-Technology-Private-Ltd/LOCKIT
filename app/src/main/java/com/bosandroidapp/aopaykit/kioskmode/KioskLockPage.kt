@@ -33,6 +33,12 @@ class KioskLockPage : AppCompatActivity() {
         }
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        setupKioskMode()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityKioskLockPageBinding.inflate(layoutInflater)

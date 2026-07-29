@@ -53,6 +53,7 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.GetEMISplitDetlailsReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.LogoutReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
@@ -61,7 +62,7 @@ import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
 
-class EMICalculationDetailsPage : AppCompatActivity() {
+class EMICalculationDetailsPage : BaseActivity() {
     lateinit var binding: ActivityEmicalculationDetailsPageBinding
     lateinit var viewModel: AuthenticationViewModel
     private var sellingPriceHandler = Handler(Looper.getMainLooper())

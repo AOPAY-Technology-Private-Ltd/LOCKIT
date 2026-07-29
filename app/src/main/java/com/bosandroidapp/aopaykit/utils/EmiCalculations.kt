@@ -14,7 +14,9 @@ import com.bosandroidapp.aopaykit.constant.ConstantClass.uploadDataOnFirebaseCon
 import com.bosandroidapp.aopaykit.data.model.loginsignup.GetCustomerLoanDetailsReq
 import com.bosandroidapp.aopaykit.kioskmode.setEMICompleted
 import com.bosandroidapp.aopaykit.kioskmode.setEMINotCompleted
+import com.bosandroidapp.aopaykit.kioskmode.startInternetAlertSituation
 import com.bosandroidapp.aopaykit.kioskmode.startLockSituation
+import com.bosandroidapp.aopaykit.kioskmode.stopInternetAlertSituation
 import com.bosandroidapp.aopaykit.kioskmode.stopLockSituation
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.google.gson.Gson
@@ -160,11 +162,14 @@ private suspend fun Context.isEMIDue(sharedPref: SharedPreferences) = withContex
         Logger.d(ACCESSIBILITYTAG,"EMIDUES: $emiDues")
 
 
+
         if (emiDues != null) {
             if (emiDues!! > 0) {
                 this@isEMIDue.setEMINotCompleted()
+                this@isEMIDue.startInternetAlertSituation()
             } else {
                 this@isEMIDue.setEMICompleted()
+                this@isEMIDue.stopInternetAlertSituation()
             }
         }
 

@@ -45,6 +45,7 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.VerifyOTPReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.verification.SendOtpReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
@@ -52,7 +53,7 @@ import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
-class RetailerProfilePage : AppCompatActivity() {
+class RetailerProfilePage : BaseActivity() {
     lateinit var binding: ActivityRetailerProfilePageBinding
     lateinit var viewModel: AuthenticationViewModel
     lateinit var api: ApiInterface

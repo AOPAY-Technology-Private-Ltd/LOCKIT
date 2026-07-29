@@ -34,6 +34,7 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.DataItem
 import com.bosandroidapp.aopaykit.data.model.loginsignup.LogoutReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.slideshow.adapter.MobileListAdapter
@@ -43,7 +44,7 @@ import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.bosandroidapp.aopaykit.utils.GridSpacingItemDecoration
 import com.google.gson.Gson
 
-class MobileSelectionActivity : AppCompatActivity() {
+class MobileSelectionActivity : BaseActivity() {
 
     lateinit var binding : ActivityMobileselectionBinding
     lateinit var adapter : MobileListAdapter

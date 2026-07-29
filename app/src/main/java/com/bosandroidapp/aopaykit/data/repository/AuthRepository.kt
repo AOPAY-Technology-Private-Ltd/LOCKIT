@@ -75,6 +75,7 @@ class AuthRepository(private val apiInterface: ApiInterface) {
     suspend fun notifyCustomerListChanged() {
       _customerListUpdate.emit(Unit)
     }
+
   }
 
   suspend fun getregistration(req: RegistrationReq): Response<RegistrationRes> {

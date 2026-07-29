@@ -42,6 +42,7 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.GetIsEligibleLoanReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.LogoutReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
@@ -49,7 +50,7 @@ import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
 import java.io.File
 
-class AadharCardVerificationPage : AppCompatActivity() {
+class AadharCardVerificationPage : BaseActivity() {
     lateinit var binding : ActivityAadharCardVerificationPageBinding
     private val CAMERA_REQUEST_CODE_FRONT = 1001
     private  var photoFrontUri: Uri? = null

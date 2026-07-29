@@ -16,6 +16,7 @@ import com.bosandroidapp.aopaykit.data.model.LedgerReportDataItem
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityLedgerreportBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.adapter.LedgerAdapter
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
@@ -26,7 +27,7 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
 
-class Ledgerreport : AppCompatActivity() {
+class Ledgerreport : BaseActivity(){
     lateinit var binding : ActivityLedgerreportBinding
     var FromDate: String= ""
     var ToDate: String =""

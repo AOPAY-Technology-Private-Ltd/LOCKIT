@@ -5,7 +5,9 @@ import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -43,6 +45,9 @@ import com.bosandroidapp.aopaykit.utils.MonthsAndPayables
 import com.bosandroidapp.aopaykit.utils.getCurrentLastPaidDueDate
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import kotlin.sequences.ifEmpty
+import kotlin.text.clear
+import kotlin.toString
 
 class KioskActivity : AppCompatActivity() {
     private lateinit var binding: ActivityKioskBinding
@@ -150,70 +155,83 @@ class KioskActivity : AppCompatActivity() {
     fun setOnClickListner(){
 
         binding.submitpayment.setOnClickListener {
-
-            emiamount = binding.amount.text.toString().replace("₹ ","").toDouble()
-
-                 if(isInternetAvailable(this@KioskActivity)) {
-                     lifecycleScope.launch {
-                        selectedNoofEmi = binding.noOfEmi.selectedItem.toString().toInt()
-                        // val file = saveImageToCache(this@EmiLoanDetailPage,receiptUri,"ReceiptPhoto")
-                        // ConstantClass.OpenLoader(this@EmiLoanDetailPage)
-                        var ForServerlatefine:String ?= ""
-                        PGWebViewActivity.emiList.clear()
-
-                        for (j in 1..selectedNoofEmi) {
-
-                            val emiIndex = j - 1
-
-                            val emiAmountWithFine: String
-
-                            if (listOfDueWithGraceDate[emiIndex].lateFeesApplied) {
-                                if(isEmandateVerified!!.toLowerCase().equals("yes",ignoreCase = true)){
-                                    emiAmountWithFine = (emiAmount.toDouble() + latefine!!.toDouble() + BounceCharge!!.toDouble() + Othercharges!!.toDouble() + WaiveOff!!.toDouble()).toString()
-                                    BounceChargeApplicable = BounceCharge
-                                }
-                                else{
-                                    emiAmountWithFine = (emiAmount.toDouble() + latefine!!.toDouble() + Othercharges!!.toDouble()).toString()
-                                    BounceChargeApplicable = "0"
-                                }
-                                ForServerlatefine = latefine
-                            }
-                            else {
-                                emiAmountWithFine = emiAmount
-                                ForServerlatefine = "0"
-                                BounceChargeApplicable = "0"
-                            }
-
-                            Log.d("emiAmountWithFine", emiAmountWithFine)
-                            Log.d("EMIAmount", emiAmountWithFine)
-                            emiList.add(EmiData(selectedNoofEmi,emiNo = j, emiAmount = emiAmountWithFine, lateFine = ForServerlatefine!!,BounceChargeApplicable,loanCode)
-                            )
-                        }
-
-                        val email = preference.getStringValue(ConstantClass.CustomerEmailID, "") .ifEmpty { "bos.centerpvtltd@gmail.com" }
-                        val emiNumbers=  (1..selectedNoofEmi).joinToString("")
-
-                        PGWebViewActivity.LoanCodePG = loanCode
-
-                        var req = PGRequestCall(
-                            payCustomerPhoneNo = preference.getStringValue(ConstantClass.CustomerMobileNumber, ""),
-                            customerEmailID = email,
-                            registrationID = ConstantClass.PAN_VERIFICATION_REGISTRATION_ID,
-                            payCartAmount = emiamount.toString(),
-                            eMINumbers = "EMI${emiNumbers}",
-                            customerCode = preference.getStringValue(ConstantClass.CustomerCode, ""),
-                            payCustomerName = "${preference.getStringValue(ConstantClass.FirstName, "")} ${preference.getStringValue(ConstantClass.LastName, "")}",
-                            loanCode = loanCode
-                        )
-
-                        hitApiForRequestPG(req)
-
-
+            if(isInternetAvailable(this@KioskActivity)) {
+                if(!binding.amount.text.toString().isNullOrBlank()){
+                    emiamount = binding.amount.text.toString().replace("₹ ","").toDouble()
+                    if(binding.noOfEmi.selectedItem.toString().isNullOrBlank()){
+                        isApiRunning = false
+                        HitApiForEmiList()
                     }
-                 }
+                    else{
+                        if(emiamount>0.0){
+                            lifecycleScope.launch {
+                                selectedNoofEmi = binding.noOfEmi.selectedItem.toString().toInt()
+                                // val file = saveImageToCache(this@EmiLoanDetailPage,receiptUri,"ReceiptPhoto")
+                                // ConstantClass.OpenPopUpForVeryfyOTP(this@EmiLoanDetailPage)
+                                var ForServerlatefine:String ?= ""
+                                PGWebViewActivity.emiList.clear()
+
+                                for (j in 1..selectedNoofEmi) {
+
+                                    val emiIndex = j - 1
+
+                                    val emiAmountWithFine: String
+
+                                    if (listOfDueWithGraceDate[emiIndex].lateFeesApplied) {
+                                        if(isEmandateVerified!!.toLowerCase().equals("yes",ignoreCase = true)){
+                                            emiAmountWithFine = (emiAmount.toDouble() + latefine!!.toDouble() + BounceCharge!!.toDouble() + Othercharges!!.toDouble() + WaiveOff!!.toDouble()).toString()
+                                            BounceChargeApplicable = BounceCharge
+                                        }
+                                        else{
+                                            emiAmountWithFine = (emiAmount.toDouble() + latefine!!.toDouble() + Othercharges!!.toDouble()).toString()
+                                            BounceChargeApplicable = "0"
+                                        }
+                                        ForServerlatefine = latefine
+                                    }
+                                    else {
+                                        emiAmountWithFine = emiAmount
+                                        ForServerlatefine = "0"
+                                        BounceChargeApplicable = "0"
+                                    }
+
+                                    Log.d("emiAmountWithFine", emiAmountWithFine)
+                                    Log.d("EMIAmount", emiAmountWithFine)
+                                    emiList.add(EmiData(selectedNoofEmi,emiNo = j, emiAmount = emiAmountWithFine, lateFine = ForServerlatefine!!,BounceChargeApplicable,loanCode)
+                                    )
+                                }
+
+                                val email = preference.getStringValue(ConstantClass.CustomerEmailID, "") .ifEmpty { "bos.centerpvtltd@gmail.com" }
+                                val emiNumbers=  (1..selectedNoofEmi).joinToString("")
+                                PGWebViewActivity.LoanCodePG = loanCode
+
+                                var req = PGRequestCall(
+                                    payCustomerPhoneNo = preference.getStringValue(ConstantClass.CustomerMobileNumber, ""),
+                                    customerEmailID = email,
+                                    registrationID = ConstantClass.PAN_VERIFICATION_REGISTRATION_ID,
+                                    payCartAmount = emiamount.toString(),
+                                    eMINumbers = "EMI${emiNumbers}",
+                                    customerCode = preference.getStringValue(ConstantClass.CustomerCode, ""),
+                                    payCustomerName = "${preference.getStringValue(ConstantClass.FirstName, "")} ${preference.getStringValue(ConstantClass.LastName, "")}",
+                                    loanCode = loanCode
+                                )
+                                hitApiForRequestPG(req)
+                            }
+                        }
+                    }
+                }
                 else{
-                     Toast.makeText(this@KioskActivity,"Please connect with internet", Toast.LENGTH_SHORT).show()
-                 }
+                    isApiRunning = false
+                    HitApiForEmiList()
+                }
+            }
+            else{
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    startActivity(Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY))
+                } else {
+                    startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
+                }
+                Toast.makeText(this@KioskActivity,"Please connect with internet", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

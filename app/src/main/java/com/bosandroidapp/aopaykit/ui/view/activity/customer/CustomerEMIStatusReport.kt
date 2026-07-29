@@ -15,13 +15,14 @@ import com.bosandroidapp.aopaykit.data.model.CustomerEmiStatusReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityCustomerEmistatusReportBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.adapter.CustomerEmiStatusAdapter
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
 
-class CustomerEMIStatusReport : AppCompatActivity() {
+class CustomerEMIStatusReport : BaseActivity() {
 
     lateinit var binding: ActivityCustomerEmistatusReportBinding
     lateinit var viewModel: AuthenticationViewModel

@@ -77,6 +77,7 @@ import com.bosandroidapp.aopaykit.data.repository.PanRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.data.viewModelFactory.PanViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityRetailerEmandateVerifyPageBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.CongratulationPage.Companion.loaneCode
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.QRCodePage.Companion.isEnachCancelled
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
@@ -84,7 +85,7 @@ import com.bosandroidapp.aopaykit.ui.viewmodel.PanViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
 
-class RetailerEMandateVerifyPage : AppCompatActivity() {
+class RetailerEMandateVerifyPage : BaseActivity() {
 
     lateinit var binding : ActivityRetailerEmandateVerifyPageBinding
     var isEmandateVerified : String= ""

@@ -13,13 +13,14 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.reports.LoanSettlementR
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivitySettlementLoanReportBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.adapter.LoanSettlementAdapter
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
 
-class SettlementLoanReport : AppCompatActivity() {
+class SettlementLoanReport : BaseActivity(){
     lateinit var binding:ActivitySettlementLoanReportBinding
     lateinit var adapter: LoanSettlementAdapter
     lateinit var viewModel: AuthenticationViewModel

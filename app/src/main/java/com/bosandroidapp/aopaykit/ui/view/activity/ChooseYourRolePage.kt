@@ -38,6 +38,7 @@ import com.bosandroidapp.aopaykit.constant.ConstantClass.loginType
 import com.bosandroidapp.aopaykit.data.model.UploadDeviceInfoReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.kioskmode.KioskDeviceAdminReceiver
 import com.bosandroidapp.aopaykit.network.google_auth.GoogleAuth
 import com.bosandroidapp.aopaykit.ui.slideshow.activity.LoginPage
@@ -46,7 +47,7 @@ import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
 import java.util.UUID
 
-class ChooseYourRolePage : AppCompatActivity() {
+class ChooseYourRolePage : BaseActivity() {
     lateinit var binding : ActivityChooseYourRolePageBinding
     lateinit var viewModel: AuthenticationViewModel
 

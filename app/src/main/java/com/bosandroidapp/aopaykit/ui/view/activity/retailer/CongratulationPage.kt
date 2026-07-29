@@ -15,10 +15,11 @@ import com.bosandroidapp.aopaykit.databinding.ActivityCongratulationPageBinding
 
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 
-class CongratulationPage : AppCompatActivity() {
+class CongratulationPage : BaseActivity(){
     lateinit var binding: ActivityCongratulationPageBinding
     lateinit var viewModel: AuthenticationViewModel
     lateinit var api: ApiInterface

@@ -125,6 +125,7 @@ import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.repository.CibilRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CibilViewModelFactory
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
@@ -143,7 +144,7 @@ import java.util.Locale
 import kotlin.toString
 
 
-class NewCustomerRegistrationPage : AppCompatActivity() {
+class NewCustomerRegistrationPage : BaseActivity() {
     lateinit var binding: ActivityNewCustomerRegistrationPageBinding
 
     lateinit var dialog: Dialog
