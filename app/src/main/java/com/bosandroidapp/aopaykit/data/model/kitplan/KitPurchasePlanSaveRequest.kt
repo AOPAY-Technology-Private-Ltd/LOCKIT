@@ -62,5 +62,9 @@ data class KitPurchasePlanSaveRequest(
 	val paymentStatus: String? = null,
 
 	@field:SerializedName("remarks")
-	val remarks: String? = null
+	val remarks: String? = null,
+
+	@field:SerializedName("noOfKits")
+	val noOfKits: String? = null
+
 )

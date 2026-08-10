@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.R
 import com.bosandroidapp.aopaykit.constant.ConstantClass
+import com.bosandroidapp.aopaykit.constant.ConstantClass.CUSTOMERDYNAMICACTIVESTATUS
 import com.bosandroidapp.aopaykit.constant.ConstantClass.ClientCode
 import com.bosandroidapp.aopaykit.constant.ConstantClass.CustomerDevicePin
 import com.bosandroidapp.aopaykit.data.customeraction.GetKitCustomerLocation
@@ -35,6 +36,7 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.LogoutReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityLockKitCustomerDetailsInfoPageBinding
+import com.bosandroidapp.aopaykit.databinding.DialogInactiveCustomerBinding
 import com.bosandroidapp.aopaykit.databinding.DialogPinBinding
 import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
@@ -52,6 +54,7 @@ import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
+import java.util.Locale
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -62,7 +65,6 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
     lateinit var preference: SharedPreference
     lateinit var viewModel: AuthenticationViewModel
     var clickLocation = false
-
     var devicePin: String =""
 
 
@@ -155,7 +157,6 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
         }
     }
 
-
     private fun setupTabs() {
         val tabList = listOf("Info", "Device", "Action")
         
@@ -163,7 +164,14 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
             when (selectedTab) {
                 "Info" -> replaceFragment(CustomerInfoFragment())
                 "Device" -> replaceFragment(CustomerDeviceFragment())
-                "Action" -> replaceFragment(CustomerActionFragment())
+                "Action" -> {
+                    if (CUSTOMERDYNAMICACTIVESTATUS.lowercase(Locale.getDefault()) == ConstantClass.ISCUSTOMERACTIONPERFORM) {
+                        showInactiveCustomerDialog()
+                    }else{
+                        replaceFragment(CustomerActionFragment())
+                    }
+                    return@InfoTabAdapter
+                }
             }
         }
 
@@ -196,25 +204,53 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
 
 
         binding.locklayout.setOnClickListener {
-            clickLocation= false
-            showSetPinDialog()
-           /* CustomerDevicePin = kitcustomerData.devicePin!!*/
-
+            if (CUSTOMERDYNAMICACTIVESTATUS.lowercase(Locale.getDefault()) == ConstantClass.ISCUSTOMERACTIONPERFORM) {
+                showInactiveCustomerDialog()
+            } else {
+                clickLocation = false
+                showSetPinDialog()
+            }
         }
 
         binding.unlocklayout.setOnClickListener {
-            clickLocation= false
-            hitApiForDoActionNotification(ConstantClass.UnLock,false)
+            if (CUSTOMERDYNAMICACTIVESTATUS.lowercase(Locale.getDefault()) == ConstantClass.ISCUSTOMERACTIONPERFORM) {
+                showInactiveCustomerDialog()
+            } else {
+                clickLocation = false
+                hitApiForDoActionNotification(ConstantClass.UnLock, false)
+            }
         }
 
         binding.getlocation.setOnClickListener {
-            clickLocation = true
-            hitApiForDoActionNotification(ConstantClass.GETLOCATION,true)
+            if (CUSTOMERDYNAMICACTIVESTATUS.lowercase(Locale.getDefault()) == ConstantClass.ISCUSTOMERACTIONPERFORM) {
+                showInactiveCustomerDialog()
+            } else {
+                clickLocation = true
+                hitApiForDoActionNotification(ConstantClass.GETLOCATION, true)
+            }
         }
 
 
     }
 
+
+    private fun showInactiveCustomerDialog() {
+        val dialog = Dialog(this)
+        val dialogBinding = DialogInactiveCustomerBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        dialog.window?.apply {
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        }
+
+        dialogBinding.btnOk.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
 
     private fun showSetPinDialog() {
         val dialog = Dialog(this)
@@ -244,9 +280,9 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
                     hitApiForDoActionNotification(ConstantClass.DevicePin,true)
 
                     // hitApiForDoActionNotification(ConstantClass.Lock,true)
+
                     dialog.dismiss()
                 }
-
             } else {
                 Toast.makeText(this, "Please enter 4-digit PIN", Toast.LENGTH_SHORT).show()
             }
@@ -558,6 +594,7 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
                                         val updatedItem = response.customerList.find { it?.customerCodes == kitcustomerData.customerCodes }
                                         if (updatedItem != null) {
                                             kitcustomerData = updatedItem
+                                            CUSTOMERDYNAMICACTIVESTATUS = kitcustomerData.customerActiveStatus!!
 
                                             val currentFragment = supportFragmentManager
                                                 .findFragmentById(R.id.fragmentContainer)

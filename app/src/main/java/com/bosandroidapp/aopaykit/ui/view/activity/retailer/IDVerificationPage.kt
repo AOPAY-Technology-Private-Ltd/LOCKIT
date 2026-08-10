@@ -96,8 +96,6 @@ class IDVerificationPage : BaseActivity() {
 
         preference = SharedPreference(this)
 
-
-
         setOnClickListner()
 
     }
@@ -186,7 +184,6 @@ class IDVerificationPage : BaseActivity() {
 
         }
 
-
         binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
 
             val radioButton = group.findViewById<RadioButton>(checkedId)
@@ -269,6 +266,7 @@ class IDVerificationPage : BaseActivity() {
         }
 
         hitApiForLogin()
+        binding.radiolayout.visibility=View.GONE
         hitApiForKitOption()
 
     }
@@ -596,6 +594,7 @@ class IDVerificationPage : BaseActivity() {
                                      binding.radioButton1.visibility = if (isOnline) View.VISIBLE else View.GONE
                                      binding.radioButton2.visibility = if (isOffline) View.VISIBLE else View.GONE
                                      binding.radioButton3.visibility = if (isKit) View.VISIBLE else View.GONE
+                                     binding.radiolayout.visibility=View.VISIBLE
 
                                      binding.swiperefresh.isRefreshing = false
 

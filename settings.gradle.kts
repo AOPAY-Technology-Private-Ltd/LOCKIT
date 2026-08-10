@@ -22,6 +22,6 @@ dependencyResolutionManagement {
 
 }
 
-rootProject.name = "LockKit"
+rootProject.name = "LocKit"
 include(":app")
  

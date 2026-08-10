@@ -12,7 +12,9 @@ data class LoginReq (
  @SerializedName("deviceId")
  var deviceId:String,
  @SerializedName("token")
- var token:String
+ var token:String,
+ @SerializedName("imeiNumber")
+ var imeiNumber:String
 )
 
 

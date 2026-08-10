@@ -45,6 +45,8 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import  com.bosandroidapp.aopaykit.R
 import com.bosandroidapp.aopaykit.internetchecker.NetworkMonitor
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.workmanager.LocationUploadWorker
@@ -98,7 +100,7 @@ object ConstantClass {
 
 
     /*const val PAN_VERIFICATION_REGISTRATION_ID = "AOP-5048"
-    const val PENNYDROP_REGISTRATION_ID = "AOP-5048"*/
+     const val PENNYDROP_REGISTRATION_ID = "AOP-5048"*/
 
      const val PAN_VERIFICATION_REGISTRATION_ID = "AOP-554"
      const val PENNYDROP_REGISTRATION_ID = "AOP-554"
@@ -132,6 +134,8 @@ object ConstantClass {
      const val DefaulterEmiDebitAutoApproved ="admin"
      const val DefaulterEmiDebitPending ="retailer"
      const val SessionOutStatus = "Inactive"
+
+     const val GENERATEKEY = "GenerateKey"
 
      const val LoginMobileorMailid = "loginMobileorMail"
 
@@ -182,6 +186,9 @@ object ConstantClass {
      const val SUCCESS = "SUCCESS"
 
     var CashDeposit =  "Cash Deposit"
+    var KioskScreenRetailerName =  "retailerFullName"
+    var KioskScreenContactNumber =  "retailerContactNumber"
+
 
      var PanFirstName : String= ""
      var PanMiddleName : String= ""
@@ -364,10 +371,11 @@ object ConstantClass {
     val UPIApps ="UPI_APPS"
 
     val Phonepe = "Phonepe"
-    val Googlepay = "Googlepay"
+    val Googlepay = "GPay"
     val Paytm = "Paytm"
     val Cred = "Cred"
     val BHIM = "BHIM"
+
 
     //.............................................Upi................................................................
 
@@ -404,12 +412,17 @@ object ConstantClass {
 
     //.........................................................hide app .....................................................
     const val CameraDisable ="DISABLE_CAMERA"
+
     const val CameraEnable ="ENABLE_CAMERA"
     const val DevicePin ="DEVICE_PIN"
     const val JSONACTIONPIN ="DevicePin"
     const val GETLOCATION ="GET_LOCATION"
     const val JSONAction ="Action"
     const val CALL_DISABLE ="DISABLE_CALL"
+
+    const val ISCUSTOMERACTIONPERFORM ="inactive"
+    var CUSTOMERDYNAMICACTIVESTATUS =""
+
     const val Reboot ="REBOOT"
     const val Airplane ="AIRPLANE_MODE"
     const val Kisok ="KIOSK_MODE"
@@ -419,6 +432,7 @@ object ConstantClass {
     const val UNINSTALL ="APP_UNINSTALL"
 
     val SecretKey = "SecretKey"
+
 
     var subApp: MutableList<String> = mutableListOf()
 
@@ -1156,54 +1170,6 @@ object ConstantClass {
     }
 
 
-    fun Activity.showDevModeSnackbar(rootView: View) {
-        Snackbar.make(
-            rootView,
-            "Developer Options are enabled. Please disable to continue.",
-            Snackbar.LENGTH_INDEFINITE
-        ).setAction("OPEN SETTINGS") {
-            openDeveloperOptions()
-        }.show()
-    }
-
-
-    fun Activity.openDeveloperOptions() {
-        try {
-            startActivity(Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS))
-        } catch (e: Exception) {
-            // Fallback for some devices
-            startActivity(Intent(Settings.ACTION_SETTINGS))
-        }
-    }
-
-
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
-    fun isDevModeEnabled(context: Context): Boolean {
-        return try {
-            when {
-                Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN -> {
-                    Settings.Global.getInt(
-                        context.contentResolver,
-                        Settings.Global.DEVELOPMENT_SETTINGS_ENABLED,
-                        0
-                    ) != 0
-                }
-                Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN -> {
-                    @Suppress("DEPRECATION")
-                    Settings.Secure.getInt(
-                        context.contentResolver,
-                        Settings.Secure.DEVELOPMENT_SETTINGS_ENABLED,
-                        0
-                    ) != 0
-                }
-                else -> false
-            }
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-
     fun uploadDataOnFirebaseConsole(data:String, collectionPath:String/*,context: Context*/){
      /*   val context = context*/
         val db = Firebase.firestore
@@ -1307,7 +1273,6 @@ object ConstantClass {
     }
 
 
-
     // DPCAPPJSON
 
    /* {
@@ -1318,7 +1283,7 @@ object ConstantClass {
         "gJD2YwtOiWJHkSMkkIfLRlj-quNqG1fb6v100QmzM9w=",
 
         "android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION":
-        "https://api.pay.in/api/V1/Finance/download-DPC",
+        "https://api.oqpay.in/api/V1/Finance/download-DPC",
 
         "android.app.extra.PROVISIONING_SKIP_ENCRYPTION": true,
 

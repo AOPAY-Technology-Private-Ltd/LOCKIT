@@ -238,6 +238,10 @@ class KioskActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         if(isLocked()) finish()
+
+        if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+            ConstantClass.dialog.dismiss()
+        }
     }
 
     override fun onStop() {

@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.constant.ConstantClass
+import com.bosandroidapp.aopaykit.constant.ConstantClass.dialog
 import com.bosandroidapp.aopaykit.constant.ConstantClass.ClientCode
 import com.bosandroidapp.aopaykit.data.customeraction.GetPendingDeviceActionReq
 import com.bosandroidapp.aopaykit.data.customeraction.RetailerSaveDeviceActionRequest
@@ -32,7 +33,6 @@ import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.lockkit.LockKitCustomerDetailsInfoPage.Companion.kitcustomerData
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.lockkit.fragment.CustomerActionFragment.Companion.CustomerCode
-import com.bosandroidapp.aopaykit.ui.view.activity.retailer.lockkit.fragment.CustomerActionFragment.CustomerAction
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
@@ -62,9 +62,21 @@ class CustomerDeviceFragment : Fragment() {
     }
 
 
+    override fun onPause() {
+        super.onPause()
+
+        if(dialog!=null && dialog.isShowing)
+        {
+            dialog.dismiss()
+        }
+
+    }
+
+
     fun setOnClickListner(){
 
         binding.btnSetPin.setOnClickListener {
+            hitApiForLogin()
             showSetPinDialog()
         }
     }

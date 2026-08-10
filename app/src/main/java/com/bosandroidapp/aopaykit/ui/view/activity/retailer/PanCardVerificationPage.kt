@@ -81,8 +81,7 @@ class PanCardVerificationPage : BaseActivity() {
     var checkPanNumber:Boolean = false
 
 
-    private val cameraLauncher =
-        registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
             if (success) {
                 // Handle the photoUri, e.g., show image in ImageView
                 binding.frontcardimage.visibility = View.VISIBLE
@@ -107,6 +106,10 @@ class PanCardVerificationPage : BaseActivity() {
                     } bytes"
                 )
 
+            }
+
+            else {
+                photoFrontUri = null
             }
 
 
@@ -179,21 +182,34 @@ class PanCardVerificationPage : BaseActivity() {
             binding.photolayout.visibility = View.VISIBLE
         }
 
+        if(ConstantClass.CheckOnlineOrOffline.equals(ConstantClass.kit)){
+            binding.skipbutton.visibility = View.VISIBLE
+        }else{
+            binding.skipbutton.visibility = View.GONE
+        }
+
         binding.back.setOnClickListener {
            onBackPressed()
         }
 
         binding.verifybuttonlayout.setOnClickListener {
-            if(CheckOnlineOrOffline.equals(ConstantClass.kit)){
-                PanNumber = ""
-                PanNumberVerified = "no"
-                PanFrontImageUri = null
-                finish()
-            }
-            else{
+
                 var panNumber = binding.pannumber.text.toString()
                 // PAN validation (Regex: 5 letters, 4 digits, 1 letter)
                 val panRegex = Regex("[A-Z]{5}[0-9]{4}[A-Z]{1}")
+
+            if (panNumber.isBlank() && CheckOnlineOrOffline.equals(ConstantClass.kit)) {
+                PanNumber = ""
+                PanNumberVerified = "no"
+                PanFrontImageUri = null
+                startActivity(
+                    Intent(
+                        this@PanCardVerificationPage,
+                        AadharCardVerificationPage::class.java
+                    )
+                )
+                return@setOnClickListener
+            }
 
                 if (panNumber.isBlank() || !panRegex.matches(panNumber.uppercase())) {
                     Toast.makeText(this, "Enter a valid PAN number (e.g., ABCDE1234F)", Toast.LENGTH_SHORT).show()
@@ -205,7 +221,7 @@ class PanCardVerificationPage : BaseActivity() {
                     return@setOnClickListener
                 }
 
-                if (CheckOnlineOrOffline.equals(ConstantClass.offline)) {
+                if (CheckOnlineOrOffline.equals(ConstantClass.offline)||CheckOnlineOrOffline.equals(ConstantClass.kit)) {
                     // Image URI validation
                     if (photoFrontUri == null || photoFrontUri == null) {
                         Toast.makeText(this, "Please upload  Pan image", Toast.LENGTH_SHORT).show()
@@ -215,13 +231,18 @@ class PanCardVerificationPage : BaseActivity() {
                 }
 
                 hitApiForCheckIsEligibleOrNotForLoan(panNumber)
-            }
+
 
 
         }
 
+
         binding.uploadtextfront.setOnClickListener {
             checkCameraPermissionAndOpenCamera()
+        }
+
+        binding.skipbutton.setOnClickListener {
+            startActivity(Intent(this@PanCardVerificationPage, AadharCardVerificationPage::class.java))
         }
 
     }
@@ -364,7 +385,12 @@ class PanCardVerificationPage : BaseActivity() {
                                         PanNumber = pannumber
                                         PanNumberVerified = "no"
                                         PanFrontImageUri = photoFrontUri
-                                        finish()
+                                        if(CheckOnlineOrOffline.equals(ConstantClass.kit)){
+                                            startActivity(Intent(this@PanCardVerificationPage, AadharCardVerificationPage::class.java))
+                                        }else{
+                                            finish()
+                                        }
+
                                     }
 
                                 }

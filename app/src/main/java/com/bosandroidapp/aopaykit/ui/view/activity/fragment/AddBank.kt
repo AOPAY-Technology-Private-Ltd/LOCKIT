@@ -24,6 +24,7 @@ import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.R
 import com.bosandroidapp.aopaykit.databinding.FragmentAddAccountBinding
 import com.bosandroidapp.aopaykit.constant.ConstantClass
+import com.bosandroidapp.aopaykit.constant.ConstantClass.dialog
 import com.bosandroidapp.aopaykit.constant.ConstantClass.isInternetAvailable
 import com.bosandroidapp.aopaykit.data.pennydrop.BankListReq
 import com.bosandroidapp.aopaykit.data.pennydrop.PennyDropCheckStatusRequest
@@ -587,6 +588,17 @@ class AddBank : Fragment() {
 
                 }
             }
+        }
+
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+
+        if(dialog!=null && dialog.isShowing)
+        {
+            dialog.dismiss()
         }
 
     }

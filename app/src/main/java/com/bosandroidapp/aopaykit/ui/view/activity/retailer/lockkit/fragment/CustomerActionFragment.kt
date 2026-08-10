@@ -1,12 +1,17 @@
 package com.bosandroidapp.aopaykit.ui.view.activity.retailer.lockkit.fragment
 
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.credentials.provider.Action
@@ -15,8 +20,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.constant.ConstantClass
+import com.bosandroidapp.aopaykit.constant.ConstantClass.CUSTOMERDYNAMICACTIVESTATUS
 import com.bosandroidapp.aopaykit.constant.ConstantClass.ClientCode
+import com.bosandroidapp.aopaykit.constant.ConstantClass.dialog
 import com.bosandroidapp.aopaykit.constant.ConstantClass.subApp
+import com.bosandroidapp.aopaykit.data.CategoriesItem
 import com.bosandroidapp.aopaykit.data.customeraction.GetPendingDeviceActionReq
 import com.bosandroidapp.aopaykit.data.customeraction.RetailerSaveDeviceActionRequest
 import com.bosandroidapp.aopaykit.data.customeraction.RetailerSendNotificationToCustomer
@@ -26,6 +34,7 @@ import com.bosandroidapp.aopaykit.data.model.ValidateSessionRequest
 import com.bosandroidapp.aopaykit.data.model.loginsignup.LogoutReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.databinding.DialogInactiveCustomerBinding
 import com.bosandroidapp.aopaykit.databinding.DialogSubActionBinding
 import com.bosandroidapp.aopaykit.databinding.FragmentCustomerActionBinding
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
@@ -35,17 +44,21 @@ import com.bosandroidapp.aopaykit.ui.view.adapter.SubActionAdapter
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
+import java.util.Locale
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class CustomerActionFragment : Fragment() {
     private var _binding: FragmentCustomerActionBinding? = null
     private val binding get() = _binding!!
-    private var customerActionList: MutableList<CustomerAction> = mutableListOf()
+    /*private var customerActionList: MutableList<CustomerAction> = mutableListOf()*/
+    private var customerActionList: MutableList<CategoriesItem ?> ? = mutableListOf()
     private lateinit var adapter: CustomerActionAdapter
-    lateinit var viewModel: AuthenticationViewModel
-    lateinit var preference: SharedPreference
 
+    lateinit var viewModel: AuthenticationViewModel
+
+    lateinit var preference: SharedPreference
+    private var lastClickTime: Long = 0
 
 
     companion object{
@@ -53,19 +66,42 @@ class CustomerActionFragment : Fragment() {
     }
 
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCustomerActionBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this, CommonViewModelFactory(AuthRepository(RetrofitClient.apiInterface)))[AuthenticationViewModel::class.java]
         preference = SharedPreference(requireContext())
+        hitApiForGettingActionList()
+
+        binding.container.setOnTouchListener{ view, motionEvent ->
+
+            when(motionEvent.action)
+            {
+                MotionEvent.ACTION_DOWN -> {
+                   hitApiForLogin()
+                    true
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    hitApiForLogin()
+                    true
+                }
+
+                MotionEvent.ACTION_MOVE->{
+                    hitApiForLogin()
+                    true
+                }
+                else -> false
+
+            }
+
+        }
+
         return binding.root
     }
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAdapter()
         setonclicklistner()
     }
 
@@ -80,58 +116,109 @@ class CustomerActionFragment : Fragment() {
     fun setonclicklistner(){
 
         binding.btnUninstall.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Confirm Uninstall")
-                .setMessage("Are you sure you want to proceed with the uninstall action for this device?")
-                .setPositiveButton("Yes") { _, _ ->
-                    val actionList = CustomerAction("Uninstall", ConstantClass.UNINSTALL, true, emptyList())
-                    hitApiForDoActionNotification(actionList, true)
+            hitApiForLogin()
+            if (canPerformClick()) {
+                if (CUSTOMERDYNAMICACTIVESTATUS.lowercase(Locale.getDefault()) == ConstantClass.ISCUSTOMERACTIONPERFORM) {
+                    showInactiveCustomerDialog()
+                } else {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Confirm Uninstall")
+                        .setMessage("Are you sure you want to proceed with the uninstall action for this device?")
+                        .setPositiveButton("Yes") { _, _ ->
+                            val actionList = CategoriesItem(emptyList(),true,ConstantClass.UNINSTALL, "Uninstall" )
+                            hitApiForDoActionNotification(actionList, true)
+                        }
+                        .setNegativeButton("No", null)
+                        .show()
                 }
-                .setNegativeButton("No", null)
-                .show()
+            }
         }
 
     }
 
 
+    override fun onPause() {
+        super.onPause()
+
+        if(dialog!=null && dialog.isShowing)
+        {
+            dialog.dismiss()
+        }
+
+    }
+
+
+
+    private fun canPerformClick(): Boolean {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastClickTime > 1000) {
+            lastClickTime = currentTime
+            return true
+        }
+        return false
+    }
+
     private fun initAdapter() {
-        adapter = CustomerActionAdapter(
-            actionList = customerActionList,
+        adapter = CustomerActionAdapter(requireContext(), viewLifecycleOwner, viewModel,
+            actionList = customerActionList!!,
             onActionClick = { action ->
-                if (action.subactionList.isNotEmpty()) {
-                    openAlertForSubAction(action)
-                } else {
-                    hitApiForDoActionNotification(action, !action.check)
+                if (canPerformClick()) {
+                    if (CUSTOMERDYNAMICACTIVESTATUS.lowercase(Locale.getDefault()) == ConstantClass.ISCUSTOMERACTIONPERFORM) {
+                        showInactiveCustomerDialog()
+                    } else {
+                        if (action.subactionList!!.isNotEmpty()) {
+                            openAlertForSubAction(action)
+                        } else {
+                            hitApiForDoActionNotification(action, action.check!!)
+                        }
+                    }
                 }
             },
             onSwitchToggle = { action, isChecked ->
-                if (isChecked) {
-                    if (action.subactionList.isNotEmpty()) {
-                        openAlertForSubAction(action)
+                if (canPerformClick()) {
+                    if (CUSTOMERDYNAMICACTIVESTATUS.lowercase(Locale.getDefault()) == ConstantClass.ISCUSTOMERACTIONPERFORM) {
+                        // Revert visual state if restricted
+                        action.check = !isChecked
+                        adapter.notifyDataSetChanged()
+                        showInactiveCustomerDialog()
                     } else {
-                        hitApiForDoActionNotification(action, true)
+                        // Valid click, update state and proceed
+                        action.check = isChecked
+                        if (isChecked) {
+                            if (action.subactionList!!.isNotEmpty()) {
+                                openAlertForSubAction(action)
+                            } else {
+                                hitApiForDoActionNotification(action, true)
+                            }
+                        } else {
+                            if (action.subactionList!!.isNotEmpty()) {
+                                action.subactionList!!.forEach { it!!.active = false }
+                            }
+                            hitApiForDoActionNotification(action, false)
+                        }
                     }
                 } else {
-                    if (action.subactionList.isNotEmpty()) {
-                        action.subactionList.forEach { it.active = false }
-                    }
-                    hitApiForDoActionNotification(action, false)
+                    // Revert state if click was too rapid
+                    action.check = !isChecked
+                    adapter.notifyDataSetChanged()
                 }
             }
         )
         binding.rvCustomerActions.adapter = adapter
     }
 
-
-
+    
     fun setDataOnView() {
-        getCustomerAction()
-        adapter.updateList(customerActionList)
-        hitApiForUpdateActionStatus()
+        if(::adapter.isInitialized){
+            /*getCustomerAction()*/
+            adapter.updateList(customerActionList!!)
+            // hitApiForUpdateActionStatus()
+        }
+
     }
 
 
-    fun getCustomerAction():List <CustomerAction>{
+  /*  fun getCustomerAction():List <CustomerAction>{
 
         customerActionList.clear()
 
@@ -208,13 +295,32 @@ class CustomerActionFragment : Fragment() {
 
         customerActionList.add(CustomerAction("App Hide", ConstantClass.AppHide,false,hideApps))
 
-        customerActionList.add(CustomerAction("Sim Remove Lock", ConstantClass.SIM_REMOVE_LOCK,false,emptyList()))
-
-       /* customerActionList.add(CustomerAction("Sim Tracking Online",ConstantClass.SIM_TRACK_ONLINE,false,emptyList()))
-          customerActionList.add(CustomerAction("Sim Tracking Offline",ConstantClass.SIM_TRACK_OFFLINE,false,emptyList()) )*/
+        *//*
+          customerActionList.add(CustomerAction("Sim Remove Lock", ConstantClass.SIM_REMOVE_LOCK,false,emptyList()))
+          customerActionList.add(CustomerAction("Sim Tracking Online",ConstantClass.SIM_TRACK_ONLINE,false,emptyList()))
+          customerActionList.add(CustomerAction("Sim Tracking Offline",ConstantClass.SIM_TRACK_OFFLINE,false,emptyList()) )*//*
 
         return  customerActionList
 
+    }*/
+
+
+    private fun showInactiveCustomerDialog() {
+        val dialog = Dialog(requireContext())
+        val dialogBinding = DialogInactiveCustomerBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        dialog.window?.apply {
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        }
+
+        dialogBinding.btnOk.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
 
@@ -223,8 +329,7 @@ class CustomerActionFragment : Fragment() {
         _binding = null
     }
 
-
-    private fun openAlertForSubAction(action: CustomerAction) {
+    private fun openAlertForSubAction(action: CategoriesItem) {
         val dialogBinding = DialogSubActionBinding.inflate(layoutInflater)
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogBinding.root)
@@ -234,7 +339,7 @@ class CustomerActionFragment : Fragment() {
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         // Set title dynamically
-        val title = if (action.actionName.contains("Apps", ignoreCase = true)) {
+        val title = if (action.actionName!!.contains("Apps", ignoreCase = true)) {
             "Select ${action.actionName.removeSuffix("s")}"
         } else {
             "Select ${action.actionName}"
@@ -249,7 +354,7 @@ class CustomerActionFragment : Fragment() {
         dialogBinding.rvSubActions.adapter = subAdapter
 
         // Check if all are already selected
-        dialogBinding.cbSelectAll.isChecked = action.subactionList.all { it.active }
+        dialogBinding.cbSelectAll.isChecked = action.subactionList!!.all { it!!.active!! }
 
         // Select All Logic
         dialogBinding.cbSelectAll.setOnClickListener {
@@ -257,38 +362,51 @@ class CustomerActionFragment : Fragment() {
             subAdapter.selectAll(isChecked)
         }
 
+        // Search App Logic
+        dialogBinding.etSearchApp.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                subAdapter.filter(s.toString())
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
 
         dialogBinding.ivClose.setOnClickListener {
             dialog.dismiss()
-            hitApiForUpdateActionStatus()
+            hitApiForGettingActionList()
+           // hitApiForUpdateActionStatus()
         }
 
 
         dialogBinding.btnSave.setOnClickListener {
-            // Logic to handle saved actions
-            Log.d("ActionSaved", Gson().toJson(action))
-            val hasActiveSubActions = action.subactionList.any { it.active }
-            hitApiForDoActionNotification(action, hasActiveSubActions)
-            dialog.dismiss()
+            if (canPerformClick()) {
+                // Logic to handle saved actions
+                Log.d("ActionSaved", Gson().toJson(action))
+                val hasActiveSubActions = action.subactionList.any { it!!.active!! }
+                hitApiForDoActionNotification(action, hasActiveSubActions)
+                dialog.dismiss()
+            }
         }
 
         dialog.show()
     }
 
 
-    fun hitApiForDoActionNotification(action: CustomerAction, actionStatus: Boolean = true) {
+    fun hitApiForDoActionNotification(action: CategoriesItem, actionStatus: Boolean = true) {
         var subApp: MutableList<RetailerSendNotificationToCustomer> = mutableListOf()
         subApp.clear()
-        
+
         // convert Json data into string array list for sending enable disable feature for customer as per Naim sir discussion 22/07/2026
 
+
         action.subactionList.let { item ->
-            item.forEach {
-                subApp.add(RetailerSendNotificationToCustomer(it.subactionName, it.active))
+            item!!.forEach {
+                subApp.add(RetailerSendNotificationToCustomer(it!!.packageName, it!!.active))
             }
         }
 
-        if(action.subactionList.isEmpty()){
+
+        if(action.subactionList!!.isEmpty()){
             subApp.add(RetailerSendNotificationToCustomer(action.notificationCode, actionStatus))
         }
 
@@ -303,6 +421,7 @@ class CustomerActionFragment : Fragment() {
         val safeLastName = if (!lastName.isNullOrBlank() && lastName != "null") lastName else ""
         var createdBy = firstName.plus(" ").plus(safeLastName)
         var retailercode = preference.getStringValue(ConstantClass.RetailerCode, "")
+
 
         var actionRequest = RetailerSaveDeviceActionRequest(
             notificationCode = action.notificationCode,
@@ -332,7 +451,7 @@ class CustomerActionFragment : Fragment() {
                                 }
 
                                 if(response.status==true){
-                                    hitApiForSendNotificationToCustomer(action.notificationCode,subApp)
+                                    hitApiForSendNotificationToCustomer(action.notificationCode!!,subApp)
                                 }
                                 else {
                                     Toast.makeText(requireContext(),response.message,Toast.LENGTH_SHORT).show()
@@ -392,7 +511,11 @@ class CustomerActionFragment : Fragment() {
                                 lifecycleScope.launch {
                                     delay(3000)
                                     ConstantClass.dialog.dismiss()
-                                    hitApiForUpdateActionStatus()
+                                    hitApiForGettingActionList()
+                                    if(notificationCode.equals(ConstantClass.UNINSTALL)){
+                                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                                    }
+                                    //hitApiForUpdateActionStatus()
                                 }
 
                             }
@@ -416,7 +539,7 @@ class CustomerActionFragment : Fragment() {
     }
 
 
-    fun hitApiForUpdateActionStatus() {
+  /*  fun hitApiForUpdateActionStatus() {
         val request = GetPendingDeviceActionReq(customerCode = CustomerCode)
         viewModel.getActiveDeviceActionRequest(request).observe(requireActivity()) { resources ->
             resources.let {
@@ -467,11 +590,11 @@ class CustomerActionFragment : Fragment() {
                 }
             }
         }
-    }
+    }*/
 
 
     // data class ........................................................................................................
-    data class CustomerAction(
+ /*   data class CustomerAction(
             var actionName: String,
             var notificationCode: String,
             var check : Boolean,
@@ -481,89 +604,66 @@ class CustomerActionFragment : Fragment() {
     data class SubAction(
             var subactionName: String,
             var active : Boolean
-    )
+    )*/
 
 
-    fun hitApiForLogin() {
+    fun hitApiForLogin(onApproved: (() -> Unit)? = null) {
+        val deviceId = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
+        preference.setStringValue(ConstantClass.DEVICEID, deviceId)
 
-        var deviceId = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
-        preference.setStringValue(ConstantClass.DEVICEID,deviceId)
-
-        var sessionOutReq = SessionOutReq(
+        val sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
 
-        viewModel.getSessionReq(sessionOutReq).observe(this) { resources ->
-            resources.let {
-                when (it.apiStatus) {
-                    ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SessionOutResponse", Gson().toJson(response))
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
+        viewModel.getSessionReq(sessionOutReq).observe(viewLifecycleOwner) { resources ->
+            if (resources.apiStatus == ApiStatus.SUCCESS) {
+                resources.data?.body()?.let { response ->
+                    Log.d("SessionOutResponse", Gson().toJson(response))
+                    if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                        ConstantClass.dialog.dismiss()
+                    }
+
+                    if (response.status == "Approved") {
+                        val request = ValidateSessionRequest(
+                            preference.getStringValue(ConstantClass.RetailerCode, ""),
+                            deviceId,
+                            preference.getStringValue(ConstantClass.FCMTOKEN, "")
+                        )
+
+                        Log.d("validaterequest", Gson().toJson(request))
+                        viewModel.getSessionExpiredReq(request).observe(viewLifecycleOwner) { validateResources ->
+                            if (validateResources.apiStatus == ApiStatus.SUCCESS) {
+                                validateResources.data?.body()?.let { validateResponse ->
+                                    Log.d("validateresp", Gson().toJson(validateResponse))
+                                    if (validateResponse.status == 1) {
+                                        onApproved?.invoke()
+                                    } else  {
+                                        hitApiForRetailerLogout()
+                                    }
                                 }
-                                ConstantClass.checkActiveStatusAndLogout(requireContext(), response.status, preference)
                             }
                         }
-                    }
-
-                    ApiStatus.ERROR -> {
-
-                    }
-
-                    ApiStatus.LOADING -> {
-
+                    } else {
+                        ConstantClass.checkActiveStatusAndLogout(requireContext(), response.status, preference)
                     }
                 }
             }
         }
-
-
-        var request = ValidateSessionRequest(
-            preference.getStringValue(ConstantClass.RetailerCode, ""),
-            deviceId,
-            preference.getStringValue(ConstantClass.FCMTOKEN, "")
-        )
-
-        Log.d("validaterequest", Gson().toJson(request))
-        viewModel.getSessionExpiredReq(request).observe(this){resources ->
-            resources.let {
-                when (it.apiStatus) {
-                    ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("validateresp", Gson().toJson(response))
-                                if(response.status==0){
-                                    hitApiForRetailerLogout()
-                                }
-                            }
-                        }
-                    }
-
-                    ApiStatus.ERROR -> {
-
-                    }
-
-                    ApiStatus.LOADING -> {
-
-                    }
-                }
-            }
-        }
-
     }
 
+
+
     fun hitApiForRetailerLogout() {
+
         var loginRequest = LogoutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
         )
 
         Log.d("LogoutReq", Gson().toJson(loginRequest))
 
-        viewModel.getLogout(loginRequest).observe(this) { resources ->
+        viewModel.getLogout(loginRequest).observe(activity) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
@@ -592,8 +692,41 @@ class CustomerActionFragment : Fragment() {
             }
         }
 
+
     }
 
-    
+    fun hitApiForGettingActionList(){
+
+        viewModel.getKitCustomerInstalledAppRequest(CustomerCode).observe(requireActivity()){resources ->
+            resources.let {
+                when (it.apiStatus) {
+                    ApiStatus.SUCCESS -> {
+                        it.data.let { users ->
+                            users!!.body().let { response ->
+                                ConstantClass.dialog.dismiss()
+                                Log.d("GetActionList", Gson().toJson(response))
+                                if(response!!.categories!!.size>0){
+                                    customerActionList = response.categories
+                                    initAdapter()
+                                }
+
+                            }
+                        }
+                    }
+
+                    ApiStatus.ERROR -> {
+                        ConstantClass.dialog.dismiss()
+                    }
+
+                    ApiStatus.LOADING -> {
+                        ConstantClass.OpenLoader(requireContext())
+                    }
+                }
+            }
+
+        }
+
+
+    }
 
 }

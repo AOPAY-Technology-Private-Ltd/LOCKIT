@@ -3,6 +3,7 @@ package com.bosandroidapp.aopaykit.ui.slideshow.activity
 import android.Manifest
 import android.app.Dialog
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -66,6 +67,10 @@ import com.bosandroidapp.aopaykit.constant.ConstantClass.longitude
 import com.bosandroidapp.aopaykit.constant.ConstantClass.scheduleLocationWorker
 import com.bosandroidapp.aopaykit.constant.ConstantClass.scheduleOneTimeLocationWorker
 import com.bosandroidapp.aopaykit.constant.ConstantClass.uploadDataOnFirebaseConsole
+import com.bosandroidapp.aopaykit.data.customeraction.AppsItem
+import com.bosandroidapp.aopaykit.data.customeraction.CategoriesItem
+import com.bosandroidapp.aopaykit.data.customeraction.SaveRetailerDeviceTokenRequest
+import com.bosandroidapp.aopaykit.data.customeraction.SendInstalledAppOnServerRequest
 import com.bosandroidapp.aopaykit.data.model.GenerateAccessTokenRequest
 import com.bosandroidapp.aopaykit.data.model.NavParentItem
 import com.bosandroidapp.aopaykit.data.model.RetailerWalletAmountReq
@@ -98,6 +103,7 @@ import com.bosandroidapp.aopaykit.ui.view.activity.retailer.IDVerificationPage.C
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.MobileSelectionActivity
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.RetailerProfilePage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.WalletAccountDetails
+import com.bosandroidapp.aopaykit.ui.view.activity.retailer.lockkit.KitInventoryReportListPage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.lockkit.LockKitCustomerListPage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.lockkit.LockKitPackageTopUpPage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.makepayment.MakePaymentPage
@@ -130,9 +136,9 @@ class DashBoard : BaseActivity() {
     val items = listOf(NavParentItem("Reports", listOf("Low Cibil Customer")))
     private lateinit var navAdapter: NavAdapter
     private val notificationPermission = 1001
-    var listOfDueWithGraceDate : ArrayList<MonthsAndPayables> = arrayListOf()
+    var listOfDueWithGraceDate: ArrayList<MonthsAndPayables> = arrayListOf()
 
-    var registrationID : String =""
+    var registrationID: String = ""
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -143,11 +149,19 @@ class DashBoard : BaseActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.appBarDashBoard.root) { view, insets ->
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(systemBarsInsets.left, systemBarsInsets.top, systemBarsInsets.right, systemBarsInsets.bottom)
+            view.setPadding(
+                systemBarsInsets.left,
+                systemBarsInsets.top,
+                systemBarsInsets.right,
+                systemBarsInsets.bottom
+            )
             WindowInsetsCompat.CONSUMED
         }
 
-        viewModel = ViewModelProvider(this, CommonViewModelFactory(AuthRepository(RetrofitClient.apiInterface)))[AuthenticationViewModel::class.java]
+        viewModel = ViewModelProvider(
+            this,
+            CommonViewModelFactory(AuthRepository(RetrofitClient.apiInterface))
+        )[AuthenticationViewModel::class.java]
         preference = SharedPreference(this)
 
         headerBinding = NavHeaderDashBoardBinding.bind(binding.headerlayout.root)
@@ -160,25 +174,29 @@ class DashBoard : BaseActivity() {
 
 
         if (logintype.equals(Customer)) {
-            if(!checkPermissions()){
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE, Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION), 101)
+            if (!checkPermissions()) {
+                ActivityCompat.requestPermissions(
+                    this, arrayOf(
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.POST_NOTIFICATIONS,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ), 101
+                )
             }
-            binding.makePaymentLayout.visibility=View.GONE
-            binding.kitPlanPurchase.visibility=View.GONE
-            binding.installAppLayout.visibility=View.GONE
-            binding.logout.visibility = View.GONE
+            binding.makePaymentLayout.visibility = View.GONE
+            binding.kitPlanPurchase.visibility = View.GONE
+            binding.installAppLayout.visibility = View.GONE
+            binding.logout.visibility = View.VISIBLE // for testing otherwise should be Gone
 
-        }
-
-        else {
-            if(!checkPermissionsrRetailer()){
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), 101)
+        } else {
+            if (!checkPermissionsrRetailer()) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE, Manifest.permission.POST_NOTIFICATIONS), 101)
             }
 
-            binding.makePaymentLayout.visibility=View.VISIBLE
-            binding.installAppLayout.visibility=View.VISIBLE
-            binding.kitPlanPurchase.visibility=View.VISIBLE
+            binding.makePaymentLayout.visibility = View.VISIBLE
+            binding.installAppLayout.visibility = View.VISIBLE
+            binding.kitPlanPurchase.visibility = View.VISIBLE
             /*binding.navRecyclerViewlayout.visibility=View.GONE
             binding.navRecyclerView.layoutManager = LinearLayoutManager(this)
             navAdapter = NavAdapter(this, items) { clickedChild ->
@@ -189,13 +207,13 @@ class DashBoard : BaseActivity() {
             }
             binding.navRecyclerView.adapter = navAdapter*/
 
-             binding.logout.visibility = View.VISIBLE
+            binding.logout.visibility = View.VISIBLE
 
             if (isInternetAvailable(this@DashBoard)) {
                 hitApiForRetailerWalletAmount()
             }
 
-          }
+        }
 
         setonclickListner()
 
@@ -203,30 +221,35 @@ class DashBoard : BaseActivity() {
 
 
     private fun checkPermissions(): Boolean {
-        val phoneStatePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-        val notificationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-        val fineLocationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-        val coarLocationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-        return phoneStatePermission == PackageManager.PERMISSION_GRANTED && notificationPermission == PackageManager.PERMISSION_GRANTED && fineLocationPermission== PackageManager.PERMISSION_GRANTED && coarLocationPermission== PackageManager.PERMISSION_GRANTED
+        val phoneStatePermission =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+        val notificationPermission =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+        val fineLocationPermission =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        val coarLocationPermission =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        return phoneStatePermission == PackageManager.PERMISSION_GRANTED && notificationPermission == PackageManager.PERMISSION_GRANTED && fineLocationPermission == PackageManager.PERMISSION_GRANTED && coarLocationPermission == PackageManager.PERMISSION_GRANTED
     }
 
 
     private fun checkPermissionsrRetailer(): Boolean {
         val phoneStatePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-        return phoneStatePermission == PackageManager.PERMISSION_GRANTED
+        val notificationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+        return phoneStatePermission == PackageManager.PERMISSION_GRANTED && notificationPermission == PackageManager.PERMISSION_GRANTED
     }
-
 
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
+        getFirebaseToken()
         setDataHeader()
         if (logintype.equals(Customer)) {
             HitApiForEmiList()
             hitApiForUploadLatLong()
             // 🔁 Setup periodic once only
-            if(latitude > 0.0 && longitude > 0.0){
+            if (latitude > 0.0 && longitude > 0.0) {
                 val lastLat = preference
                     .getStringValue(ConstantClass.CUREENTLAT, "")
                     ?.toDoubleOrNull()
@@ -236,7 +259,9 @@ class DashBoard : BaseActivity() {
                     ?.toDoubleOrNull()
 
 
-                val hasLocationChanged = lastLat == null || lastLong == null || kotlin.math.abs(latitude - lastLat) > 0.0001 || kotlin.math.abs(longitude - lastLong) > 0.0001
+                val hasLocationChanged = lastLat == null || lastLong == null || kotlin.math.abs(latitude - lastLat) > 0.0001 || kotlin.math.abs(
+                        longitude - lastLong
+                    ) > 0.0001
 
                 if (hasLocationChanged) {
                     scheduleOneTimeLocationWorker(latitude, longitude)
@@ -246,9 +271,9 @@ class DashBoard : BaseActivity() {
             else {
                 getCurrentLocation()
             }
-
             setupPeriodicWork()
             initiateBlocking(CheckCompleteEmiStatus)
+            hitApiForUploadDynamicInstallApps()
         }
         else {
             PanFirstName = ""
@@ -263,37 +288,29 @@ class DashBoard : BaseActivity() {
             PanState = ""
             PanCity = ""
             PanCountry = ""
-            getFirebaseToken()
+
             if (isInternetAvailable(this@DashBoard)) {
+                //hitApiForUploadDynamicInstallApps()
                 hitApiForRetailerWalletAmount()
+                hitApiForUploadRetailerDeviceToken()
+                hitApiForLogin()
+                hitApiForKitOption()
             }
-            hitApiForLogin()
-            hitApiForKitOption()
-
-            var request = SendNotificationFeatureNameRequest(
-                clientCode = ConstantClass.ClientCode,
-                customerCode =  preference.getStringValue(ConstantClass.CustomerCode,""),
-                retailerCode = preference.getStringValue(ConstantClass.RetailerCode,""),
-                title = "EMI Overdue",
-                message = "Hello",
-                notificationCode = "EMI_OVERDUE"
-            )
-
-            sendDataOnServerForFeatureActivate(request)
 
         }
 
     }
 
-    fun hitApiForKitOption(){
-        binding.appBarDashBoard.deskdesign.onlinekitlayout.visibility =  View.GONE
+
+    fun hitApiForKitOption() {
+        binding.appBarDashBoard.deskdesign.onlinekitlayout.visibility = View.GONE
         binding.appBarDashBoard.deskdesign.viewonline.visibility = View.GONE
-        binding.appBarDashBoard.deskdesign.offlinekitlayout.visibility =  View.GONE
-        binding.appBarDashBoard.deskdesign.viewoffline.visibility =  View.GONE
-        binding.appBarDashBoard.deskdesign.kitlayout.visibility =  View.GONE
+        binding.appBarDashBoard.deskdesign.offlinekitlayout.visibility = View.GONE
+        binding.appBarDashBoard.deskdesign.viewoffline.visibility = View.GONE
+        binding.appBarDashBoard.deskdesign.kitlayout.visibility = View.GONE
 
         var request = KitOptionRequest(
-            retailerCode = preference.getStringValue(ConstantClass.RetailerCode,"")
+            retailerCode = preference.getStringValue(ConstantClass.RetailerCode, "")
         )
 
         viewModel.getRequestKitOption(request).observe(this) { resources ->
@@ -304,10 +321,11 @@ class DashBoard : BaseActivity() {
                             users.body()?.let { response ->
                                 Log.d("ktResponse", Gson().toJson(response))
 
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
+                                resources.data?.errorBody()?.string()?.let {
+                                    Log.e("API_ERROR_BODY", it)
+                                    Toast.makeText(this@DashBoard, it.toString(), Toast.LENGTH_LONG)
+                                        .show()
                                 }
-
                                 var getdata = response.data
 
                                 getdata.let {
@@ -324,15 +342,23 @@ class DashBoard : BaseActivity() {
                                     kitMaxLoanLimit = it?.get(0)!!.kitMaxLoanLimit!!
                                     availableKitBalance = it?.get(0)!!.availableKitBalance!!
 
-                                    binding.appBarDashBoard.deskdesign.onlineavailablekit.text = "${availableOnlineBalance}"
-                                    binding.appBarDashBoard.deskdesign.offlineavailablekit.text = "${availableOfflineBalance}"
-                                    binding.appBarDashBoard.deskdesign.lockkitavailablekit.text = "${availableKitBalance}"
+                                    binding.appBarDashBoard.deskdesign.onlineavailablekit.text =
+                                        "${availableOnlineBalance}"
+                                    binding.appBarDashBoard.deskdesign.offlineavailablekit.text =
+                                        "${availableOfflineBalance}"
+                                    binding.appBarDashBoard.deskdesign.lockkitavailablekit.text =
+                                        "${availableKitBalance}"
 
-                                    binding.appBarDashBoard.deskdesign.onlinekitlayout.visibility = if (isOnline) View.VISIBLE else View.GONE
-                                    binding.appBarDashBoard.deskdesign.viewonline.visibility = if (isOnline) View.VISIBLE else View.GONE
-                                    binding.appBarDashBoard.deskdesign.offlinekitlayout.visibility = if (isOffline) View.VISIBLE else View.GONE
-                                    binding.appBarDashBoard.deskdesign.viewoffline.visibility = if (isOffline) View.VISIBLE else View.GONE
-                                    binding.appBarDashBoard.deskdesign.kitlayout.visibility = if (isKit) View.VISIBLE else View.GONE
+                                    binding.appBarDashBoard.deskdesign.onlinekitlayout.visibility =
+                                        if (isOnline) View.VISIBLE else View.GONE
+                                    binding.appBarDashBoard.deskdesign.viewonline.visibility =
+                                        if (isOnline) View.VISIBLE else View.GONE
+                                    binding.appBarDashBoard.deskdesign.offlinekitlayout.visibility =
+                                        if (isOffline) View.VISIBLE else View.GONE
+                                    binding.appBarDashBoard.deskdesign.viewoffline.visibility =
+                                        if (isOffline) View.VISIBLE else View.GONE
+                                    binding.appBarDashBoard.deskdesign.kitlayout.visibility =
+                                        if (isKit) View.VISIBLE else View.GONE
 
 
                                 }
@@ -341,13 +367,12 @@ class DashBoard : BaseActivity() {
                     }
 
                     ApiStatus.ERROR -> {
-                        if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                            ConstantClass.dialog.dismiss()
-                        }
+
+                        hitApiForKitOption()
                     }
 
                     ApiStatus.LOADING -> {
-                        ConstantClass.OpenLoader(this)
+
                     }
 
                 }
@@ -369,8 +394,7 @@ class DashBoard : BaseActivity() {
         view.layoutParams = params
     }
 
-
-    fun getFirebaseToken(){
+    fun getFirebaseToken() {
         FirebaseMessaging.getInstance().token
             .addOnCompleteListener { task ->
                 if (!task.isSuccessful) {
@@ -378,7 +402,7 @@ class DashBoard : BaseActivity() {
                     return@addOnCompleteListener
                 }
                 val fcmToken = task.result
-                preference.setStringValue(ConstantClass.FCMTOKEN,fcmToken)
+                preference.setStringValue(ConstantClass.FCMTOKEN, fcmToken)
                 Log.d("FCM_TOKEN", fcmToken)
             }
     }
@@ -400,27 +424,39 @@ class DashBoard : BaseActivity() {
         if (logintype.equals(Retailer)) {
             binding.appBarDashBoard.deskdesign.retailersDashboard.visibility = View.VISIBLE
             binding.appBarDashBoard.deskdesign.customerDashboard.visibility = View.GONE
-             binding.navWallet.visibility = View.VISIBLE
-             binding.navAddaccount.visibility = View.VISIBLE
+            binding.navWallet.visibility = View.VISIBLE
+            binding.navAddaccount.visibility = View.VISIBLE
+            binding.navKitInventory.visibility = View.VISIBLE
             binding.appBarDashBoard.deskdesign.subtitle.text = "One Tap to Your Next Loan"
 
-        }
-        else {
+        } else {
             binding.navWallet.visibility = View.GONE
             binding.navAddaccount.visibility = View.GONE
+            binding.navKitInventory.visibility = View.GONE
             binding.appBarDashBoard.deskdesign.retailersDashboard.visibility = View.GONE
             binding.appBarDashBoard.deskdesign.customerDashboard.visibility = View.VISIBLE
             binding.appBarDashBoard.deskdesign.subtitle.text = "Track Your Loan. Pay with Ease"
 
-            var accessKey = preference.getBoolanValue(ConstantClass.CustomerAccessKey,false)
+            var accessKey = preference.getBoolanValue(ConstantClass.CustomerAccessKey, false)
+            var generateKey = preference.getStringValue(ConstantClass.GENERATEKEY, "")
 
-            if(accessKey){
+            if (accessKey) {
                 binding.appBarDashBoard.deskdesign.customerGenerateKeyLayout.visibility = View.GONE
-                binding.appBarDashBoard.deskdesign.customerdashboardItemlayout.visibility = View.VISIBLE
-            }
-            else{
-                binding.appBarDashBoard.deskdesign.customerGenerateKeyLayout.visibility = View.VISIBLE
-                binding.appBarDashBoard.deskdesign.customerdashboardItemlayout.visibility = View.GONE
+                binding.appBarDashBoard.deskdesign.customerdashboardItemlayout.visibility =
+                    View.VISIBLE
+            } else {
+                if (generateKey.isNotEmpty()) {
+                    binding.appBarDashBoard.deskdesign.customerGenerateKeyLayout.visibility =
+                        View.GONE
+                    binding.appBarDashBoard.deskdesign.customerdashboardItemlayout.visibility =
+                        View.VISIBLE
+                } else {
+                    binding.appBarDashBoard.deskdesign.customerGenerateKeyLayout.visibility =
+                        View.VISIBLE
+                    binding.appBarDashBoard.deskdesign.customerdashboardItemlayout.visibility =
+                        View.GONE
+                }
+
             }
 
 
@@ -446,21 +482,33 @@ class DashBoard : BaseActivity() {
         }
 
 
-        binding.appBarDashBoard.deskdesign.customerGenerateKeyLayout.setOnClickListener{
-            hitApiForGetAndCheckAccessToken()
+        binding.appBarDashBoard.deskdesign.customerGenerateKeyLayout.setOnClickListener {
+            var generateKey = preference.getStringValue(ConstantClass.GENERATEKEY, "")
+            if (generateKey.isNullOrBlank()) {
+                hitApiForGetAndCheckAccessToken()
+            } else {
+                preference.setBooleanValue(ConstantClass.CustomerAccessKey, true)
+                binding.appBarDashBoard.deskdesign.customerGenerateKeyLayout.visibility = View.GONE
+                binding.appBarDashBoard.deskdesign.customerdashboardItemlayout.visibility =
+                    View.VISIBLE
+            }
         }
 
 
         binding.appBarDashBoard.deskdesign.clicktologin.setOnClickListener {
             val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
             val loanDetails = sharedPref.getString("LoanData", "")
-            if(loanDetails.isNullOrBlank()){
-                Toast.makeText(this,resources.getString(R.string.customerdashboard), Toast.LENGTH_LONG).show()
-            }
-            else{
-                preference.setBooleanValue(ConstantClass.CustomerAccessKey,true)
+            if (loanDetails.isNullOrBlank()) {
+                Toast.makeText(
+                    this,
+                    resources.getString(R.string.customerdashboard),
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                preference.setBooleanValue(ConstantClass.CustomerAccessKey, true)
                 binding.appBarDashBoard.deskdesign.customerGenerateKeyLayout.visibility = View.GONE
-                binding.appBarDashBoard.deskdesign.customerdashboardItemlayout.visibility = View.VISIBLE
+                binding.appBarDashBoard.deskdesign.customerdashboardItemlayout.visibility =
+                    View.VISIBLE
             }
 
             /*preference.setBooleanValue(ConstantClass.CustomerAccessKey,true)
@@ -480,7 +528,9 @@ class DashBoard : BaseActivity() {
             startActivity(Intent(this, RetailerProfilePage::class.java))
         }
 
+
         binding.installAppLayout.setOnClickListener {
+            binding.drawerLayout.closeDrawers()
             startActivity(Intent(this, CustomerAppInstall::class.java))
         }
 
@@ -513,7 +563,13 @@ class DashBoard : BaseActivity() {
 
 
         binding.kitPlanPurchase.setOnClickListener {
+            binding.drawerLayout.closeDrawers()
             startActivity(Intent(this, LockKitPackageTopUpPage::class.java))
+        }
+
+        binding.navKitInventory.setOnClickListener {
+            binding.drawerLayout.closeDrawers()
+            startActivity(Intent(this, KitInventoryReportListPage::class.java))
         }
 
 
@@ -544,7 +600,7 @@ class DashBoard : BaseActivity() {
         }
 
 
-       /* binding.appBarDashBoard.deskdesign.customerMakePaymentCard.setOnClickListener {
+        /* binding.appBarDashBoard.deskdesign.customerMakePaymentCard.setOnClickListener {
             if (clickMakePaymentPage) {
                 startActivity(Intent(this@DashBoard, MakePaymentPage::class.java))
             } else {
@@ -568,9 +624,9 @@ class DashBoard : BaseActivity() {
     }
 
 
-    fun hitApiForGetAndCheckAccessToken(){
+    fun hitApiForGetAndCheckAccessToken() {
         var generateTokenReq = GenerateAccessTokenRequest(
-            fcmToken = preference.getStringValue(ConstantClass.FCMTOKEN,"")
+            fcmToken = preference.getStringValue(ConstantClass.FCMTOKEN, "")
         )
         Log.d("tokenreq", Gson().toJson(generateTokenReq))
 
@@ -581,13 +637,23 @@ class DashBoard : BaseActivity() {
                         it.data?.let { users ->
                             users.body()?.let { response ->
                                 Log.d("tokenresp", response.message!!)
-                                Log.d("tokenmessage",Gson().toJson(response))
+                                Log.d("tokenmessage", Gson().toJson(response))
                                 ConstantClass.dialog.dismiss()
-                                uploadDataOnFirebaseConsole(Gson().toJson(response),"CurrentLocation")
-                                if(response.success!!){
-                                    binding.appBarDashBoard.deskdesign.generatedkey.visibility= View.VISIBLE
-                                    binding.appBarDashBoard.deskdesign.clicktologin.visibility = View.VISIBLE
-                                    binding.appBarDashBoard.deskdesign.generatedkey.text = response.data!!.apiacessKey
+                                uploadDataOnFirebaseConsole(
+                                    Gson().toJson(response),
+                                    "CurrentLocation"
+                                )
+                                if (response.success!!) {
+                                    binding.appBarDashBoard.deskdesign.generatedkey.visibility =
+                                        View.VISIBLE
+                                    binding.appBarDashBoard.deskdesign.clicktologin.visibility =
+                                        View.VISIBLE
+                                    binding.appBarDashBoard.deskdesign.generatedkey.text =
+                                        response.data!!.apiacessKey
+                                    preference.setStringValue(
+                                        ConstantClass.GENERATEKEY,
+                                        response.data?.apiacessKey ?: ""
+                                    )
                                 }
                             }
                         }
@@ -609,13 +675,10 @@ class DashBoard : BaseActivity() {
     }
 
 
-
     override fun onBackPressed() {
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
-        }
-
-        else{
+        } else {
             if (count == 0) {
                 count++
                 Toast.makeText(this@DashBoard, "Press again to exit", Toast.LENGTH_SHORT).show()
@@ -626,7 +689,6 @@ class DashBoard : BaseActivity() {
 
 
     }
-
 
 
     fun OpenLoader() {
@@ -647,10 +709,9 @@ class DashBoard : BaseActivity() {
         val done = dialog.findViewById<Button>(R.id.btnLogout)
 
         done.setOnClickListener {
-            if (logintype.equals(Retailer)){
+            if (logintype.equals(Retailer)) {
                 hitApiForRetailerLogout()
-            }
-            else{
+            } else {
                 preference.setBooleanValue(ConstantClass.LoggedIn, false)
                 preference.setStringValue(ConstantClass.LoginType, "")
                 ConstantClass.ClickOnCardDashboard = ""
@@ -659,7 +720,7 @@ class DashBoard : BaseActivity() {
                 startActivity(intent)
                 finish()
             }
-           
+
         }
 
         cancel.setOnClickListener {
@@ -673,7 +734,7 @@ class DashBoard : BaseActivity() {
 
     fun hitApiForRetailerWalletAmount() {
 
-        if(registrationID.isNotEmpty()){
+        if (registrationID.isNotEmpty()) {
             var request = RetailerWalletAmountReq(
                 retailerID = registrationID,
                 amountType = "CreditBalance"
@@ -695,11 +756,15 @@ class DashBoard : BaseActivity() {
                                     binding.appBarDashBoard.swiperefresh.isRefreshing = false
                                     Log.d("Walletamount", response.walletBalance!!)
 
-                                    val walletAmount = response.walletBalance!!.toDoubleOrNull() ?: 0.0
+                                    val walletAmount =
+                                        response.walletBalance!!.toDoubleOrNull() ?: 0.0
                                     val holdAmount = response.holdAmount!!.toDoubleOrNull() ?: 0.0
-                                    val maxholdAmount = response.maxholdAmount!!.toDoubleOrNull() ?: 0.0
-                                    val minholdAmount = response.miniholdamountrequest!!.toDoubleOrNull() ?: 0.0
-                                    val loanSecurityHoldAmount = response.loanSecurityHoldAmount!!.toDoubleOrNull() ?: 0.0
+                                    val maxholdAmount =
+                                        response.maxholdAmount!!.toDoubleOrNull() ?: 0.0
+                                    val minholdAmount =
+                                        response.miniholdamountrequest!!.toDoubleOrNull() ?: 0.0
+                                    val loanSecurityHoldAmount =
+                                        response.loanSecurityHoldAmount!!.toDoubleOrNull() ?: 0.0
 
 
                                     AdminLoanApprovedStatus = response.loanApprovalStatus!!
@@ -712,11 +777,16 @@ class DashBoard : BaseActivity() {
                                     HoldAmount = String.format("%.2f", holdAmount)
                                     MaxHoldingAmount = String.format("%.2f", maxholdAmount)
                                     MinHoldingAmount = String.format("%.2f", minholdAmount)
-                                    LoanSecurityHoldAmount = String.format("%.2f", loanSecurityHoldAmount)
+                                    LoanSecurityHoldAmount =
+                                        String.format("%.2f", loanSecurityHoldAmount)
 
-                                    binding.appBarDashBoard.deskdesign.walletamount.text =  formatIndianAmount(myWalletAmountStr)
+                                    binding.appBarDashBoard.deskdesign.walletamount.text =
+                                        formatIndianAmount(myWalletAmountStr)
 
-                                    Log.d("AdminLoanApprovedStatus", "${response.loanApprovalStatus!!} ${response.cibilScore!!}")
+                                    Log.d(
+                                        "AdminLoanApprovedStatus",
+                                        "${response.loanApprovalStatus!!} ${response.cibilScore!!}"
+                                    )
 
 
                                 }
@@ -773,28 +843,43 @@ class DashBoard : BaseActivity() {
                                 Log.d("customerLoanemiresp", Gson().toJson(response))
                                 val loanList = response.data
                                 val currentDate = response.indiaTimeIST
-                                Log.d("DashboardCurrentDate","$currentDate")
+                                Log.d("DashboardCurrentDate", "$currentDate")
 
                                 listOfDueWithGraceDate.clear()
 
                                 lifecycleScope.launch {
 
                                     loanList!!.forEach { item ->
-                                        var startDate = item?.startDate?.toString()?:""
+                                        var startDate = item?.startDate?.toString() ?: ""
 
-                                        if(startDate.isNotBlank()){
-                                            val dueData = formatDateToDDMMYYYY(startDate).getCurrentLastPaidDueDate(this@DashBoard, item?.paidEMI!!.toLong(), item?.duesEMI!!.toLong(), item.gracePeriod!!.toInt(),item.customerGracePeriod!!.toInt(),currentDate!!)
+                                        if (startDate.isNotBlank()) {
+                                            val dueData =
+                                                formatDateToDDMMYYYY(startDate).getCurrentLastPaidDueDate(
+                                                    this@DashBoard,
+                                                    item?.paidEMI!!.toLong(),
+                                                    item?.duesEMI!!.toLong(),
+                                                    item.gracePeriod!!.toInt(),
+                                                    item.customerGracePeriod!!.toInt(),
+                                                    currentDate!!
+                                                )
                                             listOfDueWithGraceDate.addAll(dueData)
                                             Log.d("DueDataAlert", "Data $dueData")
                                         }
                                     }
 
-                                    preference.setStringValue(ConstantClass.EMILIST,Gson().toJson(listOfDueWithGraceDate))
-                                    uploadDataOnFirebaseConsole(Gson().toJson(listOfDueWithGraceDate),"listOfDueWithGraceDateForAlert")
+                                    preference.setStringValue(
+                                        ConstantClass.EMILIST,
+                                        Gson().toJson(listOfDueWithGraceDate)
+                                    )
+                                    uploadDataOnFirebaseConsole(
+                                        Gson().toJson(listOfDueWithGraceDate),
+                                        "listOfDueWithGraceDateForAlert"
+                                    )
 
                                     Log.d("currentDate", "$currentDate")
 
-                                    val currentmillis = convertDateToMillis(currentDate!!.convertDate())
+                                    val currentmillis =
+                                        convertDateToMillis(currentDate!!.convertDate())
 
                                     val sdf = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
                                     sdf.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
@@ -802,18 +887,23 @@ class DashBoard : BaseActivity() {
 
 
                                     listOfDueWithGraceDate.forEach { dueItem ->
-                                        val dueMillis = convertDateToMillis(dueItem.dueDateWithGross)
+                                        val dueMillis =
+                                            convertDateToMillis(dueItem.dueDateWithGross)
 
-                                        val diffDays = TimeUnit.MILLISECONDS.toDays(dueMillis - currentmillis)
+                                        val diffDays =
+                                            TimeUnit.MILLISECONDS.toDays(dueMillis - currentmillis)
 
-                                        Log.d("EMI_CHECK", "DueDate=${dueItem.dueDateWithGross}, diffDays=$diffDays")
+                                        Log.d(
+                                            "EMI_CHECK",
+                                            "DueDate=${dueItem.dueDateWithGross}, diffDays=$diffDays"
+                                        )
 
                                         if (diffDays in 1..3) {
                                             setupEmiWorkManager(dueMillis)
                                         }
                                     }
 
-                                  /*
+                                    /*
                                  // doing for testing purpose.................................................
                                  val testDueMillis = System.currentTimeMillis() + 15000 // after 15 seconds
                                     setupEmiWorkManager(testDueMillis)*/
@@ -829,8 +919,7 @@ class DashBoard : BaseActivity() {
                                     clickMakePaymentPage = false
                                     Log.d("CheckEMI", "$clickMakePaymentPage")
 
-                                }
-                                else {
+                                } else {
                                     clickMakePaymentPage = true
                                     Log.d("CheckEMI", "$clickMakePaymentPage")
                                 }
@@ -865,23 +954,32 @@ class DashBoard : BaseActivity() {
 
     private fun setupEmiWorkManager(dueMillis: Long) {
         val delay = dueMillis - System.currentTimeMillis()
-        WorkManager.getInstance(this).enqueue(OneTimeWorkRequestBuilder<EmiNotificationWorker>().setInitialDelay(delay, TimeUnit.MILLISECONDS).
-            setInputData(androidx.work.Data.Builder().putLong("due_date", dueMillis).build()).build()
+        WorkManager.getInstance(this).enqueue(
+            OneTimeWorkRequestBuilder<EmiNotificationWorker>().setInitialDelay(
+                delay,
+                TimeUnit.MILLISECONDS
+            ).setInputData(androidx.work.Data.Builder().putLong("due_date", dueMillis).build())
+                .build()
         )
 
     }
 
 
     private fun setupPeriodicWork() {
-        val workRequest = PeriodicWorkRequestBuilder<EmiNotificationWorker>(6, TimeUnit.HOURS).build()
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork("EMI_ALERT_WORK", ExistingPeriodicWorkPolicy.UPDATE, workRequest)
+        val workRequest =
+            PeriodicWorkRequestBuilder<EmiNotificationWorker>(6, TimeUnit.HOURS).build()
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "EMI_ALERT_WORK",
+            ExistingPeriodicWorkPolicy.UPDATE,
+            workRequest
+        )
     }
 
 
     fun hitApiForLogin() {
 
-       var deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-       preference.setStringValue(ConstantClass.DEVICEID,deviceId)
+        var deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        preference.setStringValue(ConstantClass.DEVICEID, deviceId)
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
@@ -899,7 +997,11 @@ class DashBoard : BaseActivity() {
                                 if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
                                     ConstantClass.dialog.dismiss()
                                 }
-                                ConstantClass.checkActiveStatusAndLogout(this@DashBoard, response.status, preference)
+                                ConstantClass.checkActiveStatusAndLogout(
+                                    this@DashBoard,
+                                    response.status,
+                                    preference
+                                )
                             }
                         }
                     }
@@ -923,16 +1025,16 @@ class DashBoard : BaseActivity() {
         )
 
         Log.d("validaterequest", Gson().toJson(request))
-        viewModel.getSessionExpiredReq(request).observe(this){resources ->
+        viewModel.getSessionExpiredReq(request).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
                         it.data?.let { users ->
                             users.body()?.let { response ->
                                 Log.d("validateresp", Gson().toJson(response))
-                                 if(response.status==0){
-                                     hitApiForRetailerLogout()
-                                 }
+                                if (response.status == 0) {
+                                    hitApiForRetailerLogout()
+                                }
                             }
                         }
                     }
@@ -949,6 +1051,7 @@ class DashBoard : BaseActivity() {
         }
 
     }
+
 
 
     fun hitApiForRetailerLogout() {
@@ -969,7 +1072,8 @@ class DashBoard : BaseActivity() {
                                 preference.setStringValue(ConstantClass.LoginType, "")
                                 ConstantClass.ClickOnCardDashboard = ""
                                 val intent = Intent(this@DashBoard, ChooseYourRolePage::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                intent.flags =
+                                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 startActivity(intent)
                                 finish()
                             }
@@ -989,12 +1093,13 @@ class DashBoard : BaseActivity() {
 
     }
 
+
     fun hitApiForUploadLatLong() {
         val modelName = Build.MODEL
         val product = Build.PRODUCT
         val brand = Build.BRAND
         val manufecturer = Build.MANUFACTURER
-        Log.d("DeviceDetails","$modelName $product $brand $manufecturer")
+        Log.d("DeviceDetails", "$modelName $product $brand $manufecturer")
         /*   var locationRequest = CustomerlocationUploadReq (
             taskType = "INS",
             locationAuditID = 0,
@@ -1039,7 +1144,8 @@ class DashBoard : BaseActivity() {
 
         val fused = LocationServices.getFusedLocationProviderClient(this)
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
@@ -1075,7 +1181,6 @@ class DashBoard : BaseActivity() {
     }
 
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -1092,33 +1197,372 @@ class DashBoard : BaseActivity() {
     }
 
 
-    fun sendDataOnServerForFeatureActivate(request : SendNotificationFeatureNameRequest){
+    fun hitApiForUploadDynamicInstallApps() {
 
-        viewModel.sendNotificationFeatureNameReq(request).observe(this) { it ->
+        var sendInstalledAppOnServerRequest = SendInstalledAppOnServerRequest(
+            createdBy = preference.getStringValue(ConstantClass.CustomerCode, ""),
+            categories = getCustomerAction()
+        )
 
-            when (it.apiStatus) {
-                ApiStatus.LOADING -> {
+        Log.d("UploadAppRequest", Gson().toJson(sendInstalledAppOnServerRequest))
+
+        viewModel.uploadCustomerDeviceInsatlledAppsOnServerRequest(sendInstalledAppOnServerRequest).observe(this) { resources ->
+                resources.let {
+                    when (it.apiStatus) {
+                        ApiStatus.SUCCESS -> {
+                            it.data.let { users ->
+                                users!!.body().let { response ->
+                                    ConstantClass.dialog.dismiss()
+                                    Log.d("UploadAppResaponse", Gson().toJson(response))
+
+                                    if (response!!.status == true) {
+                                      //  Toast.makeText(this@DashBoard, response.message, Toast.LENGTH_SHORT).show()
+                                    } else {
+                                       // Toast.makeText(this@DashBoard, response.message, Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                        }
+
+                        ApiStatus.ERROR -> {
+                            ConstantClass.dialog.dismiss()
+                        }
+
+                        ApiStatus.LOADING -> {
+                            ConstantClass.OpenLoader(this)
+                        }
+                    }
+                }
+            }
+
+
+    }
+
+
+    fun getCustomerAction():List <CategoriesItem> {
+
+        val categoryList = mutableListOf<CategoriesItem>()
+        val socialApps = mutableListOf<AppsItem>()
+        val gamingApps = mutableListOf<AppsItem>()
+        val videoApps = mutableListOf<AppsItem>()
+        val audioApps = mutableListOf<AppsItem>()
+        val imageApps = mutableListOf<AppsItem>()
+        val mapApps = mutableListOf<AppsItem>()
+        val newsApps = mutableListOf<AppsItem>()
+        val productivityApps = mutableListOf<AppsItem>()
+        val undefinedApps = mutableListOf<AppsItem>()
+
+        val apps = packageManager.getInstalledApplications(0)
+        val pm = this.packageManager
+
+        apps.forEach { AppsItem ->
+
+            val appName = packageManager.getApplicationLabel(AppsItem).toString()
+            val packageName = AppsItem.packageName
+
+            when (AppsItem.category) {
+
+                ApplicationInfo.CATEGORY_SOCIAL -> {
+                    socialApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_GAME -> {
+                    gamingApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_AUDIO -> {
+                    audioApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_IMAGE -> {
+                    imageApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_MAPS -> {
+                    mapApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_NEWS -> {
+                    newsApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_PRODUCTIVITY -> {
+                    productivityApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_VIDEO -> {
+                    videoApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_UNDEFINED -> {
+
+
+                    // Skip system apps
+                    if ((AppsItem.flags and ApplicationInfo.FLAG_SYSTEM) != 0) {
+                        return@forEach
+                    }
+
+                    if ((AppsItem.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
+                        return@forEach
+                    }
+
+                    // Skip apps without launcher icon
+                    val launchIntent = pm.getLaunchIntentForPackage(packageName)
+
+                    if (launchIntent == null ) {
+                        return@forEach
+                    }
+
+                    undefinedApps.add(AppsItem(appName = appName, packageName = packageName))
 
                 }
 
-                ApiStatus.SUCCESS ->{
-                    val response = it.data?.body()
-                    Log.d("LoginResponse", Gson().toJson(response))
-
-                }
-
-                ApiStatus.ERROR -> {
-                    ConstantClass.dialog.dismiss()
-                    // 👇 Show proper error from ViewModel (404, 500 etc.)
-                    val errorMessage = it.message ?: "Something went wrong"
-
-                    Log.e("LoginError", errorMessage)
-                }
             }
 
         }
 
+        // Add categories
 
+        categoryList.add(
+            CategoriesItem(
+
+                category = "Social",
+                apps = socialApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+                category = "Gaming",
+                apps = gamingApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+                category = "Audio",
+                apps = audioApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+                category = "Image",
+                apps = imageApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+
+                category = "Map",
+                apps = mapApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+
+                category = "News",
+                apps = newsApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+
+                category = "Video",
+                apps = videoApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+
+                category = "Productivity",
+                apps = productivityApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+                category = "Undefined",
+                apps = undefinedApps
+            )
+        )
+
+        Log.d("CategoryList", Gson().toJson(categoryList.toString()))
+
+        // 3. Add System/Special Actions
+        categoryList.add(CategoriesItem(category = "Disable Call", apps = emptyList()))
+        val disabledSetting = mutableListOf(
+            AppsItem(appName = ConstantClass.Bluetooth, packageName = ConstantClass.Bluetooth),
+            AppsItem(appName = ConstantClass.Wifi, packageName = ConstantClass.Wifi),
+            AppsItem(appName = ConstantClass.Hotspot, packageName = ConstantClass.Hotspot),
+            AppsItem(appName = ConstantClass.USB, packageName = ConstantClass.USB),
+        )
+
+        categoryList.add(CategoriesItem(category = "Disable Settings", apps = disabledSetting))
+        categoryList.add(CategoriesItem(category = "Kiosk Mode", apps = emptyList()))
+        categoryList.add(CategoriesItem(category = "Disable Camera", apps = emptyList()))
+        categoryList.add(CategoriesItem(category = "Reboot", apps = emptyList()))
+        categoryList.add(CategoriesItem(category = "Airplane Mode", apps = emptyList()))
+        return categoryList
+    }
+
+    
+   /* fun getCustomerAction(): List<CategoriesItem> {
+        val categoryList = mutableListOf<CategoriesItem>()
+
+        val socialMatched = mutableListOf<AppsItem>()
+        val gamingMatched = mutableListOf<AppsItem>()
+        val upiMatched = mutableListOf<AppsItem>()
+        val appHideMatched = mutableListOf<AppsItem>()
+
+        // 1. Predefined Static Matching Lists
+        val socialAppsList = listOf(
+            ConstantClass.FaceBook, ConstantClass.WhatsApp, ConstantClass.Instagram,
+            ConstantClass.Telegram, ConstantClass.Snapchat, ConstantClass.YouTube
+        )
+        val gamingAppsList = listOf(
+            ConstantClass.CandyCrush, ConstantClass.BattleGroundMobile, ConstantClass.Chess,
+            ConstantClass.FreeFire, ConstantClass.CallOfDuty, ConstantClass.BallPool
+        )
+        val upiAppsList = listOf(
+            ConstantClass.Phonepe, ConstantClass.Googlepay, ConstantClass.Paytm,
+            ConstantClass.Cred, ConstantClass.BHIM,
+        )
+        val appHideList = listOf(
+            ConstantClass.Gallery, ConstantClass.Chrome, ConstantClass.Gmail,
+            ConstantClass.GooglePhotos, ConstantClass.GoogleDrive, ConstantClass.PlayStore,
+            ConstantClass.GoogleMaps, ConstantClass.Files, ConstantClass.Calculator,
+            ConstantClass.Calendar, ConstantClass.Contacts, ConstantClass.Messages,
+            ConstantClass.Phone, ConstantClass.XTwitter, ConstantClass.Amazon,
+            ConstantClass.Flipkart, ConstantClass.Netflix, ConstantClass.Spotify
+        )
+
+        // 2. Map all installed apps into categories (Static Name Match OR Android System Category)
+        val installedApps = packageManager.getInstalledApplications(0)
+
+        installedApps.forEach { appInfo ->
+            val appName = packageManager.getApplicationLabel(appInfo).toString()
+            val packageName = appInfo.packageName
+            val item = AppsItem(appName = appName, packageName = packageName)
+
+            // Categorize by Name OR Android System Category (O+ requirement for .category)
+            val isSocial = socialAppsList.any { it.equals(appName, ignoreCase = true) } ||
+                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appInfo.category == ApplicationInfo.CATEGORY_SOCIAL)
+
+            val isGaming = gamingAppsList.any { it.equals(appName, ignoreCase = true) } ||
+                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appInfo.category == ApplicationInfo.CATEGORY_GAME)
+
+            val isUPI = upiAppsList.any { it.equals(appName, ignoreCase = true) }
+
+            // App Hide includes sensitive apps + media/maps/productivity categories
+            val isAppHide = appHideList.any { it.equals(appName, ignoreCase = true) } ||
+                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && (
+                            appInfo.category == ApplicationInfo.CATEGORY_IMAGE ||
+                                    appInfo.category == ApplicationInfo.CATEGORY_VIDEO ||
+                                    appInfo.category == ApplicationInfo.CATEGORY_MAPS ||
+                                    appInfo.category == ApplicationInfo.CATEGORY_PRODUCTIVITY))
+
+            if (isSocial) socialMatched.add(item)
+            if (isGaming) gamingMatched.add(item)
+            if (isUPI) upiMatched.add(item)
+            if (isAppHide) appHideMatched.add(item)
+        }
+
+        // Add Categories with deduplicated app lists
+        categoryList.add(CategoriesItem(category = "Social Apps", apps = socialMatched.distinctBy { it.packageName }))
+        categoryList.add(CategoriesItem(category = "Gaming Apps", apps = gamingMatched.distinctBy { it.packageName }))
+        categoryList.add(CategoriesItem(category = "UPI Apps", apps = upiMatched.distinctBy { it.packageName }))
+        categoryList.add(CategoriesItem(category = "App Hide", apps = appHideMatched.distinctBy { it.packageName }))
+
+
+        // 3. Add System/Special Actions
+        categoryList.add(CategoriesItem(category = "Disable Call", apps = emptyList()))
+        val disabledSetting = mutableListOf(
+            AppsItem(appName = ConstantClass.Bluetooth, packageName = ""),
+            AppsItem(appName = ConstantClass.Wifi, packageName = ""),
+            AppsItem(appName = ConstantClass.Hotspot, packageName = ""),
+            AppsItem(appName = ConstantClass.USB, packageName = ""),
+        )
+        categoryList.add(CategoriesItem(category = "Disable Settings", apps = disabledSetting))
+        categoryList.add(CategoriesItem(category = "Kiosk Mode", apps = emptyList()))
+        categoryList.add(CategoriesItem(category = "Disable Camera", apps = emptyList()))
+        categoryList.add(CategoriesItem(category = "Reboot", apps = emptyList()))
+        categoryList.add(CategoriesItem(category = "Airplane Mode", apps = emptyList()))
+
+        Log.d("CategoryList", Gson().toJson(categoryList))
+        return categoryList
+    }*/
+
+
+    fun hitApiForUploadRetailerDeviceToken() {
+        var request = SaveRetailerDeviceTokenRequest(
+            deviceType = "Android",
+            clientCode = ConstantClass.ClientCode,
+            retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            fcmToken = preference.getStringValue(ConstantClass.FCMTOKEN, ""),
+        )
+        Log.d("saveRetailerDeviceTokenRequest", Gson().toJson(request))
+
+        viewModel.saveRetailerDeviceTokenRequest(request).observe(this) { resource ->
+            resource.let {
+                when (it.apiStatus) {
+                    ApiStatus.SUCCESS -> {
+                        it.data?.let { users ->
+                            users.body()?.let { response ->
+                                Log.d("saveRetailerDeviceTokenResponse", Gson().toJson(response))
+                            }
+                        }
+                    }
+
+                    ApiStatus.ERROR -> {}
+                    ApiStatus.LOADING -> {}
+                }
+            }
+        }
     }
 
 

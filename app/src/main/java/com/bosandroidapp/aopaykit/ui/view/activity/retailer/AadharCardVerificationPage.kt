@@ -85,6 +85,14 @@ class AadharCardVerificationPage : BaseActivity() {
             }
 
         }
+        else{
+            if(front){
+                photoFrontUri = null
+            }
+            else{
+                photoBackUri = null
+            }
+        }
 
 
     }
@@ -111,6 +119,7 @@ class AadharCardVerificationPage : BaseActivity() {
 
     }
 
+
     override fun onResume() {
         super.onResume()
 
@@ -118,11 +127,16 @@ class AadharCardVerificationPage : BaseActivity() {
     }
 
     fun setDataOnUI(){
-
+        if(ConstantClass.CheckOnlineOrOffline.equals(ConstantClass.kit)){
+            binding.skipbutton.visibility = View.VISIBLE
+        }else{
+            binding.skipbutton.visibility = View.GONE
+        }
     }
 
 
     fun setOnClickListner(){
+
 
         binding.back.setOnClickListener {
             finish()
@@ -141,17 +155,18 @@ class AadharCardVerificationPage : BaseActivity() {
         }
 
         binding.verifybuttonlayout.setOnClickListener {
+            val aadharNumber = binding.aadharnumberEdittxt.text.toString().trim()
 
-            if(CheckOnlineOrOffline.equals(ConstantClass.kit)){
+            if(aadharNumber.isBlank() && CheckOnlineOrOffline.equals(ConstantClass.kit)){
                 AadharFrontImageUri = null
                 AadharBackImageUri = null
                 AadharNumber = ""
                 ConstantClass.AadharVerified = "no"
                 val intent = Intent(this, NewCustomerRegistrationPage::class.java)
                 startActivity(intent)
+                return@setOnClickListener
             }
             else{
-                val aadharNumber = binding.aadharnumberEdittxt.text.toString().trim()
 
                 // Aadhaar validation
                 if (aadharNumber.isBlank() || aadharNumber.length != 12 || !aadharNumber.all { it.isDigit() }) {
@@ -171,6 +186,9 @@ class AadharCardVerificationPage : BaseActivity() {
         }
 
 
+        binding.skipbutton.setOnClickListener {
+            startActivity(Intent(this@AadharCardVerificationPage, NewCustomerRegistrationPage::class.java))
+        }
 
     }
 

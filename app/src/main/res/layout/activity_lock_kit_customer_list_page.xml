@@ -68,6 +68,42 @@
 
         </RelativeLayout>
 
+        <LinearLayout
+            android:id="@+id/search_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/bg_light_blue_rounded"
+            android:backgroundTint="#F0F7FF"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:paddingVertical="@dimen/_5sdp"
+            app:layout_constraintTop_toBottomOf="@+id/headlayout">
+
+            <ImageView
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:src="@drawable/searchicon"
+                app:tint="@color/grey" />
+
+            <EditText
+                android:id="@+id/etSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:background="@null"
+                android:fontFamily="@font/inter_regular"
+                android:hint="@string/search_code_mobile_lock_unlock"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:padding="@dimen/_8sdp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_12ssp" />
+
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/lockkitcustomerlist"
             android:layout_width="match_parent"
@@ -75,7 +111,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginTop="@dimen/_10sdp"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/headlayout"
+            app:layout_constraintTop_toBottomOf="@+id/search_layout"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/lockkitcustomer_item_layout"/>
 
@@ -87,7 +123,7 @@
             app:layout_constraintRight_toRightOf="parent"
             android:visibility="gone"
             android:src="@drawable/notfoundimage"
-            app:layout_constraintTop_toBottomOf="@+id/headlayout"
+            app:layout_constraintTop_toBottomOf="@+id/search_layout"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,10 +33,12 @@ import com.chaos.view.PinView
 import com.bosandroidapp.aopaykit.R
 import com.bosandroidapp.aopaykit.databinding.ActivityRetailerProfilePageBinding
 import com.bosandroidapp.aopaykit.constant.ConstantClass
+import com.bosandroidapp.aopaykit.constant.ConstantClass.CUSTOMERDYNAMICACTIVESTATUS
 import com.bosandroidapp.aopaykit.constant.ConstantClass.Customer
 import com.bosandroidapp.aopaykit.constant.ConstantClass.Retailer
 import com.bosandroidapp.aopaykit.constant.ConstantClass.isInternetAvailable
 import com.bosandroidapp.aopaykit.constant.ConstantClass.validateLoginInput
+import com.bosandroidapp.aopaykit.data.model.CustomerKitRequest
 import com.bosandroidapp.aopaykit.data.model.SessionOutReq
 import com.bosandroidapp.aopaykit.data.model.ValidateSessionRequest
 import com.bosandroidapp.aopaykit.data.model.loginsignup.LogoutReq
@@ -48,6 +50,8 @@ import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
+import com.bosandroidapp.aopaykit.ui.view.activity.retailer.lockkit.LockKitCustomerDetailsInfoPage.Companion.kitcustomerData
+import com.bosandroidapp.aopaykit.ui.view.activity.retailer.lockkit.fragment.CustomerDeviceFragment
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
@@ -110,7 +114,8 @@ class RetailerProfilePage : BaseActivity() {
             binding.pannumber.setTextColor(resources.getColor(R.color.grey))
             customerCode = preference.getStringValue(ConstantClass.RetailerCode, "")
             hitapiforGetUpdateProfile()
-        } else {
+        }
+        else {
             binding.codetype.text = "Customer Code"
             binding.edittext.visibility = View.INVISIBLE
             binding.verifybuttonlayout.visibility = View.GONE
@@ -119,7 +124,7 @@ class RetailerProfilePage : BaseActivity() {
             binding.pannumber.setTextColor(resources.getColor(R.color.black))
             customerType = Customer
             customerCode = preference.getStringValue(ConstantClass.CustomerCode, "")
-            hitapiforGetUpdateProfile()
+            getKitCustomerList()
         }
         setViewValidation()
         setClickListner()
@@ -539,6 +544,132 @@ class RetailerProfilePage : BaseActivity() {
             }
         }
 
+    }
+
+
+    fun getKitCustomerList(){
+        val firstName = preference.getStringValue(ConstantClass.FirstName, "").orEmpty()
+        val lastName = preference.getStringValue(ConstantClass.LastName, "").orEmpty()
+        val safeLastName = if (!lastName.isNullOrBlank() && lastName != "null") lastName else ""
+        var createdBy = firstName.plus(" ").plus(safeLastName)
+        var retailercode = preference.getStringValue(ConstantClass.RetailerCode, "")
+
+        var registationRequest = CustomerKitRequest(
+            mode = "GET",
+            firstName =  "",
+            middleName =  "",
+            lastName =  "",
+            primaryMobileNumber = preference.getStringValue(ConstantClass.CustomerMobileNumber, ""),
+            primaryOTP =  "",
+            primaryMobileVerified =  "",
+            alternateMobileNumber = "",
+            alternateMobileOTP =  "",
+            pAlternateMobileVerified =  "",
+            eMailID =  "",
+            flatNo =  "",
+            aearSector =  "",
+            pinCode = "",
+            currentAddress =  "",
+            stateName =  "",
+            cityName =  "",
+            country =  "India",
+            aadharNumber =  "",
+            aadharNumberVerified =  "",
+            panNumber = "",
+            panNumberVerified = "",
+            brandName = "",
+            modelName = "",
+            modelVariant = "",
+            color = "",
+            sellingPrice =  "",
+            downPayment = "",
+            tenure =  "",
+            emiAmount = "",
+            imeiNumber1 = "",
+            imeiNumber2 =  "",
+            accountNumber = "",
+            bankIFSCCode = "",
+            bankName =  "",
+            accountType =  "",
+            branchName =  "",
+            refName =  "",
+            refRelationShip = "",
+            refmobileNo = "",
+            refAddress = "",
+            debitOrCreditCard = "",
+            upiMandate = "yes",
+            createdBy = createdBy,
+            membershipfees = "",
+            retailercode = retailercode,
+            cibilScore = "",
+            isAggrementVerified = "",
+            IsRetailerAggrementVerified = "",
+            custPhoto_File =  null,
+            imeiNumber1_SealPhotoPath = null,
+            imeiNumber2_SealPhotoPath =  null,
+            imeiNumber_PhotoPath =  null,
+            invoive_Path =  null,
+            aadharFront_Path =  null,
+            aadharBack_Path =  null,
+            panFront_Path =  null
+        )
+        Log.d("RegistationRequest", Gson().toJson(registationRequest))
+
+        viewModel.getCustomerKitRequest(registationRequest).observe(this) { resources ->
+            resources.let {
+                when (it.apiStatus) {
+                    ApiStatus.SUCCESS -> {
+                        it.data.let { users ->
+                            users!!.body().let { response ->
+                                // ConstantClass.dialog.dismiss()
+                                // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show() // Optional: remove or keep
+                                if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
+
+                                    if(!response.customerList.isNullOrEmpty()){
+                                        if (response.customerList != null) {
+                                             response.customerList[0].let {
+                                                 Address = it!!.currentAddress.toString()
+                                                 EmailId = it!!.eMailID.toString()
+                                                 MobileNumber = it!!.primaryMobileNumber.toString()
+                                                 FName = it!!.firstName.toString()
+                                                 LName = it!!.lastName.toString()
+                                                 binding.retailerFName.setText(it!!.firstName)
+                                                 binding.retailerLName.setText(it!!.lastName)
+                                                 binding.customerCode.setText(it!!.customerCodes)
+                                                 binding.aadharNumber.setText(it!!.aadharNumber)
+                                                 binding.address.setText(it!!.currentAddress)
+                                                 binding.mobileNumber.setText(it!!.primaryMobileNumber)
+                                                 binding.emailId.setText(it!!.eMailID)
+                                                 binding.pannumber.setText(it!!.panNumber)
+                                                 binding.verifybuttonlayout.visibility = View.GONE
+                                                 binding.edittext.text = ConstantClass.editprofile
+                                                 preference.setStringValue(ConstantClass.FirstName, it!!.firstName.toString())
+                                                 preference.setStringValue(ConstantClass.LastName, it!!.lastName.toString())
+                                                 preference.setStringValue(ConstantClass.CustomerMobileNumber, it!!.primaryMobileNumber.toString())
+                                                 preference.setStringValue(ConstantClass.CustomerEmailID, it!!.eMailID.toString())
+
+                                             }
+
+
+                                            // Optional: notify current fragment if needed, but since fragments use companion object it might be okay
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    ApiStatus.ERROR -> {
+                        // ConstantClass.dialog.dismiss()
+                    }
+
+                    ApiStatus.LOADING -> {
+                        //ConstantClass.OpenLoader(this)
+                    }
+
+                }
+            }
+        }
     }
 
 

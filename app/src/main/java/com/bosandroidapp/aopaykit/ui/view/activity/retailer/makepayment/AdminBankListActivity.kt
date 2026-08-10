@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.constant.ConstantClass
+import com.bosandroidapp.aopaykit.constant.ConstantClass.dialog
 import com.bosandroidapp.aopaykit.data.model.AdminBankDataItem
 import com.bosandroidapp.aopaykit.data.model.AdminBankDetailsReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
@@ -38,6 +39,17 @@ class AdminBankListActivity : Fragment() {
         viewModel = ViewModelProvider(this, CommonViewModelFactory(AuthRepository(RetrofitClient.apiInterface)))[AuthenticationViewModel::class.java]
         hitApiForAdminBankList()
         return binding.root
+
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+
+        if(dialog!=null && dialog.isShowing)
+        {
+            dialog.dismiss()
+        }
 
     }
 

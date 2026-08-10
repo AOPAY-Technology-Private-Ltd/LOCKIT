@@ -1,10 +1,14 @@
 package com.bosandroidapp.aopaykit.data.repository
 
 import com.bos.payment.appName.network.ApiInterface
+import com.bosandroidapp.aopaykit.data.customeraction.CustomerSideUpdateUnInstallAppRequest
 import com.bosandroidapp.aopaykit.data.customeraction.GetKitCustomerLocation
+import com.bosandroidapp.aopaykit.data.customeraction.kitinventory.GetKitInventoryListRequest
 import com.bosandroidapp.aopaykit.data.customeraction.GetPendingDeviceActionReq
 import com.bosandroidapp.aopaykit.data.customeraction.RetailerSaveDeviceActionRequest
 import com.bosandroidapp.aopaykit.data.customeraction.RetailerSendNotificationToCustomerReq
+import com.bosandroidapp.aopaykit.data.customeraction.SaveRetailerDeviceTokenRequest
+import com.bosandroidapp.aopaykit.data.customeraction.SendInstalledAppOnServerRequest
 import com.bosandroidapp.aopaykit.data.customeraction.UpdateCustomerDeviceActionRequest
 import com.bosandroidapp.aopaykit.data.customeraction.UploadCustomerLocationRequest
 import com.bosandroidapp.aopaykit.data.enach.EnachDateUploadReq
@@ -30,7 +34,6 @@ import com.bosandroidapp.aopaykit.data.model.ValidateSessionRequest
 import com.bosandroidapp.aopaykit.data.model.VerifyCustomerReq
 import com.bosandroidapp.aopaykit.data.model.kitoption.KitCustomerListResponse
 import com.bosandroidapp.aopaykit.data.model.kitoption.KitOptionRequest
-import com.bosandroidapp.aopaykit.data.model.kitoption.KitOptionResponse
 import com.bosandroidapp.aopaykit.data.model.kitplan.KitPlanRequest
 import com.bosandroidapp.aopaykit.data.model.kitplan.KitPurchaseHistoryRequest
 import com.bosandroidapp.aopaykit.data.model.kitplan.KitPurchasePlanSaveRequest
@@ -43,7 +46,6 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.GetIsEligibleLoanReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.LoanCreatedReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.LoginReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.LogoutReq
-import com.bosandroidapp.aopaykit.data.model.loginsignup.RegisterCustomerResp
 import com.bosandroidapp.aopaykit.data.model.loginsignup.RegistrationReq
 import com.bosandroidapp.aopaykit.data.model.loginsignup.RegistrationRes
 import com.bosandroidapp.aopaykit.data.model.loginsignup.RetailerProfileReq
@@ -182,6 +184,7 @@ class AuthRepository(private val apiInterface: ApiInterface) {
 
   suspend fun dueoverdueCustomerRequest(req: DueOverdueRequest) = apiInterface.dueoverdueCustomerRequest(req)
 
+
   suspend fun getCustomerLoanEmiReceiveReq(req: CustomerLoanEmiReceiveReq): Response<CustomerMakePaymentResp> {
     val mode = req.mode.toRequestBody("text/plain".toMediaTypeOrNull())
     val loanCode = req.loanCode.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -205,6 +208,7 @@ class AuthRepository(private val apiInterface: ApiInterface) {
 //      // send empty multipart field
 //        MultipartBody.Part.createFormData("ReceiptImage_FileName", "")
 //    }
+
     val imagePart =  MultipartBody.Part.createFormData("ReceiptImage_FileName", "")
     return apiInterface.getcustomerLoanEmiReceive(mode, loanCode,  paymentDate, paymentMode, utrNumber, remarks, createdBy, customerCode, retailerCode, Bankname,receiptImagePath, imagePart)
 
@@ -253,9 +257,12 @@ class AuthRepository(private val apiInterface: ApiInterface) {
   suspend fun uploadDeviceInfo(req: UploadDeviceInfoReq) = apiInterface.uploadDeviceInfo(req)
 
   suspend fun UpdateEmandateDetails(req: EnachDateUploadReq) = apiInterface.UpdateEmandateDetails(req)
+
   suspend fun sendTokenViaNotificationReq(req: NotificationSendTokenRequest) = apiInterface.sendTokenViaNotificationReq(req)
 
   suspend fun updateActionFromCustomerDevice(req: UpdateCustomerDeviceActionRequest) = apiInterface.updateActionFromCustomerDevice(req)
+
+  suspend fun updateAppUninstallStatusReq(req: CustomerSideUpdateUnInstallAppRequest) = apiInterface.updateAppUninstallStatusReq(req)
 
   suspend fun uploadKitCustomerLocationRequest(req: UploadCustomerLocationRequest) = apiInterface.uploadKitCustomerLocationRequest(req)
 
@@ -263,11 +270,15 @@ class AuthRepository(private val apiInterface: ApiInterface) {
 
   suspend fun getPurchaseHistoryRequest(req: KitPurchaseHistoryRequest) = apiInterface.getPurchaseHistoryRequest(req)
 
+
   suspend fun savePurchaseKitPlan(req: KitPurchasePlanSaveRequest) = apiInterface.savePurchaseKitPlan(req)
+
 
   suspend fun LoanEmIScheduleWithStatusReq(req: CustomerEmiStatusReq) = apiInterface.LoanEmIScheduleWithStatusReq(req)
 
+
   suspend fun GetAdminBankDetailsReq(req: AdminBankDetailsReq) = apiInterface.GetAdminBankDetailsReq(req)
+
 
   suspend fun uploadDocumentForRaisAmountTransferAdminReq(req: RaiseMakePaymentReq): retrofit2.Response<MakepaymentResp> {
     val RetailerCode = req.RetailerCode.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -298,23 +309,21 @@ class AuthRepository(private val apiInterface: ApiInterface) {
     return apiInterface.uploadDocumentForRaisAmountTransferAdmin(RetailerCode,RequestAmount,PaymentMode,BankName,AccountHolderName,AccountNumber,IFSCCode,UTRNumber,UPIID,Remarks,ApprovedRemarks,CreatedBy,RecordStatus,ActiveStatus,imagePart1)
 
   }
-
-
   suspend fun getMakePaymentReportReq(req: MakePaymentAdminReportRequest) = apiInterface.getMakePaymentReportReq(req)
-
   suspend fun kitPlanTopUpRequest(req: KitPlanRequest) = apiInterface.kitPlanTopUpRequest(req)
-
   suspend fun getRequestKitOption(req: KitOptionRequest) = apiInterface.getRequestKitOption(req)
-
   suspend fun getKitCustomerLocation(req: GetKitCustomerLocation) = apiInterface.getKitCustomerLocation(req)
-
   suspend fun getRetailerDeviceActionToCustomerRequest(req: RetailerSaveDeviceActionRequest) = apiInterface.getRetailerDeviceActionToCustomerRequest(req)
-
   suspend fun sendRetailerNotificationToCustomerRequest(req: RetailerSendNotificationToCustomerReq) = apiInterface.sendRetailerNotificationToCustomerRequest(req)
-
   suspend fun getPendingDeviceActionRequest(req: GetPendingDeviceActionReq) = apiInterface.getPendingDeviceActionRequest(req)
-
   suspend fun getActiveDeviceActionRequest(req: GetPendingDeviceActionReq) = apiInterface.getActiveDeviceActionRequest(req)
+  suspend fun uploadCustomerDeviceInsatlledAppsOnServerRequest(req: SendInstalledAppOnServerRequest) = apiInterface.uploadCustomerDeviceInsatlledAppsOnServerRequest(req)
+
+  suspend fun getkitInventoryListRequest(req: GetKitInventoryListRequest) = apiInterface.getkitInventoryListRequest(req)
+
+  suspend fun getKitCustomerInstalledAppRequest(createdBy: String) = apiInterface.getKitCustomerInstalledAppRequest(createdBy)
+
+  suspend fun saveRetailerDeviceTokenRequest(req : SaveRetailerDeviceTokenRequest) = apiInterface.saveRetailerDeviceTokenRequest(req)
 
   suspend fun getCustomerKitRequest(req: CustomerKitRequest): Response<KitCustomerListResponse> {
     val mode = req.mode.toRequestBody("text/plain".toMediaTypeOrNull())

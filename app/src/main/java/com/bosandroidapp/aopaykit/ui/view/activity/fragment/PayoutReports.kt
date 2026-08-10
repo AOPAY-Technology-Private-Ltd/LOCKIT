@@ -13,6 +13,7 @@ import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.R
 import com.bosandroidapp.aopaykit.databinding.FragmentPayoutReportsBinding
 import com.bosandroidapp.aopaykit.constant.ConstantClass
+import com.bosandroidapp.aopaykit.constant.ConstantClass.dialog
 import com.bosandroidapp.aopaykit.data.model.DataItem
 import com.bosandroidapp.aopaykit.data.model.RetailerWalletReportReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
@@ -51,6 +52,17 @@ class PayoutReports : Fragment() {
         super.onResume()
 
         hitApiForReports(reportType)
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+
+        if(dialog!=null && dialog.isShowing)
+        {
+            dialog.dismiss()
+        }
+
     }
 
 

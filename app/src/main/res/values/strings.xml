@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">LockKit</string>
+    <string name="app_name">LocKit</string>
     <string name="MAPS_API_KEY">AIzaSyDu-tT_-yOsQGweZDJNMiXSDjyMbj9-SIg</string>
+
 
     <string name="splachscreentxt1">"Smart money"</string>
     <string name="splachscreentxt2">"Simple tools,Strong future"</string>
@@ -363,6 +364,8 @@ CLIENT shall access your Credit Information as your authorized representative an
     <string name="customer_app_install">Customer App Install</string>
     <string name="your_loan">Your loan has been successfully created.</string>
     <string name="your_kit_message">Your Kit has been installed successfully..</string>
+    <string name="skip">Skip</string>
+    <string name="search_code_mobile_lock_unlock">Search Code, Mobile, Lock, Unlock</string>
 
 
 </resources>

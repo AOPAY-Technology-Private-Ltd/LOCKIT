@@ -24,6 +24,7 @@ class KitPlanAdapter(private var plans: List<KitPlanListDataItem?>?, private val
         if (plan == null) return
 
         with(holder.binding) {
+            kitname.text = plan.planName ?: ""
             tvKitCount.text = plan.noOfKits.toString()
             tvTotalPrice.text = "₹${String.format("%,.0f", plan.planAmount)}"
             tvPerKitPrice.text = "₹${plan.pricePerKit?.toInt() ?: 0} / kits"

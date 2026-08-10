@@ -6,7 +6,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.constant.ConstantClass
@@ -14,15 +13,16 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.RetailerProfileReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityKioskLockPageBinding
+import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 
-class KioskLockPage : AppCompatActivity() {
-
+class KioskLockPage : BaseActivity() {
     private lateinit var binding: ActivityKioskLockPageBinding
     private lateinit var preference: SharedPreference
     private lateinit var viewModel: AuthenticationViewModel
+    
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -36,9 +36,12 @@ class KioskLockPage : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        binding.tvRetailerName.text = preference.getStringValue(ConstantClass.KioskScreenRetailerName,"")
+        binding.tvRetailerPhone.text = preference.getStringValue(ConstantClass.KioskScreenContactNumber,"")
         setupKioskMode()
     }
 
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityKioskLockPageBinding.inflate(layoutInflater)
@@ -90,6 +93,8 @@ class KioskLockPage : AppCompatActivity() {
                         if (response.statuss == "True") {
                             binding.tvRetailerName.text = "${response.firstName} ${response.lastName}"
                             binding.tvRetailerPhone.text = response.mobileNo
+                            preference.setStringValue(ConstantClass.KioskScreenRetailerName,"${response.firstName} ${response.lastName}")
+                            preference.setStringValue(ConstantClass.KioskScreenContactNumber,response.mobileNo!!)
                         }
                     }
                 }
@@ -98,9 +103,12 @@ class KioskLockPage : AppCompatActivity() {
         }
     }
 
+
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         // Disable back button in kiosk mode
         // super.onBackPressed() // Do not call super to disable back button
     }
+
+
 }

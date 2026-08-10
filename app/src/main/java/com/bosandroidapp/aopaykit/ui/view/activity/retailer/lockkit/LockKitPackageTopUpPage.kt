@@ -92,7 +92,7 @@ class LockKitPackageTopUpPage : BaseActivity() {
                     payCustomerPhoneNo = preference.getStringValue(ConstantClass.CustomerMobileNumber, ""),
                     customerEmailID = "bos.centerpvtltd@gmail.com",
                     registrationID = ConstantClass.PAN_VERIFICATION_REGISTRATION_ID,
-                    payCartAmount = /*amount*/"1",
+                    payCartAmount = amount,
                     payCustomerName = "${preference.getStringValue(ConstantClass.FirstName, "")} ${preference.getStringValue(ConstantClass.LastName, "")}",
                     retailerCode = preference.getStringValue(ConstantClass.RetailerCode,"")
                 )
@@ -159,8 +159,9 @@ class LockKitPackageTopUpPage : BaseActivity() {
     fun hitApiForGeetingKitPackage(){
         var request  = KitPlanRequest(
             companyCode = ConstantClass.ClientCode,
-            retailerCode = preference.getStringValue(ConstantClass.RetailerCode,"") /* "RTL000028"*/
+            retailerCode = preference.getStringValue(ConstantClass.RetailerCode,"")
         )
+
         Log.d("requestKit",Gson().toJson(request))
 
         viewModel.kitPlanTopUpRequest(request).observe(this) { it ->
@@ -231,7 +232,6 @@ class LockKitPackageTopUpPage : BaseActivity() {
         binding.tvSummaryTotal.text = "₹${String.format("%,.0f", plan.totalAmount)}"
         kitPlanListDataItem= plan
     }
-
 
 
     fun hitApiForLogin() {
@@ -305,6 +305,7 @@ class LockKitPackageTopUpPage : BaseActivity() {
         }
 
     }
+
 
     fun hitApiForRetailerLogout() {
         var loginRequest = LogoutReq(

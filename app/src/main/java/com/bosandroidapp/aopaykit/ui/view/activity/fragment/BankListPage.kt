@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.databinding.FragmentBankListBinding
 import com.bosandroidapp.aopaykit.constant.ConstantClass
+import com.bosandroidapp.aopaykit.constant.ConstantClass.dialog
 import com.bosandroidapp.aopaykit.data.model.BankDataItem
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
@@ -50,6 +51,17 @@ class BankListPage : Fragment() {
             binding.banklistview.adapter = adapter
             adapter.notifyDataSetChanged()
         }
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+
+        if(dialog!=null && dialog.isShowing)
+        {
+            dialog.dismiss()
+        }
+
     }
 
 

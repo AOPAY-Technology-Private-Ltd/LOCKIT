@@ -35,12 +35,15 @@
     <uses-permission android:name="android.permission.MANAGE_DEVICE_POLICY_CAMERA" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.MANAGE_DEVICE_POLICY_FACTORY_RESET" />
+
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
+
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
@@ -66,6 +69,7 @@
         android:icon="@drawable/newapplogo"
         android:label="@string/app_name"
         android:largeHeap="true"
+
         android:roundIcon="@drawable/newapplogo"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.TheEmiClub"
@@ -397,6 +401,12 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAeWqwtaPeBBAx99493pPOCwI1ryvGriuc" />
+
+        <activity
+            android:name=".ui.view.activity.retailer.lockkit.KitInventoryReportListPage"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.view.activity.retailer.lockkit.LockKitCustomerListPage"

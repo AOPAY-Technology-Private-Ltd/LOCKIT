@@ -8,22 +8,38 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
+import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.databinding.SplashMainBinding
 import com.bosandroidapp.aopaykit.constant.ConstantClass
+import com.bosandroidapp.aopaykit.constant.ConstantClass.AadharTransactionIdNo
 import com.bosandroidapp.aopaykit.constant.ConstantClass.isInternetAvailable
+import com.bosandroidapp.aopaykit.data.customeraction.AppsItem
+import com.bosandroidapp.aopaykit.data.customeraction.CategoriesItem
+import com.bosandroidapp.aopaykit.data.customeraction.SendInstalledAppOnServerRequest
+import com.bosandroidapp.aopaykit.data.model.loginsignup.verification.AadharVerificationReq
+import com.bosandroidapp.aopaykit.data.repository.AuthRepository
+import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
+import com.bosandroidapp.aopaykit.ui.view.activity.retailer.AadharCardWebViewDIGILockerPage
+import com.bosandroidapp.aopaykit.ui.view.activity.retailer.AadharCardWebViewDIGILockerPage.Companion.digilockerLink
+import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
+import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 
 
 class SplashScreen : AppCompatActivity() {
     lateinit var binding: SplashMainBinding
     lateinit var preference: SharedPreference
+    lateinit var viewModel: AuthenticationViewModel
 
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
@@ -32,21 +48,7 @@ class SplashScreen : AppCompatActivity() {
         binding = SplashMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         preference = SharedPreference(this)
-
-
-        val apps = packageManager.getInstalledApplications(0)
-        apps.forEach { appInfo ->
-            val appName = packageManager.getApplicationLabel(appInfo).toString()
-            val packageName = appInfo.packageName
-            Log.d("InstalledApps", "App: $appName | Package: $packageName")
-        }
-
-
-        ApplicationInfo.CATEGORY_GAME
-        ApplicationInfo.CATEGORY_SOCIAL
-        ApplicationInfo.CATEGORY_AUDIO
-        ApplicationInfo.CATEGORY_IMAGE
-        ApplicationInfo.CATEGORY_VIDEO
+        viewModel = ViewModelProvider(this, CommonViewModelFactory(AuthRepository(RetrofitClient.apiInterface)))[AuthenticationViewModel::class.java]
 
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { view, insets ->
@@ -55,9 +57,7 @@ class SplashScreen : AppCompatActivity() {
             WindowInsetsCompat.CONSUMED
         }
 
-
         binding.uattext.visibility= View.VISIBLE
-
 
         Handler(Looper.getMainLooper()).postDelayed({
 
@@ -89,6 +89,7 @@ class SplashScreen : AppCompatActivity() {
 
 
         }, 3000)
+
 
 
     }

@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.R
 import com.bosandroidapp.aopaykit.constant.ConstantClass
+import com.bosandroidapp.aopaykit.constant.ConstantClass.dialog
 import com.bosandroidapp.aopaykit.data.model.MakePaymentAdminReportRequest
 import com.bosandroidapp.aopaykit.data.model.MakePaymentReportDataItem
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
@@ -53,6 +54,17 @@ class ReportPage : Fragment() {
         preference = SharedPreference(requireContext())
         clickListner()
         return  binding.root
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+
+        if(dialog!=null && dialog.isShowing)
+        {
+            dialog.dismiss()
+        }
+
     }
 
 

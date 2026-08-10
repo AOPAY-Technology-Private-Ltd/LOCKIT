@@ -241,6 +241,7 @@ class LoginPage : BaseActivity() {
 
 
     fun hitApiForLogin(emailOfMobile:String,password:String){
+
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         preference.setStringValue("deviceid",deviceId)
 
@@ -249,7 +250,8 @@ class LoginPage : BaseActivity() {
             password = password,
             logintype = loginType,
             deviceId = deviceId,
-            token = FireBaseToken
+            token = FireBaseToken,
+            imeiNumber = ConstantClass.IMEI
         )
 
         Log.d("LoginReq", Gson().toJson(loginRequest))
@@ -317,6 +319,7 @@ class LoginPage : BaseActivity() {
         }
 
     }
+
 
     fun validateLoginInput(mobileOrEmailID: String, password: String, context: Context): Boolean {
         val isMobile = mobileOrEmailID.all { it.isDigit() } && mobileOrEmailID.length == 10
@@ -536,6 +539,7 @@ class LoginPage : BaseActivity() {
             logintype = message
         )
         Log.d("VerifyOTPReq", Gson().toJson(verifyotpreq))
+
         viewModel.verifyOTPReq(verifyotpreq).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
@@ -697,6 +701,7 @@ class LoginPage : BaseActivity() {
        }
 
 
+
     // for tsting ........................
     fun sendDataToEmail(data: String) {
 
@@ -722,6 +727,7 @@ class LoginPage : BaseActivity() {
 
         startActivity(Intent.createChooser(intent, "Send email"))
     }
+
 
 
     fun sendDataOnServerForUploadToken(request : NotificationSendTokenRequest){

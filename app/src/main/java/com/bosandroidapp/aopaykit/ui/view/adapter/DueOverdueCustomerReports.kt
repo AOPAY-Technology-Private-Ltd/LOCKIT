@@ -23,6 +23,7 @@ import com.bosandroidapp.aopaykit.ui.view.activity.retailer.MapActivity
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.MapActivity.Companion.lattitude
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.MapActivity.Companion.longitude
 
+
 class DueOverdueCustomerReports(var context:Context, var dueoverDueList : MutableList<OverdueDataItem?>?): RecyclerView.Adapter<DueOverdueCustomerReports.ViewHolder>() {
 
     lateinit var preference : SharedPreference
@@ -50,6 +51,10 @@ class DueOverdueCustomerReports(var context:Context, var dueoverDueList : Mutabl
         var customermobImage = binding.customermobtxt
         var customeraltremobImag = binding.customeraltremobtxt
         var customerRefmobImag = binding.customerRefmobtxt
+
+        var custMobCopied = binding.custMobCopied
+        var alterMobCopied = binding.alterMobCopied
+        var refMobCopied = binding.refMobCopied
     }
 
 
@@ -88,33 +93,37 @@ class DueOverdueCustomerReports(var context:Context, var dueoverDueList : Mutabl
         var imageurl = ConstantClass.BASE_URL_IMAGE + dueoverDueList!![position]!!.customerPhoto
         Glide.with(context).load(imageurl).into(holder.image)
 
+
         holder.locationlayout.setOnClickListener {
             if(dueoverDueList!![position]!!.latitude!=null&& dueoverDueList!![position]!!.longitude!=null){
                 lattitude = dueoverDueList!![position]!!.latitude!!
                 longitude = dueoverDueList!![position]!!.longitude!!
                 context.startActivity(Intent(context,MapActivity::class.java))
             }
-       }
+        }
 
-        holder.custMob.setOnLongClickListener {
+
+        holder.custMobCopied.setOnLongClickListener {
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("Copied Text",  holder.custMob.text.toString())
+            val clip = ClipData.newPlainText("Copied Text",  dueoverDueList!![position]!!.primaryMobileNumber.toString())
             clipboard.setPrimaryClip(clip)
             Toast.makeText(context, "Text Copied", Toast.LENGTH_SHORT).show()
             true
         }
 
-        holder.custAlterMob.setOnLongClickListener {
+
+        holder.alterMobCopied.setOnLongClickListener {
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("Copied Text",  holder.custAlterMob.text.toString())
+            val clip = ClipData.newPlainText("Copied Text",  dueoverDueList!![position]!!.alternateMobileNumber.toString())
             clipboard.setPrimaryClip(clip)
             Toast.makeText(context, "Text Copied", Toast.LENGTH_SHORT).show()
             true
         }
 
-        holder.custRefMob.setOnLongClickListener {
+
+        holder.refMobCopied.setOnLongClickListener {
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("Copied Text",  holder.custRefMob.text.toString())
+            val clip = ClipData.newPlainText("Copied Text",  dueoverDueList!![position]!!.refmobileNo.toString())
             clipboard.setPrimaryClip(clip)
             Toast.makeText(context, "Text Copied", Toast.LENGTH_SHORT).show()
             true
@@ -123,7 +132,7 @@ class DueOverdueCustomerReports(var context:Context, var dueoverDueList : Mutabl
 
         holder.customermobImage.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL).apply {
-                data = Uri.parse("tel:${holder.custMob.text.toString()}")
+                data = Uri.parse("tel:${dueoverDueList!![position]!!.primaryMobileNumber.toString()}")
             }
             context.startActivity(intent)
         }
@@ -131,22 +140,22 @@ class DueOverdueCustomerReports(var context:Context, var dueoverDueList : Mutabl
 
         holder.customeraltremobImag.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL).apply {
-                data = Uri.parse("tel:${holder.custAlterMob.text.toString()}")
+                data = Uri.parse("tel:${dueoverDueList!![position]!!.alternateMobileNumber.toString()}")
             }
             context.startActivity(intent)
         }
 
 
         holder.customerRefmobImag.setOnClickListener {
+
             val intent = Intent(Intent.ACTION_DIAL).apply {
-                data = Uri.parse("tel:${holder.custRefMob.text.toString()}")
+                data = Uri.parse("tel:${dueoverDueList!![position]!!.refmobileNo.toString()}")
             }
             context.startActivity(intent)
         }
 
 
     }
-
 
 
 }

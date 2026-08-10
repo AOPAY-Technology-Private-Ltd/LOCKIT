@@ -61,15 +61,49 @@
         android:background="@color/grey100"
         app:layout_constraintTop_toBottomOf="@+id/clHeader" />
 
+    <LinearLayout
+        android:id="@+id/llSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/bg_light_blue_rounded"
+        android:backgroundTint="#F0F7FF"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/_10sdp"
+        app:layout_constraintTop_toBottomOf="@+id/divider">
+
+        <ImageView
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:src="@drawable/searchicon"
+            app:tint="@color/grey" />
+
+        <EditText
+            android:id="@+id/etSearchApp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:background="@android:color/transparent"
+            android:hint="Search app name..."
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:paddingVertical="@dimen/_8sdp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_11ssp" />
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSubActions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
         app:layout_constrainedHeight="true"
-        app:layout_constraintHeight_max="@dimen/_350sdp"
+        app:layout_constraintHeight_max="@dimen/_300sdp"
         app:layout_constraintBottom_toTopOf="@+id/btnSave"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@+id/llSearch"
         tools:listitem="@layout/item_sub_action" />
 
     <TextView

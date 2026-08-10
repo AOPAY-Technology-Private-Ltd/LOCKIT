@@ -43,26 +43,26 @@ class SimStateReceiver : BroadcastReceiver() {
             when (simState) {
                 TelephonyManager.SIM_STATE_ABSENT -> {
                     Log.d("SimCardState", "SIM Removed")
-                    logoutUser(context)
+                    val preference = SharedPreference(context)
+                    val loginType = preference.getStringValue(ConstantClass.LoginType, "").orEmpty()
+                    if(loginType.equals(ConstantClass.Retailer)){
+                        performLogout(context)
+                    }
                 }
                 TelephonyManager.SIM_STATE_READY -> {
                     Log.d("SimCardState", "SIM Ready")
+                    val preference = SharedPreference(context)
+                    val loginType = preference.getStringValue(ConstantClass.LoginType, "").orEmpty()
+                    if(loginType.equals(ConstantClass.Customer)){
+                        uploadDeviceInfo(context)
+                    }
+
                 }
             }
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
-    private fun logoutUser(context: Context) {
-        val preference = SharedPreference(context)
-        val loginType = preference.getStringValue(ConstantClass.LoginType, "").orEmpty()
 
-        if (loginType == Customer) {
-            uploadDeviceInfo(context)
-        } else {
-            performLogout(context)
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     private fun performLogout(context: Context) {

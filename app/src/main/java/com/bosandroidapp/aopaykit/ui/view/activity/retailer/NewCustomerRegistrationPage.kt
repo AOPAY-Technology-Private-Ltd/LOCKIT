@@ -187,6 +187,8 @@ class NewCustomerRegistrationPage : BaseActivity() {
                 val imageFile = uriToFile(photoUri!!, this)
                 customerImagePath = imageFile!!.absolutePath
                 binding.imagenotuploaded.visibility = View.GONE
+            }else{
+                photoUri = null
             }
 
         }
@@ -581,6 +583,8 @@ class NewCustomerRegistrationPage : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun setOnClickListner() {
+
+        hitApiForLogin()
 
         binding.home.setOnClickListener {
             val intent = Intent(this, DashBoard::class.java)

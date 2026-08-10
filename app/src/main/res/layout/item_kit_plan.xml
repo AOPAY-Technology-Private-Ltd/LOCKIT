@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/_5sdp">
+    android:padding="@dimen/_2sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clMain"
@@ -11,8 +12,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_8sdp"
         android:background="@drawable/bg_plan_item"
-        android:padding="@dimen/_15sdp"
+        android:padding="@dimen/_10sdp"
         app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/kitname"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_medium"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/tvSaveTag"/>
 
         <TextView
             android:id="@+id/tvKitCount"
@@ -23,7 +35,7 @@
             android:textColor="@color/black"
             android:textSize="@dimen/_18ssp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/kitname" />
 
         <TextView
             android:id="@+id/tvKitsLabel"

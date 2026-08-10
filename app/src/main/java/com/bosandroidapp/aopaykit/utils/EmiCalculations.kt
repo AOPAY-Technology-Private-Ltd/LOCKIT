@@ -64,6 +64,7 @@ private suspend fun getCustomerLoanEmiDetailsReq(req: GetCustomerLoanDetailsReq)
     RetrofitClient.apiInterface.getCustomerLoanDetailsList(req)
 
 
+
 suspend fun Context.syncEmis() = withContext(Dispatchers.IO) {
     val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
 
@@ -161,8 +162,6 @@ private suspend fun Context.isEMIDue(sharedPref: SharedPreferences) = withContex
 
         Logger.d(ACCESSIBILITYTAG,"EMIDUES: $emiDues")
 
-
-
         if (emiDues != null) {
             if (emiDues!! > 0) {
                 this@isEMIDue.setEMINotCompleted()
@@ -172,7 +171,6 @@ private suspend fun Context.isEMIDue(sharedPref: SharedPreferences) = withContex
                 this@isEMIDue.stopInternetAlertSituation()
             }
         }
-
 
         if (lateEMIs > 0) {
             Logger.d(ACCESSIBILITYTAG, "Late EMIs Count: $lateEMIs")

@@ -1,13 +1,22 @@
 package com.bos.payment.appName.network
 
+import com.bosandroidapp.aopaykit.data.CustomerInstalledAppListResponse
+import com.bosandroidapp.aopaykit.data.customeraction.CustomerSideUpdateUnInstallAppRequest
+import com.bosandroidapp.aopaykit.data.customeraction.CustomerSideUpdateUnInstallAppResponse
 import com.bosandroidapp.aopaykit.data.customeraction.GetKitCustomerLocation
 import com.bosandroidapp.aopaykit.data.customeraction.GetKitCustomerLocationResponse
+import com.bosandroidapp.aopaykit.data.customeraction.kitinventory.GetKitInventoryListRequest
+import com.bosandroidapp.aopaykit.data.customeraction.kitinventory.GetKitInventoryListResponse
 import com.bosandroidapp.aopaykit.data.customeraction.GetPendingDeviceActionReq
 import com.bosandroidapp.aopaykit.data.customeraction.GetPendingDeviceActionResponse
 import com.bosandroidapp.aopaykit.data.customeraction.RetailerSaveDeviceActionRequest
 import com.bosandroidapp.aopaykit.data.customeraction.RetailerSaveDeviceActionResponse
 import com.bosandroidapp.aopaykit.data.customeraction.RetailerSendNotificationToCustomerReq
 import com.bosandroidapp.aopaykit.data.customeraction.RetailerSendNotificationToCustomerResponse
+import com.bosandroidapp.aopaykit.data.customeraction.SaveRetailerDeviceTokenRequest
+import com.bosandroidapp.aopaykit.data.customeraction.SaveRetailerDeviceTokenResponse
+import com.bosandroidapp.aopaykit.data.customeraction.SendInstalledAppOnServerRequest
+import com.bosandroidapp.aopaykit.data.customeraction.SendInstalledAppOnServerResponse
 import com.bosandroidapp.aopaykit.data.customeraction.UpdateCustomerDeviceActionRequest
 import com.bosandroidapp.aopaykit.data.customeraction.UpdateCustomerDeviceActionResponse
 import com.bosandroidapp.aopaykit.data.customeraction.UploadCustomerLocationRequest
@@ -158,6 +167,7 @@ interface ApiInterface {
     // low cibil score customer report ....................
     @POST("api/V1/AopayFinance/GetCustomerReports")
     suspend fun getLowCibilReports(@Body req : LowCibilCustomerReportReq): Response<LowCibilCustomerReportResp>?
+
 
 
     @Multipart
@@ -492,8 +502,10 @@ interface ApiInterface {
 
 
 
+    // kit customer list
     @POST("api/V1/AopayFinance/GetUpdateProfile")
     suspend fun getRetailerProfileGetUpdateReq(@Body req : RetailerProfileReq): Response<RetailerProfileRespo>?
+
 
 
     @POST("api/V1/AopayFinance/GetDealerHoldWalletLedger")
@@ -602,15 +614,18 @@ interface ApiInterface {
 
 
 
+
     // for customer and retailer both showing reports
     @POST("api/V1/AopayFinance/GetLoanDetailsRetailerWise")
     suspend fun getReports(@Body req : GetReportsReq): Response<ReportsResp>?
 
 
 
+
     // revalidate user eligible for loan or not
     @POST("api/V1/AopayFinance/IsLoanReapplyEligible")
     suspend fun getEligiblereq(@Body req : GetIsEligibleLoanReq): Response<EligibleLoanResp>?
+
 
 
 
@@ -627,7 +642,7 @@ interface ApiInterface {
 
 
     // link for download apk file
-    @GET("api/V1/AopayFinance/generate-qr")
+    @GET("api/V1/AopayFinance/generate-download-lockit-qr")
     suspend fun getApkUrlLink(): Response<ResponseBody>?
 
 
@@ -635,6 +650,7 @@ interface ApiInterface {
     // for customer generate token key
     @POST("api/V1/AopayFinance/generatekey")
     suspend fun getAccessKeyForValidateAPKReq(@Body req : GenerateAccessTokenRequest): Response<GenerateAccessTokenResponse>?
+
 
 
     //  key validate retailer end
@@ -782,5 +798,33 @@ interface ApiInterface {
 
     @POST("api/V1/AopayFinance/SavePurchaseHistory")
     suspend fun savePurchaseKitPlan(@Body req : KitPurchasePlanSaveRequest) : Response<KitPurchasePlanSaveResponse>?
+
+
+    @POST("api/notification/SaveAppMaster")
+    suspend fun uploadCustomerDeviceInsatlledAppsOnServerRequest(@Body req : SendInstalledAppOnServerRequest) : Response<SendInstalledAppOnServerResponse>?
+
+
+
+    @POST("api/V1/AopayFinance/GetKitInventory")
+    suspend fun getkitInventoryListRequest(@Body req : GetKitInventoryListRequest) : Response<GetKitInventoryListResponse>?
+
+
+
+    @GET("api/notification/GetAppMaster")
+    suspend fun getKitCustomerInstalledAppRequest(@Query("CreatedBy") createdBy: String) : Response<CustomerInstalledAppListResponse>?
+
+
+
+    @POST("api/notification/SaveRetailerDeviceToken")
+    suspend fun saveRetailerDeviceTokenRequest(@Body req : SaveRetailerDeviceTokenRequest) : Response<SaveRetailerDeviceTokenResponse>?
+
+
+    
+    // for customer side update api for uninstall option
+
+    @POST("api/notification/CustomerAppUninstalled")
+    suspend fun updateAppUninstallStatusReq(@Body req : CustomerSideUpdateUnInstallAppRequest) : Response<CustomerSideUpdateUnInstallAppResponse>?
+
+
 
 }

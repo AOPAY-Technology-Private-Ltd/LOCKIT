@@ -4,9 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.bosandroidapp.aopaykit.data.customeraction.GetKitCustomerLocation
+import com.bosandroidapp.aopaykit.data.customeraction.kitinventory.GetKitInventoryListRequest
 import com.bosandroidapp.aopaykit.data.customeraction.GetPendingDeviceActionReq
 import com.bosandroidapp.aopaykit.data.customeraction.RetailerSaveDeviceActionRequest
 import com.bosandroidapp.aopaykit.data.customeraction.RetailerSendNotificationToCustomerReq
+import com.bosandroidapp.aopaykit.data.customeraction.SaveRetailerDeviceTokenRequest
+import com.bosandroidapp.aopaykit.data.customeraction.SendInstalledAppOnServerRequest
 import com.bosandroidapp.aopaykit.data.customeraction.UpdateCustomerDeviceActionRequest
 import com.bosandroidapp.aopaykit.data.enach.EnachDateUploadReq
 import com.bosandroidapp.aopaykit.data.model.AdminBankDetailsReq
@@ -699,6 +702,54 @@ class AuthenticationViewModel (private val repository: AuthRepository):ViewModel
         emit(ApiResponse.loading(data = null))
         try {
             emit(ApiResponse.success(data = repository.getCustomerKitRequest(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
+
+
+    fun uploadCustomerDeviceInsatlledAppsOnServerRequest(req : SendInstalledAppOnServerRequest)= liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.uploadCustomerDeviceInsatlledAppsOnServerRequest(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
+
+
+    fun getkitInventoryListRequest(req : GetKitInventoryListRequest)= liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.getkitInventoryListRequest(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
+
+
+    fun getKitCustomerInstalledAppRequest(createdBy: String) = liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.getKitCustomerInstalledAppRequest(createdBy)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
+
+
+    fun saveRetailerDeviceTokenRequest(req : SaveRetailerDeviceTokenRequest) = liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.saveRetailerDeviceTokenRequest(req)))
         }
         catch (exception: Exception) {
             emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))

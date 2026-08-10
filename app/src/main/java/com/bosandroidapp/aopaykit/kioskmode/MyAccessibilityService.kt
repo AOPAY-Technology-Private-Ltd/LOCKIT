@@ -42,13 +42,16 @@ class MyAccessibilityService : AccessibilityService() {
             performGlobalAction(GLOBAL_ACTION_BACK)
         }
 
+
         if (isFactoryResetting(event?.text?.toString() ?: "") && !isEMIsCompleted()) {
             Logger.d(ACCESSIBILITYTAG, "On Factory Reset Page: Global Back")
             performGlobalAction(GLOBAL_ACTION_BACK)
             this.showToast("You are not allowed to Factory reset your device when your EMIs are pending.")
         }
 
+
         val currentPkg = event?.packageName?.toString() ?: ""
+
 
         if (!isGpsEnabled(this) && !isEMIsCompleted()) {
             // Open GPS settings ONLY ONCE
@@ -85,6 +88,7 @@ class MyAccessibilityService : AccessibilityService() {
             if (!isInternetAvailable(this) && isInternetAlertSituationCompleted()) {
                 // Open Internet settings ONLY ONCE
                 if (!internetSettingsOpened) {
+
                     internetSettingsOpened = true
                     showToast("Please connect with internet")
                     openInternetSettings()
@@ -140,13 +144,11 @@ class MyAccessibilityService : AccessibilityService() {
 
     private fun isFactoryResetting(t: String): Boolean {
         val text = t.toLowerCase()
-        return if (text.contains("reset phone", false) || text.contains(
-                "erase all data",
-                false
-            ) || text.contains(
-                "erase data",
-                false
-            ) || text.contains("factory reset", false) || text.contains("factory reset", false)
+        return if (text.contains("reset phone", false) || text.contains("erase all data", false) ||
+            text.contains("erase data", false) ||
+            text.contains("factory reset", false) ||
+            text.contains("factory reset", false)||
+            text.contains("reset", false)
         ) true
         else false
     }

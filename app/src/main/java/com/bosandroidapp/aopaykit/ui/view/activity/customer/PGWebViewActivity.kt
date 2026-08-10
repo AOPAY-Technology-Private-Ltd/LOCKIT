@@ -85,8 +85,7 @@ class PGWebViewActivity : BaseActivity() {
         }
 
         preference = SharedPreference(this)
-        viewModel = ViewModelProvider(this, CommonViewModelFactory(
-            AuthRepository(RetrofitClient.apiInterface))
+        viewModel = ViewModelProvider(this, CommonViewModelFactory(AuthRepository(RetrofitClient.apiInterface))
         )[AuthenticationViewModel::class.java]
 
         clearWebViewData(binding.pgwebview)
@@ -389,6 +388,7 @@ class PGWebViewActivity : BaseActivity() {
                     planAmount= kitPlanListDataItem.planAmount,
                     paymentStatus= "SUCCESS",
                     remarks= "Plan purchased successfully",
+                    noOfKits = kitPlanListDataItem.noOfKits.toString()
                 )
                 Log.d("kitpurchaserequest", Gson().toJson(request))
 

@@ -27,6 +27,7 @@ import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.R
 import com.bosandroidapp.aopaykit.databinding.FragmentPayoutPageBinding
 import com.bosandroidapp.aopaykit.constant.ConstantClass
+import com.bosandroidapp.aopaykit.constant.ConstantClass.dialog
 import com.bosandroidapp.aopaykit.constant.ConstantClass.AdminCibilScore
 import com.bosandroidapp.aopaykit.constant.ConstantClass.AdminLoanApprovedStatus
 import com.bosandroidapp.aopaykit.constant.ConstantClass.HoldAmount
@@ -97,6 +98,17 @@ class PayoutPage : Fragment() {
     override fun onResume() {
         super.onResume()
         hitApiForGetBankList()
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+
+        if(dialog!=null && dialog.isShowing)
+        {
+            dialog.dismiss()
+        }
+
     }
 
 
