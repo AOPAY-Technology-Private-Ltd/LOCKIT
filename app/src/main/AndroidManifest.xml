@@ -265,12 +265,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.TheEmiClub" />
         <activity
-            android:name=".ui.slideshow.activity.DashBoard"
+            android:name=".ui.activity.DashBoard"
             android:exported="false"
             android:label="@string/title_activity_dash_board"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.slideshow.activity.LoginPage"
+            android:name=".ui.activity.LoginPage"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"

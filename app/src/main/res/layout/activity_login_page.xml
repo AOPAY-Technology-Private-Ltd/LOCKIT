@@ -47,6 +47,7 @@
 
             </RelativeLayout>
 
+
             <!-- Login Container: Height set to wrap_content to prevent cropping -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/loginscreen"
@@ -185,6 +186,7 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+
                 <!-- Customer Login (Hidden by default) -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/customerLogin"
@@ -269,6 +271,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+
             <!-- Footer: Always at the bottom of the scrollable content -->
             <LinearLayout
                 android:id="@+id/powered_by"
@@ -295,6 +298,7 @@
                     android:textSize="@dimen/_10ssp" />
 
             </LinearLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

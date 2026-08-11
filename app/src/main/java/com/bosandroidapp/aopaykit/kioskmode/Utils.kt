@@ -43,7 +43,6 @@ fun Context.startLockSituation() {
     editor.apply()
 }
 
-@RequiresApi(Build.VERSION_CODES.R)
 fun Context.setEMICompleted() {
     removeRestrictions()
     val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)

@@ -31,7 +31,6 @@ class SimStateReceiver : BroadcastReceiver() {
 
     private val authRepository by lazy { AuthRepository(RetrofitClient.apiInterface) }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context == null) return
@@ -63,8 +62,6 @@ class SimStateReceiver : BroadcastReceiver() {
     }
 
 
-
-    @RequiresApi(Build.VERSION_CODES.S)
     private fun performLogout(context: Context) {
         val preference = SharedPreference(context)
         preference.setBooleanValue(ConstantClass.LoggedIn, false)
@@ -76,7 +73,6 @@ class SimStateReceiver : BroadcastReceiver() {
         context.startActivity(intent)
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     fun uploadDeviceInfo(context: Context) {
         try {
             val dpm = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
@@ -148,7 +144,6 @@ class SimStateReceiver : BroadcastReceiver() {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("MissingPermission")
     fun getSimIdentifiers(context: Context): List<SimInfo> {
         val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
@@ -161,8 +156,8 @@ class SimStateReceiver : BroadcastReceiver() {
                     iccId = sim.iccId,
                     subscriptionId = sim.subscriptionId,
                     carrierName = sim.carrierName.toString(),
-                    mcc = sim.mccString,
-                    mnc = sim.mncString,
+                    mcc = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) sim.mccString else sim.mcc.toString(),
+                    mnc = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) sim.mncString else sim.mnc.toString(),
                     slotIndex = sim.simSlotIndex
                 )
             )

@@ -127,7 +127,7 @@ import com.bosandroidapp.aopaykit.data.viewModelFactory.CibilViewModelFactory
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
-import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
+import com.bosandroidapp.aopaykit.ui.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.ui.viewmodel.CibilViewModel
@@ -215,6 +215,7 @@ class NewCustomerRegistrationPage : BaseActivity() {
         api = RetrofitClient.apiInterfaceSMS
         registerCustomerApiHolder = RetrofitClient.apiInterface
         preference = SharedPreference(this)
+        CustPrimaryMobileVerified=""
         setOnClickListner()
         setDataInUI()
 
@@ -416,6 +417,7 @@ class NewCustomerRegistrationPage : BaseActivity() {
         })
 
         binding.mobileNumber.addTextChangedListener(object : TextWatcher {
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -427,14 +429,19 @@ class NewCustomerRegistrationPage : BaseActivity() {
                 if (primaryNumber.length == 10) {
                     // ✅ Check if alternate is same
                     if (primaryNumber == altNumber && altNumber.isNotEmpty()) {
-                        binding.mobileNumber.error =
-                            "Primary mobile number should not be same as alternate number"
+                        binding.mobileNumber.error = "Primary mobile number should not be same as alternate number"
                         binding.verifymobilenumber.visibility = View.GONE
                         return
                     }
 
-                    // ✅ Show verify if valid
-                    binding.verifymobilenumber.visibility = View.VISIBLE
+                    if(preference.getStringValue(ConstantClass.RetailerCode,"").equals(ConstantClass.RETAILER_CODE_BIASS_OTP)){
+                        binding.verifymobilenumber.visibility = View.GONE
+                    }
+                    else{
+                        // ✅ Show verify if valid
+                        binding.verifymobilenumber.visibility = View.VISIBLE
+                    }
+
 
                 } else {
                     binding.verifymobilenumber.visibility = View.GONE
@@ -456,7 +463,11 @@ class NewCustomerRegistrationPage : BaseActivity() {
                     if (mobileveryfied) {
                         binding.verifymobilenumber.visibility = View.GONE
                     } else {
-                        binding.verifymobilenumber.visibility = View.VISIBLE
+                        if(preference.getStringValue(ConstantClass.RetailerCode,"").equals(ConstantClass.RETAILER_CODE_BIASS_OTP)){
+                            binding.verifymobilenumber.visibility = View.GONE
+                        }else {
+                            binding.verifymobilenumber.visibility = View.VISIBLE
+                        }
                     }
 
 
@@ -465,8 +476,11 @@ class NewCustomerRegistrationPage : BaseActivity() {
                         binding.alternateverifymobilenumber.visibility = View.GONE
                         return
                     }
-
-                    binding.alternateverifymobilenumber.visibility = View.VISIBLE
+                    if(preference.getStringValue(ConstantClass.RetailerCode,"").equals(ConstantClass.RETAILER_CODE_BIASS_OTP)) {
+                        binding.alternateverifymobilenumber.visibility = View.GONE
+                    }else{
+                        binding.alternateverifymobilenumber.visibility = View.VISIBLE
+                    }
 
                 } else {
                     binding.alternateverifymobilenumber.visibility = View.GONE
@@ -510,7 +524,13 @@ class NewCustomerRegistrationPage : BaseActivity() {
                             if(primaryNumber.isNullOrBlank()){
                                 binding.verifymobilenumber.visibility = View.GONE
                             }else {
-                                binding.verifymobilenumber.visibility = View.VISIBLE
+                                if(preference.getStringValue(ConstantClass.RetailerCode,"").equals(ConstantClass.RETAILER_CODE_BIASS_OTP)){
+                                    binding.verifymobilenumber.visibility = View.GONE
+
+                                }else{
+                                    binding.verifymobilenumber.visibility = View.VISIBLE
+
+                                }
                             }
 
                         }
@@ -527,7 +547,11 @@ class NewCustomerRegistrationPage : BaseActivity() {
                             if(altNumber.isNullOrBlank()){
                                 binding.alternateverifymobilenumber.visibility= View.GONE
                             }else {
-                                binding.alternateverifymobilenumber.visibility = View.VISIBLE
+                                if(preference.getStringValue(ConstantClass.RetailerCode,"").equals(ConstantClass.RETAILER_CODE_BIASS_OTP)) {
+                                    binding.alternateverifymobilenumber.visibility = View.GONE
+                                }else{
+                                    binding.alternateverifymobilenumber.visibility = View.VISIBLE
+                                }
                             }
 
 
@@ -577,7 +601,6 @@ class NewCustomerRegistrationPage : BaseActivity() {
 
         })
 
-
     }
 
 
@@ -593,7 +616,6 @@ class NewCustomerRegistrationPage : BaseActivity() {
             onBackPressed()
         }
 
-
         binding.acceptTermConditionCheck.setOnClickListener {
 
             OpenPopUpForTermCondition()
@@ -604,11 +626,9 @@ class NewCustomerRegistrationPage : BaseActivity() {
             checkCameraPermissionAndOpenCamera()
         }
 
-
         binding.back.setOnClickListener {
             OpenPopUpForVAlert()
         }
-
 
         binding.verifymobilenumber.setOnClickListener {
             clickemailId = false
@@ -704,7 +724,9 @@ class NewCustomerRegistrationPage : BaseActivity() {
 
 
             }
+
             else{
+
                 val (isValid, errorMessage) = isValidForm(
                     firstName = binding.firstName.text.toString().trim(),
                     middleName = binding.middleName.text.toString().trim(),
@@ -903,6 +925,7 @@ class NewCustomerRegistrationPage : BaseActivity() {
         }
         countDownTimer.start()
     }
+
 
     private fun createImageFile(): File {
         val fileName = "IMG_${System.currentTimeMillis()}"
@@ -1279,12 +1302,7 @@ class NewCustomerRegistrationPage : BaseActivity() {
 
 
 
-    fun isKitValidForm(
-        firstName: String,
-        lastName: String,
-        mobileNumber: String,
-        primarymobverified: String
-    ): Pair<Boolean, String?> {
+    fun isKitValidForm(firstName: String, lastName: String, mobileNumber: String,primarymobverified: String): Pair<Boolean, String?> {
 
         if (firstName.isBlank()) {
             binding.firstName.error= "Please enter your first name."
@@ -1313,23 +1331,39 @@ class NewCustomerRegistrationPage : BaseActivity() {
 
         if (!checkLastName) return Pair(false, "Please enter a valid last name.")
 
-
-        if (!mobileNumber.matches(Regex("^[6-9]\\d{9}$"))) {
-            binding.mobileNumber.error= "Please enter a valid 10-digit mobile number."
-            scrollToView(binding.detaillayout,  binding.mobileNumber)
-            return Pair(false, "Please enter a valid mobile number.")
+        if(preference.getStringValue(ConstantClass.RetailerCode,"").equals(ConstantClass.RETAILER_CODE_BIASS_OTP)){
+            CustPrimaryMobileVerified=""
+            if (mobileNumber.length!=10) {
+                binding.mobileNumber.error= "Please enter a valid 10-digit mobile number."
+                scrollToView(binding.detaillayout,  binding.mobileNumber)
+                return Pair(false, "Please enter a valid mobile number.")
+            }
+            else{
+                binding.mobileNumber.error = null
+            }
         }
         else{
-            binding.mobileNumber.error = null
+
+            if (!mobileNumber.matches(Regex("^[6-9]\\d{9}$"))) {
+                binding.mobileNumber.error= "Please enter a valid 10-digit mobile number."
+                scrollToView(binding.detaillayout,  binding.mobileNumber)
+                return Pair(false, "Please enter a valid mobile number.")
+            }
+            else{
+                binding.mobileNumber.error = null
+            }
+
+
+            if (primarymobverified.isBlank()||!primarymobverified.equals("yes")){
+                binding.mobileNumber.error= "Please verify your primary mobile number first."
+                scrollToView(binding.detaillayout,  binding.mobileNumber)
+                return Pair(false, "Please verify your primary mobile number first.")
+            }else{
+                binding.mobileNumber.error = null
+            }
+
         }
 
-        if (primarymobverified.isBlank()|| primarymobverified.isNotBlank() && !primarymobverified.equals("yes")){
-            binding.mobileNumber.error= "Please verify your primary mobile number first."
-            scrollToView(binding.detaillayout,  binding.mobileNumber)
-            return Pair(false, "Please verify your primary mobile number first.")
-        }else{
-            binding.mobileNumber.error = null
-        }
 
         if(binding.emailId.text.isNotEmpty()){
 
@@ -1453,11 +1487,9 @@ class NewCustomerRegistrationPage : BaseActivity() {
     }
 
 
-
     override fun onBackPressed() {
         OpenPopUpForVAlert()
     }
-
 
 
     @SuppressLint("SetTextI18n")
@@ -1504,7 +1536,6 @@ class NewCustomerRegistrationPage : BaseActivity() {
         dialog.show()
 
     }
-
 
 
     fun containsEmoji(text: String): Boolean {
@@ -2142,7 +2173,12 @@ class NewCustomerRegistrationPage : BaseActivity() {
                 mobileveryfied = false
                 binding.mobileNumber.isEnabled = true
                 binding.verifyiconphonenumber.visibility = View.GONE
-                binding.verifymobilenumber.visibility = View.VISIBLE
+                if(preference.getStringValue(ConstantClass.RetailerCode,"").equals(ConstantClass.RETAILER_CODE_BIASS_OTP)){
+                    binding.verifymobilenumber.visibility = View.GONE
+                }
+                else {
+                    binding.verifymobilenumber.visibility = View.VISIBLE
+                }
                 dialog.dismiss()
             }
 

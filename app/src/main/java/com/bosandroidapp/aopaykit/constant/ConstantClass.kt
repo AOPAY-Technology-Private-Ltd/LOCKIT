@@ -105,6 +105,7 @@ object ConstantClass {
      const val PAN_VERIFICATION_REGISTRATION_ID = "AOP-554"
      const val PENNYDROP_REGISTRATION_ID = "AOP-554"
 
+     const val RETAILER_CODE_BIASS_OTP = "AFD0064"
      const val SMS_BASE_URL = "http://web.adcruxmedia.in/"
      const val PAN_BASE_URL = "https://api.aopay.in/"
      const val SMS_API_KEY = "KBSxc26XqjoiR7SA"

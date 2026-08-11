@@ -36,7 +36,7 @@ import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
-import com.bosandroidapp.aopaykit.ui.slideshow.activity.LoginPage
+import com.bosandroidapp.aopaykit.ui.activity.LoginPage
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson

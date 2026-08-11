@@ -7,6 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bosandroidapp.aopaykit.constant.ConstantClass
+import com.bosandroidapp.aopaykit.constant.ConstantClass.CustPrimaryMobileVerified
 import com.bosandroidapp.aopaykit.utils.ApplicationClass
 import kotlinx.coroutines.launch
 

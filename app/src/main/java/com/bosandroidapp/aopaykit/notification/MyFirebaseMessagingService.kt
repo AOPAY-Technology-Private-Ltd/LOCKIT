@@ -57,7 +57,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
 
 
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
@@ -164,6 +163,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
                     ConstantClass.Reboot -> {
                         dpm.reboot(admin)
+
 
                         if(rid>-1){
                             hitApiForUpdateActionStatus("")
@@ -281,10 +281,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
                         if (dpm.isDeviceOwnerApp(packageName)) {
                             CheckCompleteEmiStatus = false
-                            val policy = FactoryResetProtectionPolicy.Builder()
-                                .setFactoryResetProtectionAccounts(emptyList())
-                                .build()
-                            dpm.setFactoryResetProtectionPolicy(admin, policy)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                val policy = FactoryResetProtectionPolicy.Builder()
+                                    .setFactoryResetProtectionAccounts(emptyList())
+                                    .build()
+                                dpm.setFactoryResetProtectionPolicy(admin, policy)
+                            }
                             dpm.clearUserRestriction(admin, UserManager.DISALLOW_FACTORY_RESET)
                             dpm.clearDeviceOwnerApp(getPackageName())
                             dpm.removeActiveAdmin(admin)
@@ -366,7 +368,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("MissingPermission")
     fun getSimIdentifiers(context: Context): List<SimInfo> {
 
@@ -379,8 +380,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     iccId = sim.iccId,
                     subscriptionId = sim.subscriptionId,
                     carrierName = sim.carrierName.toString(),
-                    mcc = sim.mccString,
-                    mnc = sim.mncString,
+                    mcc = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) sim.mccString else sim.mcc.toString(),
+                    mnc = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) sim.mncString else sim.mnc.toString(),
                     slotIndex = sim.simSlotIndex,
                     simNumber =   sim.number.toString()
                 )
@@ -476,7 +477,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun hitApiForUpdateActionSimRemoveLockStatus(dpm:DevicePolicyManager,admin:ComponentName) {
 
         dpm.setPermissionGrantState(
@@ -497,7 +497,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         var simData = getSimIdentifiers(applicationContext)
         Log.d("simData", Gson().toJson(simData))
 
-        if(simData.firstOrNull()?.iccId!!.isEmpty() || simData.firstOrNull()?.carrierName!!.isEmpty()){
+        if(simData.firstOrNull()?.iccId.isNullOrEmpty() || simData.firstOrNull()?.carrierName.isNullOrEmpty()){
             dpm.clearUserRestriction(admin, UserManager.DISALLOW_OUTGOING_CALLS)
             dpm.clearUserRestriction(admin, UserManager.DISALLOW_SMS)
         }

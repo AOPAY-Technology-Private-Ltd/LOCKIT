@@ -34,10 +34,9 @@ class KioskPolicyService : Service() {
 
     private lateinit var fusedClient: FusedLocationProviderClient
 
-    @RequiresApi(Build.VERSION_CODES.R)
+
     @RequiresPermission(Manifest.permission.READ_PHONE_STATE)
     @SuppressLint("ForegroundServiceType")
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         startForeground(1, createNotification()) // required
@@ -167,11 +166,13 @@ class KioskPolicyService : Service() {
                     if (dpm.isDeviceOwnerApp(packageName)) {
                         CheckCompleteEmiStatus = false
 
-                        val policy = FactoryResetProtectionPolicy.Builder()
-                            .setFactoryResetProtectionAccounts(emptyList())
-                            .build()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            val policy = FactoryResetProtectionPolicy.Builder()
+                                .setFactoryResetProtectionAccounts(emptyList())
+                                .build()
 
-                        dpm.setFactoryResetProtectionPolicy(admin, policy)
+                            dpm.setFactoryResetProtectionPolicy(admin, policy)
+                        }
                         dpm.clearUserRestriction(admin, UserManager.DISALLOW_FACTORY_RESET)
                         dpm.clearDeviceOwnerApp(getPackageName())
                         dpm.removeActiveAdmin(admin)

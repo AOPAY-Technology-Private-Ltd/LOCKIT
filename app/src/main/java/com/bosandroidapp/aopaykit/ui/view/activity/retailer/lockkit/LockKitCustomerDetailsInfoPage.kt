@@ -40,7 +40,7 @@ import com.bosandroidapp.aopaykit.databinding.DialogInactiveCustomerBinding
 import com.bosandroidapp.aopaykit.databinding.DialogPinBinding
 import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
-import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
+import com.bosandroidapp.aopaykit.ui.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.MapActivity
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.MapActivity.Companion.lattitude

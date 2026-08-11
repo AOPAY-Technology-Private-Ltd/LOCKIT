@@ -68,7 +68,7 @@ import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.data.viewModelFactory.PanViewModelFactory
 import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
-import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
+import com.bosandroidapp.aopaykit.ui.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.view.activity.customer.PGWebViewActivity.Companion.emiList
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.ui.viewmodel.PanViewModel

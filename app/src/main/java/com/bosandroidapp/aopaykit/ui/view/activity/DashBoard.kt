@@ -1,4 +1,4 @@
-package com.bosandroidapp.aopaykit.ui.slideshow.activity
+package com.bosandroidapp.aopaykit.ui.activity
 
 import android.Manifest
 import android.app.Dialog
@@ -141,7 +141,6 @@ class DashBoard : BaseActivity() {
     var registrationID: String = ""
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDashBoardBinding.inflate(layoutInflater)
@@ -187,9 +186,10 @@ class DashBoard : BaseActivity() {
             binding.makePaymentLayout.visibility = View.GONE
             binding.kitPlanPurchase.visibility = View.GONE
             binding.installAppLayout.visibility = View.GONE
-            binding.logout.visibility = View.VISIBLE // for testing otherwise should be Gone
+            binding.logout.visibility = View.GONE // for testing otherwise should be Gone
 
-        } else {
+        }
+        else {
             if (!checkPermissionsrRetailer()) {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE, Manifest.permission.POST_NOTIFICATIONS), 101)
             }
@@ -240,14 +240,13 @@ class DashBoard : BaseActivity() {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     override fun onResume() {
         super.onResume()
         getFirebaseToken()
         setDataHeader()
         if (logintype.equals(Customer)) {
             HitApiForEmiList()
-            hitApiForUploadLatLong()
             // 🔁 Setup periodic once only
             if (latitude > 0.0 && longitude > 0.0) {
                 val lastLat = preference
@@ -312,6 +311,8 @@ class DashBoard : BaseActivity() {
         var request = KitOptionRequest(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, "")
         )
+
+        Log.d("kitOptionReq", Gson().toJson(request))
 
         viewModel.getRequestKitOption(request).observe(this) { resources ->
             resources.let {
@@ -394,6 +395,7 @@ class DashBoard : BaseActivity() {
         view.layoutParams = params
     }
 
+
     fun getFirebaseToken() {
         FirebaseMessaging.getInstance().token
             .addOnCompleteListener { task ->
@@ -408,7 +410,6 @@ class DashBoard : BaseActivity() {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun setDataHeader() {
         val firstName = preference.getStringValue(ConstantClass.FirstName, "").orEmpty()
         val lastName = preference.getStringValue(ConstantClass.LastName, "").orEmpty()
@@ -826,7 +827,6 @@ class DashBoard : BaseActivity() {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun HitApiForEmiList() {
         var loanemireq = GetCustomerLoanDetailsReq(
             loancode = "",
@@ -1094,49 +1094,7 @@ class DashBoard : BaseActivity() {
     }
 
 
-    fun hitApiForUploadLatLong() {
-        val modelName = Build.MODEL
-        val product = Build.PRODUCT
-        val brand = Build.BRAND
-        val manufecturer = Build.MANUFACTURER
-        Log.d("DeviceDetails", "$modelName $product $brand $manufecturer")
-        /*   var locationRequest = CustomerlocationUploadReq (
-            taskType = "INS",
-            locationAuditID = 0,
-            latitude = lat,
-            ipAddress = deviceIp,
-            customerCode = preference.getStringValue(ConstantClass.CustomerCode, ""),
-            retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
-            loanCode = "",
-            userName = preference.getStringValue(ConstantClass.CustomerMobileNumber, ""),
-            longitude = long,
-        )
 
-        Log.d("locationReq", Gson().toJson(locationRequest))
-
-        viewModel.uploadcustomerlocation(locationRequest).observe(this) { resources ->
-            resources.let {
-                when (it.apiStatus) {
-                    ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LocationResponse", Gson().toJson(response))
-                            }
-                        }
-                    }
-
-                    ApiStatus.ERROR -> {
-
-                    }
-
-                    ApiStatus.LOADING -> {
-
-                    }
-                }
-            }
-        }*/
-
-    }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -1335,7 +1293,6 @@ class DashBoard : BaseActivity() {
                 }
 
                 ApplicationInfo.CATEGORY_UNDEFINED -> {
-
 
                     // Skip system apps
                     if ((AppsItem.flags and ApplicationInfo.FLAG_SYSTEM) != 0) {

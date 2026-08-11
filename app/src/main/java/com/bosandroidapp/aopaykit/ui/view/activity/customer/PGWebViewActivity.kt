@@ -38,7 +38,7 @@ import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityPgwebViewBinding
 import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
-import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
+import com.bosandroidapp.aopaykit.ui.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 
@@ -354,12 +354,21 @@ class PGWebViewActivity : BaseActivity() {
 
         var Ok = dialog.findViewById<AppCompatButton>(com.bosandroidapp.aopaykit.R.id.btnOk)
         var textmessage = dialog.findViewById<TextView>(com.bosandroidapp.aopaykit.R.id.loancodewithamount)
+        var tvTitle = dialog.findViewById<TextView>(com.bosandroidapp.aopaykit.R.id.tvTitle)
 
-        val message = "Your EMI payment of ${EMIamountPG} for Loan Code ${LoanCodePG} has been successfully processed."
-        textmessage.text = message
+        if(ConstantClass.KitPlan==Activityname){
+            val message = "Kit purchase successful. ${kitPlanListDataItem.noOfKits.toString()} kits have been purchased successfully and will be added to your available kit inventory."
+            textmessage.text = message
+            tvTitle.text = "Kit Purchase Successful"
+        }
+        else{
+            val message = "Your EMI payment of ${EMIamountPG} for Loan Code ${LoanCodePG} has been successfully processed."
+            textmessage.text = message
+            tvTitle.text = "EMI Payment Successful"
+        }
+
 
         Ok.setOnClickListener {
-
             if(ConstantClass.KitPlan==Activityname){
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
                 val currentDateTime = LocalDateTime.now().format(formatter)
@@ -367,10 +376,12 @@ class PGWebViewActivity : BaseActivity() {
                     .plusYears(1)
                     .format(formatter)
 
+                val purchaseCode = transactionNo.substringAfterLast("_")
+
                 var request = KitPurchasePlanSaveRequest(
                     companyCode= ConstantClass.ClientCode ,
                     gstAmount= kitPlanListDataItem.gstAmount,
-                    purchaseCode= "",
+                    purchaseCode= purchaseCode,
                     purchaseDate = currentDateTime,
                     netAmount= kitPlanListDataItem.totalAmount ,
                     paymentMode= paymentMode ,
@@ -393,7 +404,6 @@ class PGWebViewActivity : BaseActivity() {
                 Log.d("kitpurchaserequest", Gson().toJson(request))
 
                 saveKitPlanDataAfterSuccess(request)
-
             }
             else {
                 if(emiList.size>0){
@@ -411,6 +421,8 @@ class PGWebViewActivity : BaseActivity() {
 
     }
 
+
+
     fun saveKitPlanDataAfterSuccess(request : KitPurchasePlanSaveRequest) {
         viewModel.savePurchaseHistoryDataOnSuccessPG(request).observe(this) { resources ->
             resources.let {
@@ -420,7 +432,10 @@ class PGWebViewActivity : BaseActivity() {
                             users.body()?.let { response ->
                                 Log.d("savePurchaseHistoryDataOnSuccessPG", Gson().toJson(response))
                                 ConstantClass.dialog.dismiss()
-                                finish()
+                                Toast.makeText(this,response.message,Toast.LENGTH_SHORT).show()
+                                if(response.status==true){
+                                    finish()
+                                }
                             }
                         }
 

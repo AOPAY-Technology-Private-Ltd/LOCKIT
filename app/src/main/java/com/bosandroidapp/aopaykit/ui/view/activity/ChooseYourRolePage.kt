@@ -1,7 +1,6 @@
 package com.bosandroidapp.aopaykit.ui.view.activity
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
@@ -13,9 +12,9 @@ import android.provider.Settings
 import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -24,34 +23,27 @@ import androidx.lifecycle.ViewModelProvider
 import com.bos.payment.appName.network.RetrofitClient
 import com.bosandroidapp.aopaykit.R
 import com.bosandroidapp.aopaykit.constant.ConstantClass
-import com.bosandroidapp.aopaykit.constant.ConstantClass.AppVersion
-import com.bosandroidapp.aopaykit.databinding.ActivityChooseYourRolePageBinding
-import com.bosandroidapp.aopaykit.constant.ConstantClass.Customer
-import com.bosandroidapp.aopaykit.constant.ConstantClass.DeviceBrand
-import com.bosandroidapp.aopaykit.constant.ConstantClass.DeviceName
-import com.bosandroidapp.aopaykit.constant.ConstantClass.DeviceOSVersion
 import com.bosandroidapp.aopaykit.constant.ConstantClass.Retailer
-import com.bosandroidapp.aopaykit.constant.ConstantClass.SerialNumber
-import com.bosandroidapp.aopaykit.constant.ConstantClass.deviceManufacturer
-import com.bosandroidapp.aopaykit.constant.ConstantClass.deviceModel
 import com.bosandroidapp.aopaykit.constant.ConstantClass.loginType
 import com.bosandroidapp.aopaykit.data.model.UploadDeviceInfoReq
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
+import com.bosandroidapp.aopaykit.databinding.ActivityChooseYourRolePageBinding
 import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.kioskmode.KioskDeviceAdminReceiver
+import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.network.google_auth.GoogleAuth
-import com.bosandroidapp.aopaykit.ui.slideshow.activity.LoginPage
+import com.bosandroidapp.aopaykit.ui.activity.LoginPage
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import com.bosandroidapp.aopaykit.utils.ApiStatus
 import com.google.gson.Gson
-import java.util.UUID
+import java.util.Locale
 
 class ChooseYourRolePage : BaseActivity() {
     lateinit var binding : ActivityChooseYourRolePageBinding
     lateinit var viewModel: AuthenticationViewModel
+    var SerialNumber: String = ""
 
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -68,14 +60,10 @@ class ChooseYourRolePage : BaseActivity() {
         viewModel = ViewModelProvider(this, CommonViewModelFactory(AuthRepository(RetrofitClient.apiInterface)))[AuthenticationViewModel::class.java]
 
         setOnClickListner()
-
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     fun setOnClickListner(){
-
         binding.retailerid.setOnClickListener{
-           // this.startActivityForAuth()
             loginType = Retailer
             binding.retailerid.strokeColor = resources.getColor(R.color.darkpurple)
             binding.customerid.strokeColor = resources.getColor(R.color.white)
@@ -90,11 +78,8 @@ class ChooseYourRolePage : BaseActivity() {
             else{
                 hitApiForUploadCustomerDeviceInfo()
             }
-
         }
-
     }
-
 
     private fun checkPermissionsrRetailer(): Boolean {
         val phoneStatePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
@@ -102,40 +87,35 @@ class ChooseYourRolePage : BaseActivity() {
     }
 
 
-
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         if (requestCode == 101) {
-            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                Toast.makeText(this, "Permissions Granted", Toast.LENGTH_SHORT).show()
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 hitApiForUploadCustomerDeviceInfo()
-            }
-            else {
-                Toast.makeText(this, "Permissions Denied", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
-
     fun intentNextPage(){
-        loginType = Customer
+        loginType = ConstantClass.Customer
         binding.customerid.strokeColor = resources.getColor(R.color.darkpurple)
         binding.retailerid.strokeColor = resources.getColor(R.color.white)
         val mainIntent = Intent(this@ChooseYourRolePage, LoginPage::class.java)
         startActivity(mainIntent)
-
     }
+    
 
-
-    @RequiresApi(Build.VERSION_CODES.S)
     fun hitApiForUploadCustomerDeviceInfo(){
-        val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        val androidId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         try {
             val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            ConstantClass.IMEI = telephonyManager.imei
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    ConstantClass.IMEI = try { telephonyManager.imei ?: "" } catch (e: Exception) { "" }
+                }
+            }
 
             val dpm = applicationContext.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
             val admin = ComponentName(applicationContext, KioskDeviceAdminReceiver::class.java)
@@ -143,139 +123,88 @@ class ChooseYourRolePage : BaseActivity() {
             if(dpm.isDeviceOwnerApp(packageName)){
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     try {
-                        val serial = Build.getSerial()
-                        SerialNumber= serial
-                        Log.d("SERIAL", serial)
+                        SerialNumber = Build.getSerial()
                     } catch (e: SecurityException) {
                         e.printStackTrace()
                     }
-                }
-                else {
+                } else {
                     @Suppress("DEPRECATION")
-                    val serial = Build.SERIAL
-                    SerialNumber= serial
-                    Log.d("SERIAL", serial)
+                    SerialNumber = Build.SERIAL
                 }
 
-                var simData = getSimIdentifiers(this)
+                val simData = getSimIdentifiers(this)
+                val iccid = simData.firstOrNull()?.iccId
+                val subscriptionId = simData.firstOrNull()?.subscriptionId
+                val carrierName = simData.firstOrNull()?.carrierName
+                val mcc = simData.firstOrNull()?.mcc
+                val mnc = simData.firstOrNull()?.mnc
+                val slotIndex = simData.firstOrNull()?.slotIndex
 
-                var iccid = simData.firstOrNull()?.iccId
-                var subscriptionId = simData.firstOrNull()?.subscriptionId
-                var carrierName = simData.firstOrNull()?.carrierName
-                var mcc = simData.firstOrNull()?.mcc
-                var mnc = simData.firstOrNull()?.mnc
-                var slotIndex = simData.firstOrNull()?.slotIndex
-
-                ConstantClass.deviceManufacturer = android.os.Build.MANUFACTURER
-                deviceModel= android.os.Build.MODEL
-                DeviceBrand = android.os.Build.BRAND
-
-                DeviceOSVersion = android.os.Build.VERSION.RELEASE
-                AppVersion = android.os.Build.VERSION.SDK_INT.toString()
-                DeviceName = android.provider.Settings.Global.getString(contentResolver, android.provider.Settings.Global.DEVICE_NAME)
-
-                Log.d("DeviceName", "$DeviceName")
-                Log.d("DeviceInfo", "$deviceManufacturer $deviceModel")
-                Log.d("DeviceInfo", "Android Version: $DeviceOSVersion (SDK $AppVersion) (brand $DeviceBrand)")
-
-                var request = UploadDeviceInfoReq(
-                    appVersion = AppVersion,
-                    imeiNumber = ConstantClass.IMEI,
-                    osVersion = DeviceOSVersion,
-                    model = deviceModel,
-                    sdkVersion = AppVersion,
-                    deviceID = deviceId,
-                    brand = DeviceBrand,
-                    deviceName = DeviceName,
-                    manufacturer = deviceManufacturer,
+                val request = UploadDeviceInfoReq(
+                    manufacturer = Build.MANUFACTURER,
+                    model = Build.MODEL,
+                    brand = Build.BRAND,
                     serialNumber = SerialNumber,
+                    osVersion = Build.VERSION.RELEASE,
+                    sdkVersion = Build.VERSION.SDK_INT.toString(),
+                    appVersion = packageManager.getPackageInfo(packageName, 0).versionName,
+                    imeiNumber = ConstantClass.IMEI,
+                    deviceName = Settings.Global.getString(contentResolver, Settings.Global.DEVICE_NAME) ?: Build.MODEL,
+                    deviceID = androidId,
                     iccid = iccid,
                     subscriptionId = subscriptionId,
                     carrierName = carrierName,
                     mcc = mcc,
                     mnc = mnc,
-                    slotIndex = slotIndex,
+                    slotIndex = slotIndex
                 )
 
-                Log.d("DeviceInfoReq", Gson().toJson(request))
-
-                viewModel.uploadDeviceInfo(request).observe(this) { it ->
-
-                    when (it.apiStatus) {
-
-                        ApiStatus.LOADING -> {
-                            ConstantClass.OpenLoader(this)
-                        }
-
+                viewModel.uploadDeviceInfo(request).observe(this) { resources ->
+                    when (resources.apiStatus) {
+                        ApiStatus.LOADING -> ConstantClass.OpenLoader(this)
                         ApiStatus.SUCCESS -> {
                             ConstantClass.dialog.dismiss()
-                            val response = it.data?.body()
-                            Log.d("DeviceInfoResponse", Gson().toJson(response))
-
-                            if (response != null && response.status.equals("200")) {
-                                intentNextPage()
-                            }
-                            else {
-                                Toast.makeText(this,"Kindly transfer the ownership to AO Pay.",Toast.LENGTH_SHORT).show()
-                                // intentNextPage() // for testing purpose
+                            resources.data?.body()?.let { response ->
+                                if (response.status == "200" || response.status?.lowercase() == "true") {
+                                    intentNextPage()
+                                } else {
+                                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
-
                         ApiStatus.ERROR -> {
                             ConstantClass.dialog.dismiss()
-                            // 👇 Show proper error from ViewModel (404, 500 etc.)
-                            val errorMessage = it.message ?: "Something went wrong"
-                            Log.e("LoginError", errorMessage)
+                            Toast.makeText(this, resources.message, Toast.LENGTH_SHORT).show()
                         }
-
                     }
                 }
-
+            } else {
+                Toast.makeText(this, "Kindly transfer the ownership to LockKit.", Toast.LENGTH_SHORT).show()
             }
-            else{
-                Toast.makeText(this,"Kindly transfer the ownership to LockKit .",Toast.LENGTH_SHORT).show()
-            }
-            // Toast.makeText(this, "IMEI: ${telephonyManager.imei}", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        catch (e: Exception) {
-
-            Toast.makeText(this,"Kindly transfer the ownership to LockKit .",Toast.LENGTH_SHORT).show()
-
-            // Toast.makeText(this, e.localizedMessage, Toast.LENGTH_LONG).show()
-        }
-
-
-
-
-
-
     }
 
-
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    @SuppressLint("MissingPermission")
-    fun getSimIdentifiers(context: Context): List<SimInfo> {
+    private fun getSimIdentifiers(context: Context): List<SimInfo> {
         val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-
         val simList = mutableListOf<SimInfo>()
-
-        subscriptionManager.activeSubscriptionInfoList?.forEach { sim ->
-            simList.add(
-                SimInfo(
-                    iccId = sim.iccId,
-                    subscriptionId = sim.subscriptionId,
-                    carrierName = sim.carrierName.toString(),
-                    mcc = sim.mccString,
-                    mnc = sim.mncString,
-                    slotIndex = sim.simSlotIndex
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            subscriptionManager.activeSubscriptionInfoList?.forEach { sim ->
+                simList.add(
+                    SimInfo(
+                        iccId = sim.iccId,
+                        subscriptionId = sim.subscriptionId,
+                        carrierName = sim.carrierName.toString(),
+                        mcc = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) sim.mccString else sim.mcc.toString(),
+                        mnc = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) sim.mncString else sim.mnc.toString(),
+                        slotIndex = sim.simSlotIndex
+                    )
                 )
-            )
+            }
         }
-
         return simList
     }
-
 
     data class SimInfo(
         val iccId: String?,
@@ -286,14 +215,12 @@ class ChooseYourRolePage : BaseActivity() {
         val slotIndex: Int
     )
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        GoogleAuth.onActivityResult(requestCode, data)?.let { details ->
-            Toast.makeText(this, details, Toast.LENGTH_LONG).show()
+        val result = GoogleAuth.onActivityResult(requestCode, data)
+        if (result != null) {
+            Log.d("GoogleAuth", result)
         }
     }
-
-
-
+    
 }

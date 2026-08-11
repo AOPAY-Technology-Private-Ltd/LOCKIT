@@ -27,7 +27,7 @@ import com.bosandroidapp.aopaykit.data.viewModelFactory.PanViewModelFactory
 import com.bosandroidapp.aopaykit.databinding.ActivityLockKitPackageTopUpPageBinding
 import com.bosandroidapp.aopaykit.internetchecker.BaseActivity
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
-import com.bosandroidapp.aopaykit.ui.slideshow.activity.DashBoard
+import com.bosandroidapp.aopaykit.ui.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.ui.view.activity.customer.PGWebViewActivity
 import com.bosandroidapp.aopaykit.ui.view.activity.customer.PGWebViewActivity.Companion.kitPlanListDataItem

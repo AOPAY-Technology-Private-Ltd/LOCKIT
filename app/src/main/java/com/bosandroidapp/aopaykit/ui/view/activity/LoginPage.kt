@@ -1,4 +1,4 @@
-package com.bosandroidapp.aopaykit.ui.slideshow.activity
+package com.bosandroidapp.aopaykit.ui.activity
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -123,6 +123,7 @@ class LoginPage : BaseActivity() {
                         }
 
                     }
+
                 }
 
             }, 300)
@@ -176,6 +177,7 @@ class LoginPage : BaseActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
+
         binding.loginlayout.setOnClickListener {
             var emailOfMobile = binding.emailormobilenumber.text.toString().trim()
             var password = binding.password.text.toString().trim()
@@ -195,6 +197,7 @@ class LoginPage : BaseActivity() {
 
         }
 
+
         binding.forgetpageLayout.setOnClickListener {
             val mainIntent = Intent(this@LoginPage, ForgetPasswordPage::class.java)
             startActivity(mainIntent)
@@ -208,11 +211,7 @@ class LoginPage : BaseActivity() {
             var mobnumber = binding.mobilenumber.text.toString()
             if (ConstantClass.validateLoginInput(mobnumber, this) ) {
                 if (isInternetAvailable(this@LoginPage)) {
-                    /*if (!isSimPresent()) {
-                        Toast.makeText(this, "No SIM detected. Insert SIM to continue.", Toast.LENGTH_LONG).show()
-                        return@setOnClickListener
-                    }*/
-                    hitApiForSendOTP(mobnumber,"Mobile")
+                    hitApiForLogin(mobnumber,"")
                 }
                 else {
                     Toast.makeText(this, "Please check your internet connection!!", Toast.LENGTH_SHORT).show()
@@ -240,7 +239,7 @@ class LoginPage : BaseActivity() {
 
 
 
-    fun hitApiForLogin(emailOfMobile:String,password:String){
+    fun hitApiForLogin(emailOfMobile:String,password:String, isAfterOTP: Boolean = false){
 
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         preference.setStringValue("deviceid",deviceId)
@@ -274,15 +273,21 @@ class LoginPage : BaseActivity() {
 
                         if(loginType.equals(ConstantClass.Customer)){
 
-                            val req = NotificationSendTokenRequest(
-                                deviceType= ConstantClass.DeviceType,
-                                clientCode = ConstantClass.ClientCode,
-                                customerCode = response.customerCode.toString(),
-                                retailerCode = response.retailerCode.toString(),
-                                fcmToken = FireBaseToken
-                            )
-                            sendDataOnServerForUploadToken(req)
+                            if (!isAfterOTP && response.retailerCode != ConstantClass.RETAILER_CODE_BIASS_OTP) {
+                                hitApiForSendOTP(emailOfMobile, "Mobile")
+                                return@observe
+                            }
                         }
+
+                        val req = NotificationSendTokenRequest(
+                            deviceType= ConstantClass.DeviceType,
+                            clientCode = ConstantClass.ClientCode,
+                            customerCode = response.customerCode.toString(),
+                            retailerCode = response.retailerCode.toString(),
+                            fcmToken = FireBaseToken
+                        )
+
+                        sendDataOnServerForUploadToken(req)
 
                         preference.setStringValue(ConstantClass.CustomerCode, response.customerCode.toString())
                         preference.setStringValue(ConstantClass.RetailerCode, response.retailerCode.toString())
@@ -550,7 +555,7 @@ class LoginPage : BaseActivity() {
                                 Log.d("VerifyOTPRes", response.message)
                                 if (response.statuss.equals("True")) {
 
-                                    hitApiForLogin(mobileOrEmailID,"")
+                                    hitApiForLogin(mobileOrEmailID,"", true)
 
                                     if (dialog != null && dialog.isShowing) {
                                         dialog.dismiss()
@@ -701,7 +706,6 @@ class LoginPage : BaseActivity() {
        }
 
 
-
     // for tsting ........................
     fun sendDataToEmail(data: String) {
 
@@ -727,7 +731,6 @@ class LoginPage : BaseActivity() {
 
         startActivity(Intent.createChooser(intent, "Send email"))
     }
-
 
 
     fun sendDataOnServerForUploadToken(request : NotificationSendTokenRequest){

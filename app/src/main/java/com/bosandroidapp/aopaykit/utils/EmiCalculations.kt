@@ -106,7 +106,6 @@ suspend fun Context.syncEmis() = withContext(Dispatchers.IO) {
 
 
 
-@RequiresApi(Build.VERSION_CODES.R)
 private suspend fun Context.isEMIDue(sharedPref: SharedPreferences) = withContext(Dispatchers.IO) {
     var malfunctionedDates = 0
     var emiDues: Int? = null

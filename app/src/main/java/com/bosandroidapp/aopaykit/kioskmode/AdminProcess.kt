@@ -27,19 +27,20 @@ fun Context.imposeRestrictions(){
 }
 
 
-@RequiresApi(Build.VERSION_CODES.R)
 fun Context.removeRestrictions(){
     dpm = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
     admin = ComponentName(this, KioskDeviceAdminReceiver::class.java)
     if (dpm.isDeviceOwnerApp(packageName)) {
-        val policy = FactoryResetProtectionPolicy.Builder()
-            .setFactoryResetProtectionAccounts(emptyList())
-            .build()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val policy = FactoryResetProtectionPolicy.Builder()
+                .setFactoryResetProtectionAccounts(emptyList())
+                .build()
 
-        dpm.setFactoryResetProtectionPolicy(
-            admin,
-            policy
-        )
+            dpm.setFactoryResetProtectionPolicy(
+                admin,
+                policy
+            )
+        }
         dpm.clearUserRestriction(admin, UserManager.DISALLOW_FACTORY_RESET)
         dpm.clearDeviceOwnerApp(getPackageName())
         dpm.removeActiveAdmin(admin)

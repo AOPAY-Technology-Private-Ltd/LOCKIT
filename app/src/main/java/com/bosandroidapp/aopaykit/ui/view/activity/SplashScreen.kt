@@ -25,6 +25,7 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.verification.AadharVeri
 import com.bosandroidapp.aopaykit.data.repository.AuthRepository
 import com.bosandroidapp.aopaykit.data.viewModelFactory.CommonViewModelFactory
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
+import com.bosandroidapp.aopaykit.ui.activity.DashBoard
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.AadharCardWebViewDIGILockerPage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.AadharCardWebViewDIGILockerPage.Companion.digilockerLink
@@ -37,19 +38,22 @@ import com.google.gson.Gson
 class SplashScreen : AppCompatActivity() {
     lateinit var binding: SplashMainBinding
     lateinit var preference: SharedPreference
-    lateinit var viewModel: AuthenticationViewModel
-
     
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-        actionBar?.hide()
         super.onCreate(savedInstanceState)
+
+        try {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+            supportActionBar?.hide()
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         binding = SplashMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         preference = SharedPreference(this)
-        viewModel = ViewModelProvider(this, CommonViewModelFactory(AuthRepository(RetrofitClient.apiInterface)))[AuthenticationViewModel::class.java]
-
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { view, insets ->
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -89,7 +93,6 @@ class SplashScreen : AppCompatActivity() {
 
 
         }, 3000)
-
 
 
     }

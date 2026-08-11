@@ -744,7 +744,6 @@ interface ApiInterface {
     suspend fun kitCallPG(@Body req : PGRequestCall) : Response<PGRequestResponse>?
 
 
-
     @POST("api/V1/AopayFinance/GetRetailerMakePaymentList")
     suspend fun getMakePaymentReportReq(@Body req : MakePaymentAdminReportRequest) : Response<MakePaymentAdminReportResponse>?
 
@@ -792,8 +791,10 @@ interface ApiInterface {
     suspend fun uploadKitCustomerLocationRequest(@Body req : UploadCustomerLocationRequest) : Response<UploadCustomerLocationResponse>?
 
 
+
     @POST("api/V1/AopayFinance/GetPurchaseHistory")
     suspend fun getPurchaseHistoryRequest(@Body req : KitPurchaseHistoryRequest) : Response<KitPurchaseHistoryResponse>?
+
 
 
     @POST("api/V1/AopayFinance/SavePurchaseHistory")
