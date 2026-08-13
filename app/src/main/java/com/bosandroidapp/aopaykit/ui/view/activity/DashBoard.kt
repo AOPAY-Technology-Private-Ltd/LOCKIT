@@ -133,9 +133,6 @@ class DashBoard : BaseActivity() {
     lateinit var dialog: Dialog
     lateinit var logintype: String
     lateinit var viewModel: AuthenticationViewModel
-    val items = listOf(NavParentItem("Reports", listOf("Low Cibil Customer")))
-    private lateinit var navAdapter: NavAdapter
-    private val notificationPermission = 1001
     var listOfDueWithGraceDate: ArrayList<MonthsAndPayables> = arrayListOf()
 
     var registrationID: String = ""
@@ -190,6 +187,7 @@ class DashBoard : BaseActivity() {
 
         }
         else {
+
             if (!checkPermissionsrRetailer()) {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE, Manifest.permission.POST_NOTIFICATIONS), 101)
             }
@@ -197,6 +195,7 @@ class DashBoard : BaseActivity() {
             binding.makePaymentLayout.visibility = View.VISIBLE
             binding.installAppLayout.visibility = View.VISIBLE
             binding.kitPlanPurchase.visibility = View.VISIBLE
+
             /*binding.navRecyclerViewlayout.visibility=View.GONE
             binding.navRecyclerView.layoutManager = LinearLayoutManager(this)
             navAdapter = NavAdapter(this, items) { clickedChild ->
@@ -288,27 +287,22 @@ class DashBoard : BaseActivity() {
             PanCity = ""
             PanCountry = ""
 
+            // Always trigger updates for Retailer immediately on resume
+            hitApiForRetailerWalletAmount()
+            hitApiForKitOption()
+            
             if (isInternetAvailable(this@DashBoard)) {
-                //hitApiForUploadDynamicInstallApps()
-                hitApiForRetailerWalletAmount()
                 hitApiForUploadRetailerDeviceToken()
                 hitApiForLogin()
-                hitApiForKitOption()
             }
-
+            
         }
 
     }
 
 
     fun hitApiForKitOption() {
-        binding.appBarDashBoard.deskdesign.onlinekitlayout.visibility = View.GONE
-        binding.appBarDashBoard.deskdesign.viewonline.visibility = View.GONE
-        binding.appBarDashBoard.deskdesign.offlinekitlayout.visibility = View.GONE
-        binding.appBarDashBoard.deskdesign.viewoffline.visibility = View.GONE
-        binding.appBarDashBoard.deskdesign.kitlayout.visibility = View.GONE
-
-        var request = KitOptionRequest(
+        val request = KitOptionRequest(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, "")
         )
 
@@ -322,65 +316,46 @@ class DashBoard : BaseActivity() {
                             users.body()?.let { response ->
                                 Log.d("ktResponse", Gson().toJson(response))
 
-                                resources.data?.errorBody()?.string()?.let {
-                                    Log.e("API_ERROR_BODY", it)
-                                    Toast.makeText(this@DashBoard, it.toString(), Toast.LENGTH_LONG)
-                                        .show()
-                                }
-                                var getdata = response.data
+                                val getdata = response.data
 
-                                getdata.let {
-                                    isOnline = it?.get(0)!!.isOnline!!
-                                    isOffline = it?.get(0)!!.isOffline!!
-                                    isKit = it?.get(0)!!.isKit!!
+                                if (!getdata.isNullOrEmpty()) {
+                                    val data = getdata[0]
+                                    isOnline = data?.isOnline ?: false
+                                    isOffline = data?.isOffline ?: false
+                                    isKit = data?.isKit ?: false
 
-                                    onlineMaxLoanLimit = it?.get(0)!!.onlineMaxLoanLimit!!
-                                    availableOnlineBalance = it?.get(0)!!.availableOnlineBalance!!
+                                    onlineMaxLoanLimit = data?.onlineMaxLoanLimit ?: 0
+                                    availableOnlineBalance = data?.availableOnlineBalance ?: 0
 
-                                    offlineMaxLoanLimit = it?.get(0)!!.offlineMaxLoanLimit!!
-                                    availableOfflineBalance = it?.get(0)!!.availableOfflineBalance!!
+                                    offlineMaxLoanLimit = data?.offlineMaxLoanLimit ?: 0
+                                    availableOfflineBalance = data?.availableOfflineBalance ?: 0
 
-                                    kitMaxLoanLimit = it?.get(0)!!.kitMaxLoanLimit!!
-                                    availableKitBalance = it?.get(0)!!.availableKitBalance!!
+                                    kitMaxLoanLimit = data?.kitMaxLoanLimit ?: 0
+                                    availableKitBalance = data?.availableKitBalance ?: 0
 
-                                    binding.appBarDashBoard.deskdesign.onlineavailablekit.text =
-                                        "${availableOnlineBalance}"
-                                    binding.appBarDashBoard.deskdesign.offlineavailablekit.text =
-                                        "${availableOfflineBalance}"
-                                    binding.appBarDashBoard.deskdesign.lockkitavailablekit.text =
-                                        "${availableKitBalance}"
+                                    binding.appBarDashBoard.deskdesign.onlineavailablekit.text = availableOnlineBalance.toString()
+                                    binding.appBarDashBoard.deskdesign.offlineavailablekit.text = availableOfflineBalance.toString()
+                                    binding.appBarDashBoard.deskdesign.lockkitavailablekit.text = availableKitBalance.toString()
 
-                                    binding.appBarDashBoard.deskdesign.onlinekitlayout.visibility =
-                                        if (isOnline) View.VISIBLE else View.GONE
-                                    binding.appBarDashBoard.deskdesign.viewonline.visibility =
-                                        if (isOnline) View.VISIBLE else View.GONE
-                                    binding.appBarDashBoard.deskdesign.offlinekitlayout.visibility =
-                                        if (isOffline) View.VISIBLE else View.GONE
-                                    binding.appBarDashBoard.deskdesign.viewoffline.visibility =
-                                        if (isOffline) View.VISIBLE else View.GONE
-                                    binding.appBarDashBoard.deskdesign.kitlayout.visibility =
-                                        if (isKit) View.VISIBLE else View.GONE
-
-
+                                    binding.appBarDashBoard.deskdesign.onlinekitlayout.visibility = if (isOnline) View.VISIBLE else View.GONE
+                                    binding.appBarDashBoard.deskdesign.viewonline.visibility = if (isOnline) View.VISIBLE else View.GONE
+                                    binding.appBarDashBoard.deskdesign.offlinekitlayout.visibility = if (isOffline) View.VISIBLE else View.GONE
+                                    binding.appBarDashBoard.deskdesign.viewoffline.visibility = if (isOffline) View.VISIBLE else View.GONE
+                                    binding.appBarDashBoard.deskdesign.kitlayout.visibility = if (isKit) View.VISIBLE else View.GONE
                                 }
                             }
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
-                        hitApiForKitOption()
+                        // Avoid immediate infinite recursion
+                        Log.e("KitOption", "Error fetching kit options: ${it.message}")
                     }
 
-                    ApiStatus.LOADING -> {
-
-                    }
-
+                    ApiStatus.LOADING -> {}
                 }
             }
         }
-
-
     }
 
 
@@ -484,7 +459,7 @@ class DashBoard : BaseActivity() {
 
 
         binding.appBarDashBoard.deskdesign.customerGenerateKeyLayout.setOnClickListener {
-            var generateKey = preference.getStringValue(ConstantClass.GENERATEKEY, "")
+            val generateKey = preference.getStringValue(ConstantClass.GENERATEKEY, "")
             if (generateKey.isNullOrBlank()) {
                 hitApiForGetAndCheckAccessToken()
             } else {
@@ -676,6 +651,7 @@ class DashBoard : BaseActivity() {
     }
 
 
+
     override fun onBackPressed() {
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -690,6 +666,7 @@ class DashBoard : BaseActivity() {
 
 
     }
+
 
 
     fun OpenLoader() {
@@ -799,14 +776,11 @@ class DashBoard : BaseActivity() {
                                 ConstantClass.dialog.dismiss()
                             }
                             binding.appBarDashBoard.swiperefresh.isRefreshing = false
-                            hitApiForRetailerWalletAmount()
 
                             // ✅ Print the full error details
-                            Log.e("API_ERROR", "Status: ERROR")
+                            Log.e("API_ERROR", "Status: ERROR fetching Wallet Amount")
                             Log.e("API_ERROR_CODE", resources.data?.code().toString())
                             Log.e("API_ERROR_MSG", resources.message ?: "Unknown Error")
-
-                            //Toast.makeText(this, "Server error occurred (Code: ${resources.data?.code() ?: "Unknown"})", Toast.LENGTH_LONG).show()
 
                             // Optional: Handle specific 500 error
                             if (resources.data?.code() == 500) {
@@ -828,7 +802,7 @@ class DashBoard : BaseActivity() {
 
 
     fun HitApiForEmiList() {
-        var loanemireq = GetCustomerLoanDetailsReq(
+        val loanemireq = GetCustomerLoanDetailsReq(
             loancode = "",
             customercode = preference.getStringValue(ConstantClass.CustomerCode, "")
         )
@@ -850,7 +824,7 @@ class DashBoard : BaseActivity() {
                                 lifecycleScope.launch {
 
                                     loanList!!.forEach { item ->
-                                        var startDate = item?.startDate?.toString() ?: ""
+                                        val startDate = item?.startDate?.toString() ?: ""
 
                                         if (startDate.isNotBlank()) {
                                             val dueData =
@@ -1157,7 +1131,7 @@ class DashBoard : BaseActivity() {
 
     fun hitApiForUploadDynamicInstallApps() {
 
-        var sendInstalledAppOnServerRequest = SendInstalledAppOnServerRequest(
+        val sendInstalledAppOnServerRequest = SendInstalledAppOnServerRequest(
             createdBy = preference.getStringValue(ConstantClass.CustomerCode, ""),
             categories = getCustomerAction()
         )
@@ -1170,7 +1144,7 @@ class DashBoard : BaseActivity() {
                         ApiStatus.SUCCESS -> {
                             it.data.let { users ->
                                 users!!.body().let { response ->
-                                    ConstantClass.dialog.dismiss()
+
                                     Log.d("UploadAppResaponse", Gson().toJson(response))
 
                                     if (response!!.status == true) {
@@ -1183,11 +1157,11 @@ class DashBoard : BaseActivity() {
                         }
 
                         ApiStatus.ERROR -> {
-                            ConstantClass.dialog.dismiss()
+
                         }
 
                         ApiStatus.LOADING -> {
-                            ConstantClass.OpenLoader(this)
+
                         }
                     }
                 }
@@ -1197,217 +1171,13 @@ class DashBoard : BaseActivity() {
     }
 
 
-    fun getCustomerAction():List <CategoriesItem> {
-
-        val categoryList = mutableListOf<CategoriesItem>()
-        val socialApps = mutableListOf<AppsItem>()
-        val gamingApps = mutableListOf<AppsItem>()
-        val videoApps = mutableListOf<AppsItem>()
-        val audioApps = mutableListOf<AppsItem>()
-        val imageApps = mutableListOf<AppsItem>()
-        val mapApps = mutableListOf<AppsItem>()
-        val newsApps = mutableListOf<AppsItem>()
-        val productivityApps = mutableListOf<AppsItem>()
-        val undefinedApps = mutableListOf<AppsItem>()
-
-        val apps = packageManager.getInstalledApplications(0)
-        val pm = this.packageManager
-
-        apps.forEach { AppsItem ->
-
-            val appName = packageManager.getApplicationLabel(AppsItem).toString()
-            val packageName = AppsItem.packageName
-
-            when (AppsItem.category) {
-
-                ApplicationInfo.CATEGORY_SOCIAL -> {
-                    socialApps.add(
-                        AppsItem(
-                            appName = appName,
-                            packageName = packageName
-                        )
-                    )
-                }
-
-                ApplicationInfo.CATEGORY_GAME -> {
-                    gamingApps.add(
-                        AppsItem(
-                            appName = appName,
-                            packageName = packageName
-                        )
-                    )
-                }
-
-                ApplicationInfo.CATEGORY_AUDIO -> {
-                    audioApps.add(
-                        AppsItem(
-                            appName = appName,
-                            packageName = packageName
-                        )
-                    )
-                }
-
-                ApplicationInfo.CATEGORY_IMAGE -> {
-                    imageApps.add(
-                        AppsItem(
-                            appName = appName,
-                            packageName = packageName
-                        )
-                    )
-                }
-
-                ApplicationInfo.CATEGORY_MAPS -> {
-                    mapApps.add(
-                        AppsItem(
-                            appName = appName,
-                            packageName = packageName
-                        )
-                    )
-                }
-
-                ApplicationInfo.CATEGORY_NEWS -> {
-                    newsApps.add(
-                        AppsItem(
-                            appName = appName,
-                            packageName = packageName
-                        )
-                    )
-                }
-
-                ApplicationInfo.CATEGORY_PRODUCTIVITY -> {
-                    productivityApps.add(
-                        AppsItem(
-                            appName = appName,
-                            packageName = packageName
-                        )
-                    )
-                }
-
-                ApplicationInfo.CATEGORY_VIDEO -> {
-                    videoApps.add(
-                        AppsItem(
-                            appName = appName,
-                            packageName = packageName
-                        )
-                    )
-                }
-
-                ApplicationInfo.CATEGORY_UNDEFINED -> {
-
-                    // Skip system apps
-                    if ((AppsItem.flags and ApplicationInfo.FLAG_SYSTEM) != 0) {
-                        return@forEach
-                    }
-
-                    if ((AppsItem.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
-                        return@forEach
-                    }
-
-                    // Skip apps without launcher icon
-                    val launchIntent = pm.getLaunchIntentForPackage(packageName)
-
-                    if (launchIntent == null ) {
-                        return@forEach
-                    }
-
-                    undefinedApps.add(AppsItem(appName = appName, packageName = packageName))
-
-                }
-
-            }
-
-        }
-
-        // Add categories
-
-        categoryList.add(
-            CategoriesItem(
-
-                category = "Social",
-                apps = socialApps
-            )
-        )
-
-        categoryList.add(
-            CategoriesItem(
-                category = "Gaming",
-                apps = gamingApps
-            )
-        )
-
-        categoryList.add(
-            CategoriesItem(
-                category = "Audio",
-                apps = audioApps
-            )
-        )
-
-        categoryList.add(
-            CategoriesItem(
-                category = "Image",
-                apps = imageApps
-            )
-        )
-
-        categoryList.add(
-            CategoriesItem(
-
-                category = "Map",
-                apps = mapApps
-            )
-        )
-
-        categoryList.add(
-            CategoriesItem(
-
-                category = "News",
-                apps = newsApps
-            )
-        )
-
-        categoryList.add(
-            CategoriesItem(
-
-                category = "Video",
-                apps = videoApps
-            )
-        )
-
-        categoryList.add(
-            CategoriesItem(
-
-                category = "Productivity",
-                apps = productivityApps
-            )
-        )
-
-        categoryList.add(
-            CategoriesItem(
-                category = "Undefined",
-                apps = undefinedApps
-            )
-        )
-
-        Log.d("CategoryList", Gson().toJson(categoryList.toString()))
-
-        // 3. Add System/Special Actions
-        categoryList.add(CategoriesItem(category = "Disable Call", apps = emptyList()))
-        val disabledSetting = mutableListOf(
-            AppsItem(appName = ConstantClass.Bluetooth, packageName = ConstantClass.Bluetooth),
-            AppsItem(appName = ConstantClass.Wifi, packageName = ConstantClass.Wifi),
-            AppsItem(appName = ConstantClass.Hotspot, packageName = ConstantClass.Hotspot),
-            AppsItem(appName = ConstantClass.USB, packageName = ConstantClass.USB),
-        )
-
-        categoryList.add(CategoriesItem(category = "Disable Settings", apps = disabledSetting))
-        categoryList.add(CategoriesItem(category = "Kiosk Mode", apps = emptyList()))
-        categoryList.add(CategoriesItem(category = "Disable Camera", apps = emptyList()))
-        categoryList.add(CategoriesItem(category = "Reboot", apps = emptyList()))
-        categoryList.add(CategoriesItem(category = "Airplane Mode", apps = emptyList()))
-        return categoryList
+    fun getCustomerAction(): List<CategoriesItem> {
+        return ConstantClass.getInstalledApps(packageManager, this)
     }
 
-    
+
+
+
    /* fun getCustomerAction(): List<CategoriesItem> {
         val categoryList = mutableListOf<CategoriesItem>()
 

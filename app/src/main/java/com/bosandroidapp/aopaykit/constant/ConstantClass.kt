@@ -1,7 +1,7 @@
 package com.bosandroidapp.aopaykit.constant
 
 import android.app.Activity
-import android.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -47,12 +47,15 @@ import  com.bosandroidapp.aopaykit.R
 import com.bosandroidapp.aopaykit.internetchecker.NetworkMonitor
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import com.bosandroidapp.aopaykit.data.customeraction.AppsItem
+import com.bosandroidapp.aopaykit.data.customeraction.CategoriesItem
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
 import com.bosandroidapp.aopaykit.ui.view.activity.ChooseYourRolePage
 import com.bosandroidapp.aopaykit.workmanager.LocationUploadWorker
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import com.google.gson.Gson
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.common.BitMatrix
@@ -439,26 +442,20 @@ object ConstantClass {
 
     var internetSettingsOpened = false
 
-    private var noInternetDialog: AlertDialog? = null
-
-    fun showNoInternetDialog(context: Context) {
-        if (noInternetDialog?.isShowing == true) return
-
-        noInternetDialog = AlertDialog.Builder(context)
+    fun showNoInternetDialog(context: Context): AlertDialog? {
+        val dialog = AlertDialog.Builder(context)
             .setTitle("No Internet")
             .setMessage("Please check your Wi-Fi or mobile data connection.")
             .setCancelable(false)
             .setPositiveButton("Open Settings") { _, _ ->
-                if (NetworkMonitor(context).isConnected()) noInternetDialog?.dismiss() else {
-                    val intent = Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(intent)
-                }
-
+                val intent = Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
             }
             .create()
 
-        noInternetDialog?.show()
+        dialog.show()
+        return dialog
     }
 
 
@@ -1271,6 +1268,221 @@ object ConstantClass {
         } catch (e: Exception) {
             "₹0"
         }
+    }
+
+
+    fun getInstalledApps(packageManager: PackageManager, context: Context): List<CategoriesItem> {
+        val categoryList = mutableListOf<CategoriesItem>()
+        val socialApps = mutableListOf<AppsItem>()
+        val gamingApps = mutableListOf<AppsItem>()
+        val videoApps = mutableListOf<AppsItem>()
+        val audioApps = mutableListOf<AppsItem>()
+        val imageApps = mutableListOf<AppsItem>()
+        val mapApps = mutableListOf<AppsItem>()
+        val newsApps = mutableListOf<AppsItem>()
+        val productivityApps = mutableListOf<AppsItem>()
+        val undefinedApps = mutableListOf<AppsItem>()
+
+        val apps = packageManager.getInstalledApplications(0)
+
+        apps.forEach { appItem ->
+
+            val appName = packageManager.getApplicationLabel(appItem).toString()
+            val packageName = appItem.packageName
+
+            // Skip our own app and TestDPC
+            if (packageName == context.packageName || packageName == "com.afwsamples.testdpc") {
+                return@forEach
+            }
+
+            when (appItem.category) {
+
+                ApplicationInfo.CATEGORY_SOCIAL -> {
+                    socialApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_GAME -> {
+                    gamingApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_AUDIO -> {
+                    audioApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_IMAGE -> {
+                    imageApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_MAPS -> {
+                    mapApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_NEWS -> {
+                    newsApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_PRODUCTIVITY -> {
+                    productivityApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                ApplicationInfo.CATEGORY_VIDEO -> {
+                    videoApps.add(
+                        AppsItem(
+                            appName = appName,
+                            packageName = packageName
+                        )
+                    )
+                }
+
+                else -> {
+
+                    // Skip system apps
+                    if ((appItem.flags and ApplicationInfo.FLAG_SYSTEM) != 0) {
+                        return@forEach
+                    }
+
+                    if ((appItem.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
+                        return@forEach
+                    }
+
+                    // Skip apps without launcher icon
+                    val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+
+                    if (launchIntent == null ) {
+                        return@forEach
+                    }
+
+                    undefinedApps.add(AppsItem(appName = appName, packageName = packageName))
+
+                }
+
+            }
+
+        }
+
+        // Add categories
+
+        categoryList.add(
+            CategoriesItem(
+
+                category = "Social",
+                apps = socialApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+                category = "Gaming",
+                apps = gamingApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+                category = "Audio",
+                apps = audioApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+                category = "Image",
+                apps = imageApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+
+                category = "Map",
+                apps = mapApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+
+                category = "News",
+                apps = newsApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+
+                category = "Video",
+                apps = videoApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+
+                category = "Productivity",
+                apps = productivityApps
+            )
+        )
+
+        categoryList.add(
+            CategoriesItem(
+                category = "Undefined",
+                apps = undefinedApps
+            )
+        )
+
+        Log.d("CategoryList", Gson().toJson(categoryList.toString()))
+
+        // 3. Add System/Special Actions
+        categoryList.add(CategoriesItem(category = "Disable Call", apps = emptyList()))
+        val disabledSetting = mutableListOf(
+            AppsItem(appName = ConstantClass.Bluetooth, packageName = ConstantClass.Bluetooth),
+            AppsItem(appName = ConstantClass.Wifi, packageName = ConstantClass.Wifi),
+            AppsItem(appName = ConstantClass.Hotspot, packageName = ConstantClass.Hotspot),
+            AppsItem(appName = ConstantClass.USB, packageName = ConstantClass.USB),
+        )
+
+        categoryList.add(CategoriesItem(category = "Disable Settings", apps = disabledSetting))
+        categoryList.add(CategoriesItem(category = "Kiosk Mode", apps = emptyList()))
+        categoryList.add(CategoriesItem(category = "Disable Camera", apps = emptyList()))
+        categoryList.add(CategoriesItem(category = "Reboot", apps = emptyList()))
+        categoryList.add(CategoriesItem(category = "Airplane Mode", apps = emptyList()))
+        return categoryList
+
     }
 
 

@@ -159,7 +159,7 @@ class LockKitPackageTopUpPage : BaseActivity() {
     fun hitApiForGeetingKitPackage(){
         var request  = KitPlanRequest(
             companyCode = ConstantClass.ClientCode,
-            retailerCode = preference.getStringValue(ConstantClass.RetailerCode,"")
+            retailerCode = /*"AFD0035"*/ preference.getStringValue(ConstantClass.RetailerCode,"")
         )
 
         Log.d("requestKit",Gson().toJson(request))
@@ -209,6 +209,7 @@ class LockKitPackageTopUpPage : BaseActivity() {
 
     }
 
+
     private fun setupAdapter(packagedataLits: List<KitPlanListDataItem?>?) {
 
         if (!packagedataLits.isNullOrEmpty()) {
@@ -225,12 +226,28 @@ class LockKitPackageTopUpPage : BaseActivity() {
 
     }
 
+
     private fun updateSummary(plan: KitPlanListDataItem) {
-        binding.tvSummaryPlanName.text = "${plan.noOfKits} Kits"
-        binding.tvSummaryPlanPrice.text = "₹${String.format("%,.0f", plan.planAmount)}"
-        binding.tvSummaryGst.text = "₹${String.format("%,.0f", plan.gstAmount)}"
-        binding.tvSummaryTotal.text = "₹${String.format("%,.0f", plan.totalAmount)}"
-        kitPlanListDataItem= plan
+        val planAmount = plan.planAmount ?: 0.0
+        val discountAmount = plan.discountAmount ?: 0.0
+        val subtotal = planAmount - discountAmount
+        val gstAmount = plan.gstAmount ?: 0.0
+        val totalAmount = plan.totalAmount ?: 0.0
+
+        binding.tvSummaryPlanPrice.text = "₹${String.format("%,.2f", planAmount)}"
+
+        binding.tvSummaryDiscountLabel.text = "Discount (${plan.discountPercent?.toInt() ?: 0}%)"
+        binding.tvSummaryDiscount.text = "- ₹${String.format("%,.2f", discountAmount)}"
+
+        binding.tvSummarySubtotal.text = "₹${String.format("%,.2f", subtotal)}"
+
+        binding.tvSummaryGstLabel.text = "GST (${plan.gstPercent?.toInt() ?: 0}%)"
+        binding.tvSummaryGst.text = "+ ₹${String.format("%,.2f", gstAmount)}"
+
+        binding.tvSummaryTotal.text = "₹${String.format("%,.2f", totalAmount)}"
+
+        kitPlanListDataItem = plan
+
     }
 
 

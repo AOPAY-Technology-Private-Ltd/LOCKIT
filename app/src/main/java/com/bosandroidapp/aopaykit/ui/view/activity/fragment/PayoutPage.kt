@@ -61,7 +61,7 @@ class PayoutPage : Fragment() {
      lateinit var preference : SharedPreference
      lateinit var viewModel: AuthenticationViewModel
      var currentDate : String = ""
-     lateinit var dialog : Dialog
+
      var checkHoldername : Boolean = false
      var checkIFSCcode : Boolean = false
      var checkbranchName : Boolean = false

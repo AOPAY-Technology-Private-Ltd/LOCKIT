@@ -202,7 +202,7 @@ class IDVerificationPage : BaseActivity() {
                         RefAadharTransactionIdNo = ""
                         ReferenceAadharVerified=""
                         ReferenceAadharNumber=""
-                        onResume()
+                        updateUIVisibility()
                     }
 
                     R.id.radioButton2 -> {
@@ -216,7 +216,7 @@ class IDVerificationPage : BaseActivity() {
                         RefAadharTransactionIdNo = ""
                         ReferenceAadharVerified=""
                         ReferenceAadharNumber=""
-                        onResume()
+                        updateUIVisibility()
                     }
 
                     R.id.radioButton3 -> {
@@ -230,7 +230,7 @@ class IDVerificationPage : BaseActivity() {
                         RefAadharTransactionIdNo = ""
                         ReferenceAadharVerified=""
                         ReferenceAadharNumber=""
-                        onResume()
+                        updateUIVisibility()
                     }
 
                 }
@@ -238,18 +238,22 @@ class IDVerificationPage : BaseActivity() {
 
         }
 
-
         binding.cibilcardlayout.setOnClickListener {
             startActivity(Intent(this@IDVerificationPage, CivilReportForm::class.java))
         }
-
 
     }
 
 
     override fun onResume() {
         super.onResume()
+        updateUIVisibility()
+        hitApiForLogin()
+        hitApiForKitOption()
+    }
 
+
+    fun updateUIVisibility() {
         if (PanNumber.isBlank()) {
             binding.donepancard.visibility = View.GONE
             binding.pancardlayout.isEnabled = true
@@ -258,17 +262,11 @@ class IDVerificationPage : BaseActivity() {
             binding.pancardlayout.isEnabled = false
         }
 
-        if (ConstantClass.AadharVerified.equals("no")&& ConstantClass.AadharVerified.isNullOrBlank() && ConstantClass.CheckOnlineOrOffline.equals(ConstantClass.online)) {
+        if (ConstantClass.AadharVerified.equals("no") && ConstantClass.AadharVerified.isNullOrBlank() && ConstantClass.CheckOnlineOrOffline.equals(ConstantClass.online)) {
             binding.doneaadhaar.visibility = View.VISIBLE
-        }
-        else {
+        } else {
             binding.doneaadhaar.visibility = View.GONE
         }
-
-        hitApiForLogin()
-        binding.radiolayout.visibility=View.GONE
-        hitApiForKitOption()
-
     }
 
     fun hitApiForAadharVerification() {
@@ -344,6 +342,7 @@ class IDVerificationPage : BaseActivity() {
         AadharTransactionIdNo = ""
         super.onBackPressed()
     }
+
 
     @SuppressLint("SetTextI18n")
     fun OpenPopUpForValidateDate() {
@@ -516,6 +515,7 @@ class IDVerificationPage : BaseActivity() {
     }
 
 
+
     fun hitApiForRetailerLogout() {
         var loginRequest = LogoutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
@@ -555,9 +555,8 @@ class IDVerificationPage : BaseActivity() {
     }
 
 
-
     fun hitApiForKitOption(){
-
+        binding.radiolayout.visibility=View.GONE
         var request = KitOptionRequest(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode,"")
         )

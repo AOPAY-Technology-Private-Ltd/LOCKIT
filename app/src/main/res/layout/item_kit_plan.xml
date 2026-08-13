@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/_2sdp">
+    android:layout_margin="@dimen/_2sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clMain"
@@ -20,7 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
-            android:textSize="@dimen/_12ssp"
+            android:textSize="@dimen/_10ssp"
             android:textColor="@color/black"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -58,7 +58,12 @@
             android:fontFamily="@font/inter_bold"
             android:text="₹4,999"
             android:textColor="#3461FF"
-            android:textSize="@dimen/_16ssp"
+            android:textSize="@dimen/_13ssp"
+            android:maxLines="2"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/tvPerKitPrice"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvKitCount" />
 
@@ -66,12 +71,20 @@
             android:id="@+id/tvPerKitPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_6sdp"
             android:fontFamily="@font/inter_regular"
+            android:maxLines="1"
             android:text="₹499 / kits"
             android:textColor="@color/grey"
             android:textSize="@dimen/_9ssp"
+            app:autoSizeMaxTextSize="@dimen/_9ssp"
+            app:autoSizeMinTextSize="@dimen/_7ssp"
+            app:autoSizeStepGranularity="1sp"
+            app:autoSizeTextType="uniform"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@+id/tvTotalPrice"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/tvTotalPrice"
             app:layout_constraintTop_toTopOf="@+id/tvTotalPrice" />
 

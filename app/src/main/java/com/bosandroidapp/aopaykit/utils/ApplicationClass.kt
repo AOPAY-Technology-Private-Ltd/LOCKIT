@@ -5,13 +5,17 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
+import com.bosandroidapp.aopaykit.constant.ConstantClass
 import com.bosandroidapp.aopaykit.localdb.SharedPreference
+import com.bosandroidapp.aopaykit.phonestatereceiver.PackageReceiver
 import com.bosandroidapp.aopaykit.ui.viewmodel.AuthenticationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -22,19 +26,23 @@ class ApplicationClass : Application() {
     lateinit var FcmToken: String
     lateinit var deviceId: String
     lateinit var retailerCode : String
-
-
+    
     companion object {
-        val isNetworkAvailable = MutableStateFlow(true)
+        val isNetworkAvailable = MutableStateFlow(false)
     }
 
     override fun onCreate() {
         super.onCreate()
+        
+        isNetworkAvailable.value = ConstantClass.isInternetAvailable(this)
 
         Log.d("ApplicationClass", "Application started")
 
         // Create default notification channel once
         createNotificationChannel()
+        
+        // Register PackageReceiver
+        registerPackageReceiver() // for check which app is uninstall from device
 
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
@@ -73,6 +81,15 @@ class ApplicationClass : Application() {
             val manager = getSystemService(NotificationManager::class.java)
             manager.createNotificationChannel(channel)
         }
+    }
+
+    private fun registerPackageReceiver() {
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REMOVED)
+            addDataScheme("package")
+        }
+        registerReceiver(PackageReceiver(), filter)
     }
 
 

@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_4sdp"
                     android:fontFamily="@font/inter_regular"
-                    android:text="Save more on bigger bundles. GST 18% included at checkout."
+                    android:text="@string/save_more_on_bigger_bundles_gst_included_at_checkout"
                     android:textColor="@color/grey"
                     android:textSize="@dimen/_10ssp" />
 
@@ -120,11 +120,11 @@
                             android:layout_height="wrap_content">
 
                             <TextView
-                                android:id="@+id/tvSummaryPlanName"
+                                android:id="@+id/tvLabelPlanAmount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/inter_regular"
-                                android:text="50 Kits"
+                                android:text="Plan Amount"
                                 android:textColor="@color/grey"
                                 android:textSize="@dimen/_11ssp" />
 
@@ -134,7 +134,60 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
                                 android:fontFamily="@font/inter_bold"
-                                android:text="₹24,950"
+                                android:text="₹0.00"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_11ssp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/rlDiscount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_8sdp">
+
+                            <TextView
+                                android:id="@+id/tvSummaryDiscountLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/inter_regular"
+                                android:text="Discount (0%)"
+                                android:textColor="@color/grey"
+                                android:textSize="@dimen/_11ssp" />
+
+                            <TextView
+                                android:id="@+id/tvSummaryDiscount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:fontFamily="@font/inter_bold"
+                                android:text="- ₹0.00"
+                                android:textColor="@color/green"
+                                android:textSize="@dimen/_11ssp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/rlSubtotal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_8sdp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/inter_regular"
+                                android:text="Subtotal"
+                                android:textColor="@color/grey"
+                                android:textSize="@dimen/_11ssp" />
+
+                            <TextView
+                                android:id="@+id/tvSummarySubtotal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:fontFamily="@font/inter_bold"
+                                android:text="₹0.00"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/_11ssp" />
 
@@ -146,6 +199,7 @@
                             android:layout_marginTop="@dimen/_8sdp">
 
                             <TextView
+                                android:id="@+id/tvSummaryGstLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/inter_regular"
@@ -159,7 +213,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
                                 android:fontFamily="@font/inter_bold"
-                                android:text="₹4,950"
+                                android:text="+ ₹0.00"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/_11ssp" />
 
@@ -179,7 +233,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/inter_regular"
-                                android:text="Total"
+                                android:text="Total Payable"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/_13ssp" />
 
@@ -189,7 +243,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
                                 android:fontFamily="@font/inter_bold"
-                                android:text="₹29,900"
+                                android:text="₹0.00"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/_16ssp" />
 

@@ -26,13 +26,13 @@ class KitPlanAdapter(private var plans: List<KitPlanListDataItem?>?, private val
         with(holder.binding) {
             kitname.text = plan.planName ?: ""
             tvKitCount.text = plan.noOfKits.toString()
-            tvTotalPrice.text = "₹${String.format("%,.0f", plan.planAmount)}"
-            tvPerKitPrice.text = "₹${plan.pricePerKit?.toInt() ?: 0} / kits"
+            tvTotalPrice.text = "₹${String.format("%,.2f", plan.planAmount)}"
+            tvPerKitPrice.text = "₹${String.format("%.2f", plan.pricePerKit ?: 0.0)} / kits"
             
             tvSaveTag.text = "Save ${plan.discountPercent?.toInt() ?: 0}%"
             tvSaveTag.visibility = if ((plan.discountPercent ?: 0.0) > 0) View.VISIBLE else View.GONE
             
-            tvPopularTag.visibility = if (plan.isDefault == true) View.VISIBLE else View.GONE
+            tvPopularTag.visibility = if (plan.isMostPopular == true) View.VISIBLE else View.GONE
 
             if (plan.isSelected) {
                 clMain.setBackgroundResource(R.drawable.bg_plan_item_selected)

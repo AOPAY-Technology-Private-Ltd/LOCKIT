@@ -61,7 +61,8 @@ class KioskLockPage : BaseActivity() {
         val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 
         if (dpm.isDeviceOwnerApp(packageName)) {
-            dpm.setLockTaskPackages(admin, arrayOf(packageName))
+            // Allow Settings in Kiosk mode so user can fix internet
+            dpm.setLockTaskPackages(admin, arrayOf(packageName, "com.android.settings"))
             if (activityManager.lockTaskModeState == ActivityManager.LOCK_TASK_MODE_NONE) {
                 startLockTask()
             }

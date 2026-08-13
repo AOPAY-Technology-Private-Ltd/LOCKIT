@@ -17,14 +17,24 @@ open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Initial check
+        if (!ConstantClass.isInternetAvailable(this)) {
+            if (dialog == null || !dialog!!.isShowing) {
+                dialog = ConstantClass.showNoInternetDialog(this)
+            }
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 ApplicationClass.isNetworkAvailable.collect { connected ->
                     if (connected) {
                         dialog?.dismiss()
+                        dialog = null
                     }
                     else {
-                        ConstantClass.showNoInternetDialog(this@BaseActivity)
+                        if (dialog == null || !dialog!!.isShowing) {
+                            dialog = ConstantClass.showNoInternetDialog(this@BaseActivity)
+                        }
                     }
                 }
             }
@@ -38,6 +48,10 @@ open class BaseActivity : AppCompatActivity() {
         try {
             if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
                 ConstantClass.dialog.dismiss()
+            }
+            
+            if (dialog != null && dialog!!.isShowing) {
+                dialog!!.dismiss()
             }
         } catch (e: Exception) {
         }

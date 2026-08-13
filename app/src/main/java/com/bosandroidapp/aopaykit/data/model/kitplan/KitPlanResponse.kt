@@ -52,5 +52,8 @@ data class KitPlanListDataItem(
 	@field:SerializedName("gstPercent")
 	val gstPercent: Double? = null,
 
-	var isSelected: Boolean = false
+	var isSelected: Boolean = false,
+
+	@field:SerializedName("isMostPopular")
+	val isMostPopular: Boolean? = null,
 )

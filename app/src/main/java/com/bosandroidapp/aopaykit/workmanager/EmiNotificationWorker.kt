@@ -30,7 +30,6 @@ class EmiNotificationWorker(context: Context, workerParams: WorkerParameters) : 
     private val preference: SharedPreference by lazy { SharedPreference.getInstance(applicationContext)!! }
 
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun doWork(): Result {
         Log.d("EMI_WORKER", "Worker Invoked")
