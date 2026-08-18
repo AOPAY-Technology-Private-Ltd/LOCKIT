@@ -164,7 +164,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     ConstantClass.Reboot -> {
                         dpm.reboot(admin)
 
-
                         if(rid>-1){
                             hitApiForUpdateActionStatus("")
                         }
@@ -780,6 +779,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             try {
 
                 val failed = dpm.setPackagesSuspended(admin, arrayOf(packageName), suspendApp)
+                dpm.setUninstallBlocked(admin, packageName, suspendApp)
 
                 if (failed.isEmpty()) {
                     Log.d("DPC", "($packageName) $action successfully")
@@ -837,9 +837,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         // true = suspend/disable, false = resume/enable
-        val hideapp = action.toLowerCase().equals("enable", ignoreCase = true)
+            val hideapp = action.toLowerCase().equals("enable", ignoreCase = true)
             try {
+                preference.setBooleanValue(ConstantClass.IS_HIDE_ENABLED,hideapp)
                 val changedDone = dpm.setApplicationHidden(admin, packageName, hideapp)
+                dpm.setUninstallBlocked(admin, packageName, hideapp)
                 if (changedDone) {
                     Log.d("DPCHideAPP", "($packageName) $action successfully")
                 }

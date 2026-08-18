@@ -134,6 +134,7 @@ class CustomerDeviceFragment : Fragment() {
 
         dialog.show()
     }
+
     fun hitApiForDoActionNotification(action: String){
         val firstName = preference.getStringValue(ConstantClass.FirstName, "").orEmpty()
         val lastName = preference.getStringValue(ConstantClass.LastName, "").orEmpty()
@@ -244,6 +245,7 @@ class CustomerDeviceFragment : Fragment() {
         }
 
     }
+
     fun hitApiForUpdateActionStatus() {
         val request = GetPendingDeviceActionReq(customerCode = kitcustomerData.customerCodes.toString().trim())
         viewModel.getPendingDeviceActionRequest(request).observe(requireActivity()) { resources ->
@@ -266,10 +268,12 @@ class CustomerDeviceFragment : Fragment() {
         }
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
 
     fun hitApiForLogin() {
 
@@ -342,6 +346,7 @@ class CustomerDeviceFragment : Fragment() {
         }
 
     }
+
 
     fun hitApiForRetailerLogout() {
         var loginRequest = LogoutReq(

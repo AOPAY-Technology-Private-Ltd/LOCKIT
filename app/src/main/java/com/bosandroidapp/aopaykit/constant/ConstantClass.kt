@@ -93,17 +93,18 @@ object ConstantClass {
 
      // Procustion  API
 
-     /* const val BASE_URL = "https://api.aopay.finance/"
+
+/*    const val BASE_URL = "https://api.aopay.finance/"
       const val BASE_URL_IMAGE = "https://api.aopay.finance"*/
 
-
-     // UAT API
+    // UAT API
       const val BASE_URL = "https://uatapi.aopay.co.in/"
       const val BASE_URL_IMAGE = "https://uatapi.aopay.co.in"
 
 
-    /*const val PAN_VERIFICATION_REGISTRATION_ID = "AOP-5048"
-     const val PENNYDROP_REGISTRATION_ID = "AOP-5048"*/
+/*     const val PAN_VERIFICATION_REGISTRATION_ID = "AOP-5054"
+       const val PENNYDROP_REGISTRATION_ID = "AOP-5054"*/
+
 
      const val PAN_VERIFICATION_REGISTRATION_ID = "AOP-554"
      const val PENNYDROP_REGISTRATION_ID = "AOP-554"
@@ -134,6 +135,7 @@ object ConstantClass {
      const val DEVICEID = "deviceid"
      const val LoanSuccessStatus = "success"
      const val DeviceType = "Android"
+
      const val ClientCode = "CMP0005"
      const val DefaulterEmiDebitAutoApproved ="admin"
      const val DefaulterEmiDebitPending ="retailer"
@@ -175,6 +177,7 @@ object ConstantClass {
      const val CustomerLoanStatusPending = "Pending"
      const val Exit = "Exit"
      const val IS_KIOSK_ENABLED = "is_kiosk_enabled"
+     const val IS_HIDE_ENABLED = "is_hide_enabled"
 
      const val Due = "TodayDue"
      const val Overdue = "OverDue"
@@ -1099,7 +1102,7 @@ object ConstantClass {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val periodicWork = PeriodicWorkRequestBuilder<LocationUploadWorker>(1, TimeUnit.HOURS)
+        val periodicWork = PeriodicWorkRequestBuilder<LocationUploadWorker>(15, TimeUnit.MINUTES)
             .setInputData(workDataOf("LAT" to lat, "LONG" to long))
             .setConstraints(constraints)
             .build()

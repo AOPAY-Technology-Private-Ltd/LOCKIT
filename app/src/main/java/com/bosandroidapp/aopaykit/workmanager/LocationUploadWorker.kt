@@ -51,6 +51,7 @@ class LocationUploadWorker(context: Context, workerParams: WorkerParameters) : C
                 createdBy = preference.getStringValue(ConstantClass.CustomerCode, ""),
                 categories = getCustomerAction()
             )
+
             Log.d("InstallAppsWorkerReq", Gson().toJson(sendInstalledAppRequest))
             RetrofitClient.apiInterface.uploadCustomerDeviceInsatlledAppsOnServerRequest(sendInstalledAppRequest)
 

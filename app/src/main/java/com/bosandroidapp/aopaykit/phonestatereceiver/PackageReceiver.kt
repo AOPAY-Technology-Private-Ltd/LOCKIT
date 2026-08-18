@@ -15,11 +15,16 @@ import kotlinx.coroutines.runBlocking
 
 class PackageReceiver : BroadcastReceiver() {
 
+    lateinit var preference: SharedPreference
+
     private val authRepository by lazy { AuthRepository(RetrofitClient.apiInterface) }
+
 
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context == null || intent == null) return
+
+        preference = SharedPreference(context)
 
         val action = intent.action
         val packageName = intent.data?.schemeSpecificPart
@@ -28,21 +33,23 @@ class PackageReceiver : BroadcastReceiver() {
 
         if (action == Intent.ACTION_PACKAGE_REMOVED) {
             val isReplacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)
-            if (!isReplacing) {
-                // Actual uninstall
-                Log.d("PackageReceiver", "App Uninstalled: $packageName")
+            val isDataRemoved = intent.getBooleanExtra(Intent.EXTRA_DATA_REMOVED, false)
+            
+            // Only proceed if it's an actual uninstall (data removed) and not part of an update (replacing)
+            if (!isReplacing && isDataRemoved) {
+                Log.d("PackageReceiverUninstall", "App Uninstalled: $packageName")
                 hitApiForUploadUninstallAppStatus(context, packageName ?: "")
                 hitApiForUploadDynamicInstallApps(context)
             }
+
         }
         else if (action == Intent.ACTION_PACKAGE_ADDED) {
-            Log.d("PackageReceiver", "App Installed: $packageName")
+            Log.d("PackageReceiverAdd", "App Installed: $packageName")
             //hitApiForUploadUninstallAppStatus(context, packageName ?: "")
             hitApiForUploadDynamicInstallApps(context)
         }
 
     }
-
 
     private fun hitApiForUploadUninstallAppStatus(context: Context, uninstalledPackageName: String) {
         val preference = SharedPreference.getInstance(context) ?: return
@@ -99,6 +106,5 @@ class PackageReceiver : BroadcastReceiver() {
         }
 
     }
-
 
 }

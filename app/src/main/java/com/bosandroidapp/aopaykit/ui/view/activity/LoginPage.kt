@@ -160,6 +160,7 @@ class LoginPage : BaseActivity() {
             startActivity(mainIntent)
         }
 
+
         binding.emailormobilenumber.addTextChangedListener(object : TextWatcher {
 
             override fun afterTextChanged(s: Editable?) {
@@ -203,9 +204,11 @@ class LoginPage : BaseActivity() {
             startActivity(mainIntent)
         }
 
+
         binding.back.setOnClickListener {
             finish()
         }
+
 
         binding.customerloginlayout.setOnClickListener {
             var mobnumber = binding.mobilenumber.text.toString()

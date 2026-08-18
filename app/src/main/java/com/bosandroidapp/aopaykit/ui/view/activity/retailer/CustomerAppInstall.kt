@@ -168,8 +168,8 @@ class CustomerAppInstall : BaseActivity() {
                         response.body()!!.byteStream().use { inputStream ->
                             BitmapFactory.decodeStream(inputStream)
                         }
-
-                    } else {
+                    }
+                    else {
                         null
                     }
                 }

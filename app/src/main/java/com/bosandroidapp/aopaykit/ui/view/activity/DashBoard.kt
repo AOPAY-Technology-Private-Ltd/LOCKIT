@@ -170,6 +170,7 @@ class DashBoard : BaseActivity() {
 
 
         if (logintype.equals(Customer)) {
+
             if (!checkPermissions()) {
                 ActivityCompat.requestPermissions(
                     this, arrayOf(
@@ -180,6 +181,7 @@ class DashBoard : BaseActivity() {
                     ), 101
                 )
             }
+
             binding.makePaymentLayout.visibility = View.GONE
             binding.kitPlanPurchase.visibility = View.GONE
             binding.installAppLayout.visibility = View.GONE
