@@ -46,10 +46,11 @@ class LocationUploadWorker(context: Context, workerParams: WorkerParameters) : C
             // Call API (suspend function preferred)
             RetrofitClient.apiInterface.uploadcustomerlocation(request)
 
-            // ✅ Upload Dynamic Installed Apps as well
+
+            //  Upload Dynamic Installed Apps as well
             val sendInstalledAppRequest = SendInstalledAppOnServerRequest(
                 createdBy = preference.getStringValue(ConstantClass.CustomerCode, ""),
-                categories = getCustomerAction()
+                categories = ConstantClass.getInstalledApps(applicationContext.packageManager, applicationContext)
             )
 
             Log.d("InstallAppsWorkerReq", Gson().toJson(sendInstalledAppRequest))
@@ -67,7 +68,8 @@ class LocationUploadWorker(context: Context, workerParams: WorkerParameters) : C
         }
     }
 
-    fun getCustomerAction():List <CategoriesItem> {
+
+   /* fun getCustomerAction():List <CategoriesItem> {
 
         val categoryList = mutableListOf<CategoriesItem>()
         val socialApps = mutableListOf<AppsItem>()
@@ -276,6 +278,6 @@ class LocationUploadWorker(context: Context, workerParams: WorkerParameters) : C
         categoryList.add(CategoriesItem(category = "Reboot", apps = emptyList()))
         categoryList.add(CategoriesItem(category = "Airplane Mode", apps = emptyList()))
         return categoryList
-    }
+    }*/
 
 }

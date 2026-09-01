@@ -11,7 +11,12 @@ import com.bosandroidapp.aopaykit.databinding.ItemKitPlanBinding
 class KitPlanAdapter(private var plans: List<KitPlanListDataItem?>?, private val onPlanSelected: (KitPlanListDataItem) -> Unit) :
     RecyclerView.Adapter<KitPlanAdapter.ViewHolder>() {
 
+    init {
+        plans = plans?.sortedByDescending { it?.isMostPopular == true }
+    }
+
     inner class ViewHolder(val binding: ItemKitPlanBinding) : RecyclerView.ViewHolder(binding.root)
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemKitPlanBinding.inflate(LayoutInflater.from(parent.context), parent, false)

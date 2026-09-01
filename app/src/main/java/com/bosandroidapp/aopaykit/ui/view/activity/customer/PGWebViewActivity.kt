@@ -379,7 +379,7 @@ class PGWebViewActivity : BaseActivity() {
                 val purchaseCode = transactionNo.substringAfterLast("_")
 
                 var request = KitPurchasePlanSaveRequest(
-                    companyCode= ConstantClass.ClientCode ,
+                    companyCode= preference.getStringValue(ConstantClass.ClientCode,"") ,
                     gstAmount= kitPlanListDataItem.gstAmount,
                     purchaseCode= purchaseCode,
                     purchaseDate = currentDateTime,

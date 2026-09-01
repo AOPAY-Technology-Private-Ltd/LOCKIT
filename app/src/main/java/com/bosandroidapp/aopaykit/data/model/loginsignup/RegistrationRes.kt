@@ -49,4 +49,4 @@ data class RegistrationRes(@SerializedName("lastName")
                            @SerializedName("company_doc_Photo")
                            val companydoc: String? = ""
 
-)
+        )

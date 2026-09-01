@@ -308,7 +308,7 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
             selectedApps = subApp,
             createdBy = createdBy,
             customerCode = CustomerCode,
-            clientCode = ClientCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode,""),
             retailerCode = retailercode,
             actionStatus = actionStatus
         )
@@ -359,7 +359,7 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
     fun hitApiForSendNotificationToCustomer(notificationCode : String,subApp: MutableList<RetailerSendNotificationToCustomer>){
 
         var sendNotificationReq = RetailerSendNotificationToCustomerReq(
-            clientCode = ClientCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode,""),
             customerCode = CustomerCode,
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
             title = "",
@@ -476,7 +476,7 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
 
     fun getKitCustomerLocation(){
         var request = GetKitCustomerLocation(
-            clientCode = ClientCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode,""),
             customerCode = kitcustomerData.customerCodes.toString().trim(),
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, "")
         )

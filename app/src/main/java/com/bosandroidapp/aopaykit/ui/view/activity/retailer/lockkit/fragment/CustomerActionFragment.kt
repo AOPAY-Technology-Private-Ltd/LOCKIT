@@ -168,9 +168,9 @@ class CustomerActionFragment : Fragment() {
                     } else {
                         if (action.subactionList!!.isNotEmpty()) {
                             openAlertForSubAction(action)
-                        } else {
+                        } /*else {
                             hitApiForDoActionNotification(action, action.check!!)
-                        }
+                        }*/
                     }
                 }
             },
@@ -428,7 +428,7 @@ class CustomerActionFragment : Fragment() {
             selectedApps = subApp,
             createdBy = createdBy,
             customerCode = CustomerCode,
-            clientCode = ClientCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode,""),
             retailerCode = retailercode,
             actionStatus = actionStatus
         )
@@ -483,7 +483,7 @@ class CustomerActionFragment : Fragment() {
     fun hitApiForSendNotificationToCustomer(notificationCode : String, selectedApps: MutableList<RetailerSendNotificationToCustomer>){
 
         var sendNotificationReq = RetailerSendNotificationToCustomerReq(
-            clientCode = ClientCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode,""),
             customerCode = CustomerCode,
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
             title = "",

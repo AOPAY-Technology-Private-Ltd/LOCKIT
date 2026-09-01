@@ -92,22 +92,20 @@ import javax.crypto.SecretKey
 object ConstantClass {
 
      // Procustion  API
+    /*  const val BASE_URL = "https://api.aopay.finance/"
+        const val BASE_URL_IMAGE = "https://api.aopay.finance"
 
+        const val PAN_VERIFICATION_REGISTRATION_ID = "AOP-5054"
+        const val PENNYDROP_REGISTRATION_ID = "AOP-5054"*/
 
-/*    const val BASE_URL = "https://api.aopay.finance/"
-      const val BASE_URL_IMAGE = "https://api.aopay.finance"*/
 
     // UAT API
       const val BASE_URL = "https://uatapi.aopay.co.in/"
       const val BASE_URL_IMAGE = "https://uatapi.aopay.co.in"
 
+      const val PAN_VERIFICATION_REGISTRATION_ID = "AOP-554"
+      const val PENNYDROP_REGISTRATION_ID = "AOP-554"
 
-/*     const val PAN_VERIFICATION_REGISTRATION_ID = "AOP-5054"
-       const val PENNYDROP_REGISTRATION_ID = "AOP-5054"*/
-
-
-     const val PAN_VERIFICATION_REGISTRATION_ID = "AOP-554"
-     const val PENNYDROP_REGISTRATION_ID = "AOP-554"
 
      const val RETAILER_CODE_BIASS_OTP = "AFD0064"
      const val SMS_BASE_URL = "http://web.adcruxmedia.in/"
@@ -136,7 +134,7 @@ object ConstantClass {
      const val LoanSuccessStatus = "success"
      const val DeviceType = "Android"
 
-     const val ClientCode = "CMP0005"
+     const val ClientCode = "clientcode"
      const val DefaulterEmiDebitAutoApproved ="admin"
      const val DefaulterEmiDebitPending ="retailer"
      const val SessionOutStatus = "Inactive"
@@ -164,8 +162,8 @@ object ConstantClass {
      const val kit = "kit"
      const val KitPlan = "KITPLAN"
 
-    var isPgClosing = false
-    var isLockTaskStarted = false
+     var isPgClosing = false
+     var isLockTaskStarted = false
      const val editprofile = "Edit Profile"
      const val cancel = "Cancel"
      const val paymentMode = "Select Payment Mode"

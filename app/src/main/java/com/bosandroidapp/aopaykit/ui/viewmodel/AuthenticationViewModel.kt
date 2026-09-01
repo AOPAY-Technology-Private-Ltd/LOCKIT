@@ -228,6 +228,16 @@ class AuthenticationViewModel (private val repository: AuthRepository):ViewModel
 
 
 
+    fun getverifycustomerKitReq(req: VerifyCustomerReq) = liveData(Dispatchers.IO) {
+        emit(ApiResponse.loading(data = null))
+        try {
+            emit(ApiResponse.success(data = repository.verifycustomerKitReq(req)))
+        }
+        catch (exception: Exception) {
+            emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))
+        }
+    }
+
     fun verifyKitcustomerReq(req: VerifyCustomerReq) = liveData(Dispatchers.IO) {
         emit(ApiResponse.loading(data = null))
         try {

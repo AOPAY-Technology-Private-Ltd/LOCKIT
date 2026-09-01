@@ -57,6 +57,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
 
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
@@ -70,9 +71,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         if (!payload.isNullOrEmpty()) {
-            Log.d("payload", Gson().toJson(payload))
-            try {
 
+            Log.d("payload", Gson().toJson(payload))
+
+            try {
                 val dpm = applicationContext.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
 
                 val admin = ComponentName(applicationContext, KioskDeviceAdminReceiver::class.java)
@@ -299,6 +301,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     }
 
                     ConstantClass.GETLOCATION ->{
+
+                        dpm.setLocationEnabled(admin, true)
+
                         dpm.setPermissionGrantState(
                             admin,
                             packageName,
@@ -314,6 +319,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         )
 
                         getCurrentLocation(this)
+
                     }
 
                     ConstantClass.SIM_REMOVE_LOCK -> {
@@ -570,8 +576,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     fun hitApiForUploadUninstallAppStatus() {
 
+
         val updaterequest = CustomerSideUpdateUnInstallAppRequest(
-            clientCode = ConstantClass.ClientCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode,""),
             appName = "LockKitApp",
             eventTime = ConstantClass.getCurrentStartDate(),
             customerCode = preference.getStringValue(ConstantClass.CustomerCode, ""),
@@ -595,7 +602,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     fun hitApiForUploadLocation(lat: Double, lng: Double) {
         val request = UploadCustomerLocationRequest(
-            clientCode = ConstantClass.ClientCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode,""),
             customerCode = preference.getStringValue(ConstantClass.CustomerCode, ""),
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
             latitude = lat,

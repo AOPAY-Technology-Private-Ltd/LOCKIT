@@ -69,7 +69,7 @@ suspend fun Context.syncEmis() = withContext(Dispatchers.IO) {
     val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
 
    /* if (hasDateChanged()) {*/
-        Logger.d(ACCESSIBILITYTAG, "Date Changed")
+      /*  Logger.d(ACCESSIBILITYTAG, "Date Changed")
         val preference = SharedPreference(this@syncEmis)
 
         var loanemireq = GetCustomerLoanDetailsReq(
@@ -92,11 +92,11 @@ suspend fun Context.syncEmis() = withContext(Dispatchers.IO) {
         }
         catch (e: Exception) {
             Logger.d(ACCESSIBILITYTAG, e.localizedMessage ?: "")
-        }
+        }*/
 
   /*  }*/
 
-    isEMIDue(sharedPref)
+   // isEMIDue(sharedPref)
 
    /* if(latitude > 0.0 && longitude > 0.0){
         scheduleLocationWorker(latitude, longitude)

@@ -51,6 +51,7 @@ class PackageReceiver : BroadcastReceiver() {
 
     }
 
+
     private fun hitApiForUploadUninstallAppStatus(context: Context, uninstalledPackageName: String) {
         val preference = SharedPreference.getInstance(context) ?: return
         val loginType = preference.getStringValue(ConstantClass.LoginType, "")
@@ -58,7 +59,7 @@ class PackageReceiver : BroadcastReceiver() {
         if (loginType != ConstantClass.Customer) return
 
         val updaterequest = CustomerSideUpdateUnInstallAppRequest(
-            clientCode = ConstantClass.ClientCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode,""),
             appName = "", 
             eventTime = ConstantClass.getCurrentStartDate(),
             customerCode = preference.getStringValue(ConstantClass.CustomerCode, ""),

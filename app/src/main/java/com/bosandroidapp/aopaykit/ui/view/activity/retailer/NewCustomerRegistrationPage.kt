@@ -637,15 +637,20 @@ class NewCustomerRegistrationPage : BaseActivity() {
             var mobnumber = binding.mobileNumber.text.toString()
 
             if (validateLoginInput(mobnumber, this) && !binding.firstName.text.toString().isNullOrBlank() && !binding.lastName.text.toString().isNullOrBlank()) {
+
                 if (isInternetAvailable(this@NewCustomerRegistrationPage)) {
-                    if(ConstantClass.CheckOnlineOrOffline.equals(ConstantClass.kit)){
+
+                    hitApiForVerifyCustomer()
+
+                   /* if(ConstantClass.CheckOnlineOrOffline.equals(ConstantClass.kit)){
                         hitApiForSendOTP(binding.mobileNumber.text.toString().trim(), OTPTYPE) //"Mobile"
-
-                    }else{
-                        hitApiForVerifyCustomer()
                     }
+                    else{
 
-                } else {
+                    }*/
+
+                }
+                else {
                     Toast.makeText(this, "Please check your internet connection!!", Toast.LENGTH_SHORT).show()
                 }
             } else {
@@ -1881,7 +1886,7 @@ class NewCustomerRegistrationPage : BaseActivity() {
             otp = otp,
             consentmessage = "I agree to share my data for verification purposes",
             consentacceptence = "yes",
-            registrationID = "AOP-5039"
+            registrationID = ConstantClass.PENNYDROP_REGISTRATION_ID
         )
 
         Log.d("CibilReq", Gson().toJson(cibilReq))
@@ -2197,38 +2202,76 @@ class NewCustomerRegistrationPage : BaseActivity() {
         var sendOtpReq = VerifyCustomerReq(
             primaryMobileNumber = binding.mobileNumber.text.toString().trim()
         )
-        Log.d("verifycustomerreq", Gson().toJson(sendOtpReq))
-        viewModel.getverifycustomerReq(sendOtpReq).observe(this) { resources ->
-            resources.let {
-                when (it.apiStatus) {
-                    ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("verifycustomerresp", Gson().toJson(response))
-                                ConstantClass.dialog.dismiss()
 
-                                if(response.statuss!!.toLowerCase().equals("true", ignoreCase = true)){
-                                    hitApiForSendOTP(binding.mobileNumber.text.toString().trim(), OTPTYPE) //"Mobile"
-                                }
-                                else{
-                                    // if customer exist
-                                    Toast.makeText(this@NewCustomerRegistrationPage,response.message,Toast.LENGTH_SHORT).show()
+        Log.d("verifycustomerreq", Gson().toJson(sendOtpReq))
+
+        if(ConstantClass.CheckOnlineOrOffline.equals(ConstantClass.kit)){
+            viewModel.getverifycustomerKitReq(sendOtpReq).observe(this) { resources ->
+                resources.let {
+                    when (it.apiStatus) {
+                        ApiStatus.SUCCESS -> {
+                            it.data?.let { users ->
+                                users.body()?.let { response ->
+                                    Log.d("verifycustomerresp", Gson().toJson(response))
+                                    ConstantClass.dialog.dismiss()
+
+                                    if(response.statuss!!.toLowerCase().equals("true", ignoreCase = true)){
+                                        hitApiForSendOTP(binding.mobileNumber.text.toString().trim(), OTPTYPE) //"Mobile"
+                                    }
+                                    else{
+                                        // if customer exist
+                                        Toast.makeText(this@NewCustomerRegistrationPage,response.message,Toast.LENGTH_SHORT).show()
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
-                    }
+                        ApiStatus.ERROR -> {
+                            ConstantClass.dialog.dismiss()
+                        }
 
-                    ApiStatus.LOADING -> {
-                        ConstantClass.OpenLoader(this)
-                    }
+                        ApiStatus.LOADING -> {
+                            ConstantClass.OpenLoader(this)
+                        }
 
+                    }
                 }
             }
         }
+        else{
+            viewModel.getverifycustomerReq(sendOtpReq).observe(this) { resources ->
+                resources.let {
+                    when (it.apiStatus) {
+                        ApiStatus.SUCCESS -> {
+                            it.data?.let { users ->
+                                users.body()?.let { response ->
+                                    Log.d("verifycustomerresp", Gson().toJson(response))
+                                    ConstantClass.dialog.dismiss()
+
+                                    if(response.statuss!!.toLowerCase().equals("true", ignoreCase = true)){
+                                        hitApiForSendOTP(binding.mobileNumber.text.toString().trim(), OTPTYPE) //"Mobile"
+                                    }
+                                    else{
+                                        // if customer exist
+                                        Toast.makeText(this@NewCustomerRegistrationPage,response.message,Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                        }
+
+                        ApiStatus.ERROR -> {
+                            ConstantClass.dialog.dismiss()
+                        }
+
+                        ApiStatus.LOADING -> {
+                            ConstantClass.OpenLoader(this)
+                        }
+
+                    }
+                }
+            }
+        }
+
     }
 
 

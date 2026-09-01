@@ -171,6 +171,7 @@ class AuthRepository(private val apiInterface: ApiInterface) {
   suspend fun getMobileList() = apiInterface.getAllDeviceDetails()
 
   suspend fun verifycustomerReq(req: VerifyCustomerReq) = apiInterface.verifycustomerReq(req)
+  suspend fun verifycustomerKitReq(req: VerifyCustomerReq) = apiInterface.verifycustomerKitReq(req)
 
   suspend fun verifyKitcustomerReq(req: VerifyCustomerReq) = apiInterface.verifyKitcustomerReq(req)
 

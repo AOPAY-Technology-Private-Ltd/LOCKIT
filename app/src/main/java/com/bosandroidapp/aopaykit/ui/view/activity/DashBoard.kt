@@ -1270,7 +1270,7 @@ class DashBoard : BaseActivity() {
     fun hitApiForUploadRetailerDeviceToken() {
         var request = SaveRetailerDeviceTokenRequest(
             deviceType = "Android",
-            clientCode = ConstantClass.ClientCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode,""),
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
             fcmToken = preference.getStringValue(ConstantClass.FCMTOKEN, ""),
         )

@@ -63,6 +63,9 @@ class LockKitPackageTopUpPage : BaseActivity() {
 
         preference = SharedPreference(this)
 
+        binding.notfoundimage.visibility= View.VISIBLE
+        binding.packageDataList.visibility = View.GONE
+        binding.btnPayNow.visibility=View.GONE
         hitApiForGeetingKitPackage()
 
         setOnClickListner()
@@ -158,7 +161,7 @@ class LockKitPackageTopUpPage : BaseActivity() {
 
     fun hitApiForGeetingKitPackage(){
         var request  = KitPlanRequest(
-            companyCode = ConstantClass.ClientCode,
+            companyCode = preference.getStringValue(ConstantClass.ClientCode,""),
             retailerCode = /*"AFD0035"*/ preference.getStringValue(ConstantClass.RetailerCode,"")
         )
 
@@ -212,13 +215,15 @@ class LockKitPackageTopUpPage : BaseActivity() {
 
     private fun setupAdapter(packagedataLits: List<KitPlanListDataItem?>?) {
 
-        if (!packagedataLits.isNullOrEmpty()) {
-            packagedataLits.forEach { it?.isSelected = false }
-            packagedataLits[0]?.isSelected = true
-            updateSummary(packagedataLits[0]!!)
+        val sortedList = packagedataLits?.sortedByDescending { it?.isMostPopular == true }
+
+        if (!sortedList.isNullOrEmpty()) {
+            sortedList.forEach { it?.isSelected = false }
+            sortedList[0]?.isSelected = true
+            updateSummary(sortedList[0]!!)
         }
 
-        adapter = KitPlanAdapter(packagedataLits) { plan ->
+        adapter = KitPlanAdapter(sortedList) { plan ->
             updateSummary(plan)
         }
 

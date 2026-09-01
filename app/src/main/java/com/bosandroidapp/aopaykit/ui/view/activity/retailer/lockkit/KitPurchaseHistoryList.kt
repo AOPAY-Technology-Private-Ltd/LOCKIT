@@ -75,7 +75,7 @@ class KitPurchaseHistoryList : BaseActivity() {
         var retailerCode = preference.getStringValue(ConstantClass.RetailerCode,"")
 
         var reportreq = KitPurchaseHistoryRequest(
-            companyCode = ConstantClass.ClientCode,
+            companyCode = preference.getStringValue(ConstantClass.ClientCode,""),
             retailerCode = retailerCode,
 
         )

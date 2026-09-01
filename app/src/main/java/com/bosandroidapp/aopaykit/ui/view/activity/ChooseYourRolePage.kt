@@ -159,6 +159,8 @@ class ChooseYourRolePage : BaseActivity() {
                     slotIndex = slotIndex
                 )
 
+                Log.d("UploadDeviceInfoReq", Gson().toJson(request))
+
                 viewModel.uploadDeviceInfo(request).observe(this) { resources ->
                     when (resources.apiStatus) {
                         ApiStatus.LOADING -> ConstantClass.OpenLoader(this)

@@ -151,7 +151,7 @@ class CustomerDeviceFragment : Fragment() {
             selectedApps = subApp,
             createdBy = createdBy,
             customerCode = CustomerCode,
-            clientCode = ClientCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode,""),
             retailerCode = retailercode,
             actionStatus = true
         )
@@ -199,7 +199,7 @@ class CustomerDeviceFragment : Fragment() {
     fun hitApiForSendNotificationToCustomer(notificationCode : String,subApp: MutableList<RetailerSendNotificationToCustomer>){
 
         var sendNotificationReq = RetailerSendNotificationToCustomerReq(
-            clientCode = ClientCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode,""),
             customerCode = CustomerCode,
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
             title = "",

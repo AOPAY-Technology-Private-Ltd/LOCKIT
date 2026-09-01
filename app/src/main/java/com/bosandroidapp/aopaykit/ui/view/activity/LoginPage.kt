@@ -276,15 +276,16 @@ class LoginPage : BaseActivity() {
 
                         if(loginType.equals(ConstantClass.Customer)){
 
-                            if (!isAfterOTP && response.retailerCode != ConstantClass.RETAILER_CODE_BIASS_OTP) {
+                           if (!isAfterOTP && response.retailerCode != ConstantClass.RETAILER_CODE_BIASS_OTP) {
                                 hitApiForSendOTP(emailOfMobile, "Mobile")
                                 return@observe
                             }
+
                         }
 
                         val req = NotificationSendTokenRequest(
                             deviceType= ConstantClass.DeviceType,
-                            clientCode = ConstantClass.ClientCode,
+                            clientCode = response.clientCode.toString(),
                             customerCode = response.customerCode.toString(),
                             retailerCode = response.retailerCode.toString(),
                             fcmToken = FireBaseToken
@@ -302,6 +303,7 @@ class LoginPage : BaseActivity() {
                         preference.setStringValue(ConstantClass.LoginType, loginType)
                         preference.setStringValue(ConstantClass.LoginMobileorMailid, emailOfMobile)
                         preference.setStringValue(ConstantClass.Loginpassword, password)
+                        preference.setStringValue(ConstantClass.ClientCode, response.clientCode.toString())
 
                         val intent = Intent(this@LoginPage, DashBoard::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

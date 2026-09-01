@@ -227,7 +227,12 @@ interface ApiInterface {
     suspend fun getEmiSplitDataDetails(@Body req : GetEMISplitDetlailsReq): Response<EmiSplitRes>?
 
 
+
     //  customer mobile verification api
+    @POST("api/V1/AopayFinance/KitVerifyCustomer")
+    suspend fun verifycustomerKitReq(@Body req : VerifyCustomerReq): Response<VerifyCustomerResp>?
+
+
     @POST("api/V1/AopayFinance/VerifyCustomer")
     suspend fun verifycustomerReq(@Body req : VerifyCustomerReq): Response<VerifyCustomerResp>?
 
@@ -785,6 +790,7 @@ interface ApiInterface {
 
     @POST("api/notification/UpdateDeviceActionStatus")
     suspend fun updateActionFromCustomerDevice(@Body req : UpdateCustomerDeviceActionRequest) : Response<UpdateCustomerDeviceActionResponse>?
+
 
 
     @POST("api/V1/AopayFinance/SaveCustomerLocationKit")
