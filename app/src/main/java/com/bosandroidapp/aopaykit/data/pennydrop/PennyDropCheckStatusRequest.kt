@@ -8,5 +8,8 @@ data class PennyDropCheckStatusRequest(
 	val registrationID: String? = null,
 
 	@field:SerializedName("RefID")
-	val refID: String? = null
+	val refID: String? = null,
+
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null
 )

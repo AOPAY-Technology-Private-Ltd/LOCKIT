@@ -17,4 +17,6 @@ data class AadharVerificationReq(
 
     @SerializedName("RegistrationID")
     var registrationId:String,
+    @SerializedName("clientCode")
+    var clientCode: String? = null
 )

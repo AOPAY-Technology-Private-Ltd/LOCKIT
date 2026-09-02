@@ -151,6 +151,7 @@ interface ApiInterface {
     suspend fun getAadharVarification(@Body req : AadharVerificationReq): Response<AadharVerificationResp>?
 
 
+
     // Adhar details
     @POST("api/AOP/V1/Fetch/Digilocker/TransactionID")
     suspend fun getAadharDetails(@Body req : AAdhaarDetailesReq): Response<AadhaarDetailsResponse>?
@@ -492,6 +493,7 @@ interface ApiInterface {
         @Part("CreatedBy") createdBy: RequestBody,
         @Part("MemberShipFees") membershipfees: RequestBody,
         @Part("RetailerCode") retailercode: RequestBody,
+        @Part("clientcode") clientcode: RequestBody,
         @Part("CibilScore") cibilScore: RequestBody,
         @Part("IsAggrementVerified") isAggrementVerified: RequestBody,
         @Part("IsRetailerAggrementVerified") IsRetailerAggrementVerified: RequestBody,

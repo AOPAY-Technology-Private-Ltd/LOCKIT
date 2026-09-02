@@ -7,6 +7,9 @@ data class KitPurchasePlanSaveRequest(
 	@field:SerializedName("companyCode")
 	val companyCode: String? = null,
 
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null,
+
 	@field:SerializedName("gstAmount")
 	val gstAmount: Double? = null,
 

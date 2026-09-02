@@ -84,7 +84,8 @@ class KioskLockPage : BaseActivity() {
             address = "",
             aadharNumber = "",
             panNumber = "",
-            activeStatus = ""
+            activeStatus = "",
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         viewModel.getRetailerProfileReq(req).observe(this) { resources ->

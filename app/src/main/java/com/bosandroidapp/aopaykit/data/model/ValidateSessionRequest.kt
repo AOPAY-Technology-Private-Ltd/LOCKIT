@@ -11,6 +11,9 @@ data class ValidateSessionRequest(
 	val deviceId: String? = null,
 
 	@field:SerializedName("token")
-	val token: String? = null
+	val token: String? = null,
+
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null
 
 )

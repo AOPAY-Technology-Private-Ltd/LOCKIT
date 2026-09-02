@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bosandroidapp.aopaykit.R
@@ -100,12 +101,15 @@ class CustomerActionAdapter(var context: Context, var lifecycleOwner: LifecycleO
         }
     }
 
+
     override fun getItemCount(): Int = actionList.size
+    
 
     fun updateList(newList: MutableList<CategoriesItem?>) {
         actionList = newList
         notifyDataSetChanged()
     }
+
 
 
     fun hitApiForLogin(onApproved: () -> Unit) {
@@ -114,46 +118,100 @@ class CustomerActionAdapter(var context: Context, var lifecycleOwner: LifecycleO
 
         val sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
 
         viewModel.getSessionReq(sessionOutReq).observe(lifecycleOwner) { resources ->
-            if (resources.apiStatus == ApiStatus.SUCCESS) {
-                resources.data?.body()?.let { response ->
-                    Log.d("SessionOutResponse", Gson().toJson(response))
+            when (resources.apiStatus) {
+                ApiStatus.LOADING -> {
+                    ConstantClass.OpenLoader(context)
+                }
+
+                ApiStatus.SUCCESS -> {
+                    val response = resources.data?.body()
+                    if (resources.data?.isSuccessful == true && response != null) {
+                        Log.d("SessionOutResponse", Gson().toJson(response))
+                        if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                            ConstantClass.dialog.dismiss()
+                        }
+                        if (response.status == "Approved") {
+                            // First check passed, now check session expiration
+                            val request = ValidateSessionRequest(
+                                preference.getStringValue(ConstantClass.RetailerCode, ""),
+                                deviceId,
+                                preference.getStringValue(ConstantClass.FCMTOKEN, "")
+                            )
+
+                            Log.d("validaterequest", Gson().toJson(request))
+
+                            viewModel.getSessionExpiredReq(request)
+                                .observe(lifecycleOwner) { validateResources ->
+                                    when (validateResources.apiStatus) {
+                                        ApiStatus.SUCCESS -> {
+                                            val validateResponse = validateResources.data?.body()
+                                            if (validateResources.data?.isSuccessful == true && validateResponse != null) {
+                                                Log.d(
+                                                    "validateresp",
+                                                    Gson().toJson(validateResponse)
+                                                )
+                                                if (validateResponse.status == 1) {
+                                                    onApproved()
+                                                } else if (validateResponse.status == 0) {
+                                                    hitApiForRetailerLogout()
+                                                }
+                                            } else {
+                                                ConstantClass.handleApiError(
+                                                    context,
+                                                    validateResources.data?.code() ?: 0
+                                                )
+                                            }
+                                        }
+
+                                        ApiStatus.ERROR -> {
+                                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                                ConstantClass.dialog.dismiss()
+                                            }
+                                            Toast.makeText(
+                                                context,
+                                                validateResources.message
+                                                    ?: "Something went wrong",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+
+                                        else -> {}
+                                    }
+                                }
+
+                        } else {
+                            ConstantClass.checkActiveStatusAndLogout(
+                                context,
+                                response.status,
+                                preference
+                            )
+                        }
+                    } else {
+                        ConstantClass.handleApiError(context, resources.data?.code() ?: 0)
+                    }
+                }
+
+                ApiStatus.ERROR -> {
                     if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
                         ConstantClass.dialog.dismiss()
                     }
-                    if (response.status == "Approved") {
-                        // First check passed, now check session expiration
-                        val request = ValidateSessionRequest(
-                            preference.getStringValue(ConstantClass.RetailerCode, ""),
-                            deviceId,
-                            preference.getStringValue(ConstantClass.FCMTOKEN, "")
-                        )
-
-                        Log.d("validaterequest", Gson().toJson(request))
-                        viewModel.getSessionExpiredReq(request).observe(lifecycleOwner) { validateResources ->
-                            if (validateResources.apiStatus == ApiStatus.SUCCESS) {
-                                validateResources.data?.body()?.let { validateResponse ->
-                                    Log.d("validateresp", Gson().toJson(validateResponse))
-                                    if (validateResponse.status == 1) {
-                                        onApproved()
-                                    }
-                                    else if (validateResponse.status == 0) {
-                                        hitApiForRetailerLogout()
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        ConstantClass.checkActiveStatusAndLogout(context, response.status, preference)
-                    }
+                    Toast.makeText(
+                        context,
+                        resources.message ?: "Something went wrong",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
+
     }
+
 
 
     fun hitApiForRetailerLogout() {
@@ -183,6 +241,8 @@ class CustomerActionAdapter(var context: Context, var lifecycleOwner: LifecycleO
                 }
             }
         }
+
     }
+
 
 }

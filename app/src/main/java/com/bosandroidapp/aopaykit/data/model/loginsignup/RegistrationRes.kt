@@ -32,7 +32,7 @@ data class RegistrationRes(@SerializedName("lastName")
                            val mobileno: String? = "",
                            @SerializedName("retailerCode")
                            val retailerCode: String? = "",
-                           @SerializedName("clientCode")
+                           @SerializedName("clientcode")
                            val clientCode: String? = "",
                            @SerializedName("profile_Photo")
                            val profilePhoto: String? = "",
@@ -47,6 +47,4 @@ data class RegistrationRes(@SerializedName("lastName")
                            @SerializedName("store_front_Photo")
                            val storefront: String? = "",
                            @SerializedName("company_doc_Photo")
-                           val companydoc: String? = ""
-
-        )
+                           val companydoc: String? = "" )

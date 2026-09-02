@@ -29,5 +29,8 @@ data class CustomerlocationUploadReq(
 	val userName: String? = null,
 
 	@field:SerializedName("longitude")
-	val longitude: Double? = null
+	val longitude: Double? = null,
+
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null
 )

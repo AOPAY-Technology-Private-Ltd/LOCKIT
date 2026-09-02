@@ -305,7 +305,8 @@ class DashBoard : BaseActivity() {
 
     fun hitApiForKitOption() {
         val request = KitOptionRequest(
-            retailerCode = preference.getStringValue(ConstantClass.RetailerCode, "")
+            retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientcode = preference.getStringValue(ConstantClass.ClientCode,"")
         )
 
         Log.d("kitOptionReq", Gson().toJson(request))
@@ -314,44 +315,44 @@ class DashBoard : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("ktResponse", Gson().toJson(response))
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("ktResponse", Gson().toJson(response))
 
-                                val getdata = response.data
+                            val getdata = response.data
 
-                                if (!getdata.isNullOrEmpty()) {
-                                    val data = getdata[0]
-                                    isOnline = data?.isOnline ?: false
-                                    isOffline = data?.isOffline ?: false
-                                    isKit = data?.isKit ?: false
+                            if (!getdata.isNullOrEmpty()) {
+                                val data = getdata[0]
+                                isOnline = data?.isOnline ?: false
+                                isOffline = data?.isOffline ?: false
+                                isKit = data?.isKit ?: false
 
-                                    onlineMaxLoanLimit = data?.onlineMaxLoanLimit ?: 0
-                                    availableOnlineBalance = data?.availableOnlineBalance ?: 0
+                                onlineMaxLoanLimit = data?.onlineMaxLoanLimit ?: 0
+                                availableOnlineBalance = data?.availableOnlineBalance ?: 0
 
-                                    offlineMaxLoanLimit = data?.offlineMaxLoanLimit ?: 0
-                                    availableOfflineBalance = data?.availableOfflineBalance ?: 0
+                                offlineMaxLoanLimit = data?.offlineMaxLoanLimit ?: 0
+                                availableOfflineBalance = data?.availableOfflineBalance ?: 0
 
-                                    kitMaxLoanLimit = data?.kitMaxLoanLimit ?: 0
-                                    availableKitBalance = data?.availableKitBalance ?: 0
+                                kitMaxLoanLimit = data?.kitMaxLoanLimit ?: 0
+                                availableKitBalance = data?.availableKitBalance ?: 0
 
-                                    binding.appBarDashBoard.deskdesign.onlineavailablekit.text = availableOnlineBalance.toString()
-                                    binding.appBarDashBoard.deskdesign.offlineavailablekit.text = availableOfflineBalance.toString()
-                                    binding.appBarDashBoard.deskdesign.lockkitavailablekit.text = availableKitBalance.toString()
+                                binding.appBarDashBoard.deskdesign.onlineavailablekit.text = availableOnlineBalance.toString()
+                                binding.appBarDashBoard.deskdesign.offlineavailablekit.text = availableOfflineBalance.toString()
+                                binding.appBarDashBoard.deskdesign.lockkitavailablekit.text = availableKitBalance.toString()
 
-                                    binding.appBarDashBoard.deskdesign.onlinekitlayout.visibility = if (isOnline) View.VISIBLE else View.GONE
-                                    binding.appBarDashBoard.deskdesign.viewonline.visibility = if (isOnline) View.VISIBLE else View.GONE
-                                    binding.appBarDashBoard.deskdesign.offlinekitlayout.visibility = if (isOffline) View.VISIBLE else View.GONE
-                                    binding.appBarDashBoard.deskdesign.viewoffline.visibility = if (isOffline) View.VISIBLE else View.GONE
-                                    binding.appBarDashBoard.deskdesign.kitlayout.visibility = if (isKit) View.VISIBLE else View.GONE
-                                }
+                                binding.appBarDashBoard.deskdesign.onlinekitlayout.visibility = if (isOnline) View.VISIBLE else View.GONE
+                                binding.appBarDashBoard.deskdesign.viewonline.visibility = if (isOnline) View.VISIBLE else View.GONE
+                                binding.appBarDashBoard.deskdesign.offlinekitlayout.visibility = if (isOffline) View.VISIBLE else View.GONE
+                                binding.appBarDashBoard.deskdesign.viewoffline.visibility = if (isOffline) View.VISIBLE else View.GONE
+                                binding.appBarDashBoard.deskdesign.kitlayout.visibility = if (isKit) View.VISIBLE else View.GONE
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@DashBoard, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        // Avoid immediate infinite recursion
-                        Log.e("KitOption", "Error fetching kit options: ${it.message}")
+                        ConstantClass.handleApiFailure(this@DashBoard, it.message)
                     }
 
                     ApiStatus.LOADING -> {}
@@ -604,7 +605,8 @@ class DashBoard : BaseActivity() {
 
     fun hitApiForGetAndCheckAccessToken() {
         var generateTokenReq = GenerateAccessTokenRequest(
-            fcmToken = preference.getStringValue(ConstantClass.FCMTOKEN, "")
+            fcmToken = preference.getStringValue(ConstantClass.FCMTOKEN, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("tokenreq", Gson().toJson(generateTokenReq))
 
@@ -612,34 +614,35 @@ class DashBoard : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("tokenresp", response.message!!)
-                                Log.d("tokenmessage", Gson().toJson(response))
-                                ConstantClass.dialog.dismiss()
-                                uploadDataOnFirebaseConsole(
-                                    Gson().toJson(response),
-                                    "CurrentLocation"
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("tokenresp", response.message!!)
+                            Log.d("tokenmessage", Gson().toJson(response))
+                            ConstantClass.dialog.dismiss()
+                            uploadDataOnFirebaseConsole(
+                                Gson().toJson(response),
+                                "CurrentLocation"
+                            )
+                            if (response.success!!) {
+                                binding.appBarDashBoard.deskdesign.generatedkey.visibility =
+                                    View.VISIBLE
+                                binding.appBarDashBoard.deskdesign.clicktologin.visibility =
+                                    View.VISIBLE
+                                binding.appBarDashBoard.deskdesign.generatedkey.text =
+                                    response.data!!.apiacessKey
+                                preference.setStringValue(
+                                    ConstantClass.GENERATEKEY,
+                                    response.data?.apiacessKey ?: ""
                                 )
-                                if (response.success!!) {
-                                    binding.appBarDashBoard.deskdesign.generatedkey.visibility =
-                                        View.VISIBLE
-                                    binding.appBarDashBoard.deskdesign.clicktologin.visibility =
-                                        View.VISIBLE
-                                    binding.appBarDashBoard.deskdesign.generatedkey.text =
-                                        response.data!!.apiacessKey
-                                    preference.setStringValue(
-                                        ConstantClass.GENERATEKEY,
-                                        response.data?.apiacessKey ?: ""
-                                    )
-                                }
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@DashBoard, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@DashBoard, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -717,7 +720,8 @@ class DashBoard : BaseActivity() {
         if (registrationID.isNotEmpty()) {
             var request = RetailerWalletAmountReq(
                 retailerID = registrationID,
-                amountType = "CreditBalance"
+                amountType = "CreditBalance",
+                clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
             )
             Log.d("walletAmountReq", Gson().toJson(request))
 
@@ -725,70 +729,55 @@ class DashBoard : BaseActivity() {
                 resources.let {
                     when (it.apiStatus) {
                         ApiStatus.SUCCESS -> {
+                            val response = it.data?.body()
+                            if (it.data?.isSuccessful == true && response != null) {
 
-                            it.data?.let { users ->
-                                users.body()?.let { response ->
-
-                                    resources.data?.errorBody()?.string()?.let {
-                                        Log.e("API_ERROR_BODY", it)
-                                    }
-
-                                    binding.appBarDashBoard.swiperefresh.isRefreshing = false
-                                    Log.d("Walletamount", response.walletBalance!!)
-
-                                    val walletAmount =
-                                        response.walletBalance!!.toDoubleOrNull() ?: 0.0
-                                    val holdAmount = response.holdAmount!!.toDoubleOrNull() ?: 0.0
-                                    val maxholdAmount =
-                                        response.maxholdAmount!!.toDoubleOrNull() ?: 0.0
-                                    val minholdAmount =
-                                        response.miniholdamountrequest!!.toDoubleOrNull() ?: 0.0
-                                    val loanSecurityHoldAmount =
-                                        response.loanSecurityHoldAmount!!.toDoubleOrNull() ?: 0.0
-
-
-                                    AdminLoanApprovedStatus = response.loanApprovalStatus!!
-                                    AdminCibilScore = response.cibilScore!!
-
-                                    val myWalletAmount = walletAmount
-                                    val myWalletAmountStr = String.format("%.2f", myWalletAmount)
-
-                                    WalletBalance = myWalletAmountStr
-                                    HoldAmount = String.format("%.2f", holdAmount)
-                                    MaxHoldingAmount = String.format("%.2f", maxholdAmount)
-                                    MinHoldingAmount = String.format("%.2f", minholdAmount)
-                                    LoanSecurityHoldAmount =
-                                        String.format("%.2f", loanSecurityHoldAmount)
-
-                                    binding.appBarDashBoard.deskdesign.walletamount.text =
-                                        formatIndianAmount(myWalletAmountStr)
-
-                                    Log.d(
-                                        "AdminLoanApprovedStatus",
-                                        "${response.loanApprovalStatus!!} ${response.cibilScore!!}"
-                                    )
-
-
+                                resources.data?.errorBody()?.string()?.let {
+                                    Log.e("API_ERROR_BODY", it)
                                 }
+
+                                binding.appBarDashBoard.swiperefresh.isRefreshing = false
+                                Log.d("Walletamount", response.walletBalance!!)
+
+                                val walletAmount =
+                                    response.walletBalance!!.toDoubleOrNull() ?: 0.0
+                                val holdAmount = response.holdAmount!!.toDoubleOrNull() ?: 0.0
+                                val maxholdAmount =
+                                    response.maxholdAmount!!.toDoubleOrNull() ?: 0.0
+                                val minholdAmount =
+                                    response.miniholdamountrequest!!.toDoubleOrNull() ?: 0.0
+                                val loanSecurityHoldAmount =
+                                    response.loanSecurityHoldAmount!!.toDoubleOrNull() ?: 0.0
+
+
+                                AdminLoanApprovedStatus = response.loanApprovalStatus!!
+                                AdminCibilScore = response.cibilScore!!
+
+                                val myWalletAmount = walletAmount
+                                val myWalletAmountStr = String.format("%.2f", myWalletAmount)
+
+                                WalletBalance = myWalletAmountStr
+                                HoldAmount = String.format("%.2f", holdAmount)
+                                MaxHoldingAmount = String.format("%.2f", maxholdAmount)
+                                MinHoldingAmount = String.format("%.2f", minholdAmount)
+                                LoanSecurityHoldAmount =
+                                    String.format("%.2f", loanSecurityHoldAmount)
+
+                                binding.appBarDashBoard.deskdesign.walletamount.text = formatIndianAmount(myWalletAmountStr)
+
+                                Log.d(
+                                    "AdminLoanApprovedStatus",
+                                    "${response.loanApprovalStatus!!} ${response.cibilScore!!}"
+                                )
+
+
+                            } else {
+                                ConstantClass.handleApiError(this@DashBoard, it.data?.code() ?: 0)
                             }
                         }
 
                         ApiStatus.ERROR -> {
-                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                ConstantClass.dialog.dismiss()
-                            }
-                            binding.appBarDashBoard.swiperefresh.isRefreshing = false
-
-                            // ✅ Print the full error details
-                            Log.e("API_ERROR", "Status: ERROR fetching Wallet Amount")
-                            Log.e("API_ERROR_CODE", resources.data?.code().toString())
-                            Log.e("API_ERROR_MSG", resources.message ?: "Unknown Error")
-
-                            // Optional: Handle specific 500 error
-                            if (resources.data?.code() == 500) {
-                                Log.e("API_ERROR", "Internal Server Error from backend.")
-                            }
-
+                            ConstantClass.handleApiFailure(this@DashBoard, it.message)
                         }
 
                         ApiStatus.LOADING -> {
@@ -806,7 +795,8 @@ class DashBoard : BaseActivity() {
     fun HitApiForEmiList() {
         val loanemireq = GetCustomerLoanDetailsReq(
             loancode = "",
-            customercode = preference.getStringValue(ConstantClass.CustomerCode, "")
+            customercode = preference.getStringValue(ConstantClass.CustomerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("customerloanEmireq", Gson().toJson(loanemireq))
 
@@ -814,100 +804,100 @@ class DashBoard : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("customerLoanemiresp", Gson().toJson(response))
-                                val loanList = response.data
-                                val currentDate = response.indiaTimeIST
-                                Log.d("DashboardCurrentDate", "$currentDate")
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("customerLoanemiresp", Gson().toJson(response))
+                            val loanList = response.data
+                            val currentDate = response.indiaTimeIST
+                            Log.d("DashboardCurrentDate", "$currentDate")
 
-                                listOfDueWithGraceDate.clear()
+                            listOfDueWithGraceDate.clear()
 
-                                lifecycleScope.launch {
+                            lifecycleScope.launch {
 
-                                    loanList!!.forEach { item ->
-                                        val startDate = item?.startDate?.toString() ?: ""
+                                loanList!!.forEach { item ->
+                                    val startDate = item?.startDate?.toString() ?: ""
 
-                                        if (startDate.isNotBlank()) {
-                                            val dueData =
-                                                formatDateToDDMMYYYY(startDate).getCurrentLastPaidDueDate(
-                                                    this@DashBoard,
-                                                    item?.paidEMI!!.toLong(),
-                                                    item?.duesEMI!!.toLong(),
-                                                    item.gracePeriod!!.toInt(),
-                                                    item.customerGracePeriod!!.toInt(),
-                                                    currentDate!!
-                                                )
-                                            listOfDueWithGraceDate.addAll(dueData)
-                                            Log.d("DueDataAlert", "Data $dueData")
-                                        }
+                                    if (startDate.isNotBlank()) {
+                                        val dueData =
+                                            formatDateToDDMMYYYY(startDate).getCurrentLastPaidDueDate(
+                                                this@DashBoard,
+                                                item?.paidEMI!!.toLong(),
+                                                item?.duesEMI!!.toLong(),
+                                                item.gracePeriod!!.toInt(),
+                                                item.customerGracePeriod!!.toInt(),
+                                                currentDate!!
+                                            )
+                                        listOfDueWithGraceDate.addAll(dueData)
+                                        Log.d("DueDataAlert", "Data $dueData")
                                     }
+                                }
 
-                                    preference.setStringValue(
-                                        ConstantClass.EMILIST,
-                                        Gson().toJson(listOfDueWithGraceDate)
+                                preference.setStringValue(
+                                    ConstantClass.EMILIST,
+                                    Gson().toJson(listOfDueWithGraceDate)
+                                )
+                                uploadDataOnFirebaseConsole(
+                                    Gson().toJson(listOfDueWithGraceDate),
+                                    "listOfDueWithGraceDateForAlert"
+                                )
+
+                                Log.d("currentDate", "$currentDate")
+
+                                val currentmillis =
+                                    convertDateToMillis(currentDate!!.convertDate())
+
+                                val sdf = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
+                                sdf.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
+                                Log.d("CHECK", sdf.format(Date(currentmillis)))
+
+
+                                listOfDueWithGraceDate.forEach { dueItem ->
+                                    val dueMillis =
+                                        convertDateToMillis(dueItem.dueDateWithGross)
+
+                                    val diffDays =
+                                        TimeUnit.MILLISECONDS.toDays(dueMillis - currentmillis)
+
+                                    Log.d(
+                                        "EMI_CHECK",
+                                        "DueDate=${dueItem.dueDateWithGross}, diffDays=$diffDays"
                                     )
-                                    uploadDataOnFirebaseConsole(
-                                        Gson().toJson(listOfDueWithGraceDate),
-                                        "listOfDueWithGraceDateForAlert"
-                                    )
 
-                                    Log.d("currentDate", "$currentDate")
-
-                                    val currentmillis =
-                                        convertDateToMillis(currentDate!!.convertDate())
-
-                                    val sdf = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
-                                    sdf.timeZone = TimeZone.getTimeZone("Asia/Kolkata")
-                                    Log.d("CHECK", sdf.format(Date(currentmillis)))
-
-
-                                    listOfDueWithGraceDate.forEach { dueItem ->
-                                        val dueMillis =
-                                            convertDateToMillis(dueItem.dueDateWithGross)
-
-                                        val diffDays =
-                                            TimeUnit.MILLISECONDS.toDays(dueMillis - currentmillis)
-
-                                        Log.d(
-                                            "EMI_CHECK",
-                                            "DueDate=${dueItem.dueDateWithGross}, diffDays=$diffDays"
-                                        )
-
-                                        if (diffDays in 1..3) {
-                                            setupEmiWorkManager(dueMillis)
-                                        }
+                                    if (diffDays in 1..3) {
+                                        setupEmiWorkManager(dueMillis)
                                     }
-
-                                    /*
-                                 // doing for testing purpose.................................................
-                                 val testDueMillis = System.currentTimeMillis() + 15000 // after 15 seconds
-                                    setupEmiWorkManager(testDueMillis)*/
-
                                 }
 
-
-                                val allEmiDone = loanList!!.all { loan ->
-                                    loan!!.tenure.toString() == loan.paidEMI
-                                }
-
-                                if (allEmiDone) {
-                                    clickMakePaymentPage = false
-                                    Log.d("CheckEMI", "$clickMakePaymentPage")
-
-                                } else {
-                                    clickMakePaymentPage = true
-                                    Log.d("CheckEMI", "$clickMakePaymentPage")
-                                }
+                                /*
+                             // doing for testing purpose.................................................
+                             val testDueMillis = System.currentTimeMillis() + 15000 // after 15 seconds
+                                setupEmiWorkManager(testDueMillis)*/
 
                             }
+
+
+                            val allEmiDone = loanList!!.all { loan ->
+                                loan!!.tenure.toString() == loan.paidEMI
+                            }
+
+                            if (allEmiDone) {
+                                clickMakePaymentPage = false
+                                Log.d("CheckEMI", "$clickMakePaymentPage")
+
+                            } else {
+                                clickMakePaymentPage = true
+                                Log.d("CheckEMI", "$clickMakePaymentPage")
+                            }
+
+                        } else {
+                            ConstantClass.handleApiError(this@DashBoard, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-
-
+                        ConstantClass.handleApiFailure(this@DashBoard, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -959,6 +949,7 @@ class DashBoard : BaseActivity() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
@@ -967,32 +958,31 @@ class DashBoard : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SessionOutResponse", Gson().toJson(response))
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
-                                }
-                                ConstantClass.checkActiveStatusAndLogout(
-                                    this@DashBoard,
-                                    response.status,
-                                    preference
-                                )
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SessionOutResponse", Gson().toJson(response))
+                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                ConstantClass.dialog.dismiss()
                             }
+                            ConstantClass.checkActiveStatusAndLogout(
+                                this@DashBoard,
+                                response.status,
+                                preference
+                            )
+                        } else {
+                            ConstantClass.handleApiError(this@DashBoard, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@DashBoard, it.message)
                     }
 
                     ApiStatus.LOADING -> {
-
                     }
                 }
             }
         }
-
 
         var request = ValidateSessionRequest(
             preference.getStringValue(ConstantClass.RetailerCode, ""),
@@ -1005,18 +995,19 @@ class DashBoard : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("validateresp", Gson().toJson(response))
-                                if (response.status == 0) {
-                                    hitApiForRetailerLogout()
-                                }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("validateresp", Gson().toJson(response))
+                            if (response.status == 0) {
+                                hitApiForRetailerLogout()
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@DashBoard, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@DashBoard, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1041,23 +1032,24 @@ class DashBoard : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LogoutResponse", Gson().toJson(response))
-                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
-                                preference.setStringValue(ConstantClass.LoginType, "")
-                                ConstantClass.ClickOnCardDashboard = ""
-                                val intent = Intent(this@DashBoard, ChooseYourRolePage::class.java)
-                                intent.flags =
-                                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                finish()
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LogoutResponse", Gson().toJson(response))
+                            preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                            preference.setStringValue(ConstantClass.LoginType, "")
+                            ConstantClass.ClickOnCardDashboard = ""
+                            val intent = Intent(this@DashBoard, ChooseYourRolePage::class.java)
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            ConstantClass.handleApiError(this@DashBoard, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@DashBoard, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1134,6 +1126,7 @@ class DashBoard : BaseActivity() {
     fun hitApiForUploadDynamicInstallApps() {
 
         val sendInstalledAppOnServerRequest = SendInstalledAppOnServerRequest(
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, ""),
             createdBy = preference.getStringValue(ConstantClass.CustomerCode, ""),
             categories = getCustomerAction()
         )
@@ -1144,22 +1137,23 @@ class DashBoard : BaseActivity() {
                 resources.let {
                     when (it.apiStatus) {
                         ApiStatus.SUCCESS -> {
-                            it.data.let { users ->
-                                users!!.body().let { response ->
+                            val response = it.data?.body()
+                            if (it.data?.isSuccessful == true && response != null) {
 
-                                    Log.d("UploadAppResaponse", Gson().toJson(response))
+                                Log.d("UploadAppResaponse", Gson().toJson(response))
 
-                                    if (response!!.status == true) {
-                                      //  Toast.makeText(this@DashBoard, response.message, Toast.LENGTH_SHORT).show()
-                                    } else {
-                                       // Toast.makeText(this@DashBoard, response.message, Toast.LENGTH_SHORT).show()
-                                    }
+                                if (response!!.status == true) {
+                                  //  Toast.makeText(this@DashBoard, response.message, Toast.LENGTH_SHORT).show()
+                                } else {
+                                   // Toast.makeText(this@DashBoard, response.message, Toast.LENGTH_SHORT).show()
                                 }
+                            } else {
+                                ConstantClass.handleApiError(this@DashBoard, it.data?.code() ?: 0)
                             }
                         }
 
                         ApiStatus.ERROR -> {
-
+                            ConstantClass.handleApiFailure(this@DashBoard, it.message)
                         }
 
                         ApiStatus.LOADING -> {
@@ -1280,14 +1274,17 @@ class DashBoard : BaseActivity() {
             resource.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("saveRetailerDeviceTokenResponse", Gson().toJson(response))
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("saveRetailerDeviceTokenResponse", Gson().toJson(response))
+                        } else {
+                            ConstantClass.handleApiError(this@DashBoard, it.data?.code() ?: 0)
                         }
                     }
 
-                    ApiStatus.ERROR -> {}
+                    ApiStatus.ERROR -> {
+                        ConstantClass.handleApiFailure(this@DashBoard, it.message)
+                    }
                     ApiStatus.LOADING -> {}
                 }
             }

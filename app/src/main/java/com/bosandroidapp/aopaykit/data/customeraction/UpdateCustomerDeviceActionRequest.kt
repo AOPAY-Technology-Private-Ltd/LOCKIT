@@ -6,6 +6,9 @@ data class UpdateCustomerDeviceActionRequest(
 	@field:SerializedName("rid")
 	val rid: Int? = null,
 
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null,
+
 	@field:SerializedName("updatedBy")
 	val updatedBy: String? = null,
 

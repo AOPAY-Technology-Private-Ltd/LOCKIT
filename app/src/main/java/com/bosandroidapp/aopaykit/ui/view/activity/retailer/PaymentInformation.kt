@@ -213,41 +213,41 @@ class PaymentInformation : BaseActivity() {
         bankList.clear()
 
         var req = BankListReq(
-            registrationID = ConstantClass.PAN_VERIFICATION_REGISTRATION_ID
+            registrationID = ConstantClass.PAN_VERIFICATION_REGISTRATION_ID,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         panViewModel.getBankListReq(req).observe(this) { resources ->
           resources.let {
               when (it.apiStatus) {
                   ApiStatus.SUCCESS -> {
-                      it.data.let { users ->
-                          users!!.body().let { response ->
-                              ConstantClass.dialog.dismiss()
+                      val response = it.data?.body()
+                      if (it.data?.isSuccessful == true && response != null) {
+                          ConstantClass.dialog.dismiss()
 
-                              if(response!!.status!!.toLowerCase().equals("false")){
-                                  Toast.makeText(this@PaymentInformation,response.message, Toast.LENGTH_SHORT).show()
-                              }
-
-                              response?.data?.banks?.forEach {
-
-                                  bankList.add(Pair(it!!.name!!, it.id) as Pair<String, Int>)
-
-                                  bankName.add(it!!.name!!)
-                                  bankName.sort()
-
-                                  val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, bankName)
-                                  binding.bankname.setAdapter(adapter)
-
-                              }
-
+                          if(response!!.status!!.toLowerCase().equals("false")){
+                              Toast.makeText(this@PaymentInformation,response.message, Toast.LENGTH_SHORT).show()
                           }
 
+                          response?.data?.banks?.forEach {
+
+                              bankList.add(Pair(it!!.name!!, it.id) as Pair<String, Int>)
+
+                              bankName.add(it!!.name!!)
+                              bankName.sort()
+
+                              val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, bankName)
+                              binding.bankname.setAdapter(adapter)
+
+                          }
+                      } else {
+                          ConstantClass.handleApiError(this@PaymentInformation, it.data?.code() ?: 0)
                       }
 
                   }
 
                   ApiStatus.ERROR -> {
-                      ConstantClass.dialog.dismiss()
+                      ConstantClass.handleApiFailure(this@PaymentInformation, it.message)
                   }
 
                   ApiStatus.LOADING -> {
@@ -630,6 +630,7 @@ class PaymentInformation : BaseActivity() {
             registrationID = ConstantClass.PENNYDROP_REGISTRATION_ID,
             refID = "",
             accountNumber = binding.accountnumber.text.toString().trim(),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("PennyDropReq",Gson().toJson(request))
@@ -638,49 +639,49 @@ class PaymentInformation : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                Log.d("PennyDropRes",Gson().toJson(response))
-                                ConstantClass.dialog.dismiss()
-                                if(response!!.model?.status.equals(ConstantClass.SUCCESS)){
-                                    isBankVerified = true
-                                    var beneficiaryName =  response.model!!.beneficiaryName
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("PennyDropRes",Gson().toJson(response))
+                            ConstantClass.dialog.dismiss()
+                            if(response!!.model?.status.equals(ConstantClass.SUCCESS)){
+                                isBankVerified = true
+                                var beneficiaryName =  response.model!!.beneficiaryName
 
-                                    val isMatch = beneficiaryName!!.trim()
-                                        .lowercase()
-                                        .startsWith(CustFirstName.trim().lowercase())
+                                val isMatch = beneficiaryName!!.trim()
+                                    .lowercase()
+                                    .startsWith(CustFirstName.trim().lowercase())
 
-                                    if(ConstantClass.CheckOnlineOrOffline.equals(ConstantClass.online)){
-                                        if(isMatch){
-                                            if(response!!.model!!.clientRefNum!!.isNotEmpty()){
-                                                hitApiForRequestPennyDropCheckStatus(response!!.model!!.clientRefNum!!)
-                                            }
-                                        }
-                                        else {
-                                            OpenAlertForExit()
-                                        }
-                                    }
-                                    else {
+                                if(ConstantClass.CheckOnlineOrOffline.equals(ConstantClass.online)){
+                                    if(isMatch){
                                         if(response!!.model!!.clientRefNum!!.isNotEmpty()){
                                             hitApiForRequestPennyDropCheckStatus(response!!.model!!.clientRefNum!!)
                                         }
                                     }
+                                    else {
+                                        OpenAlertForExit()
+                                    }
+                                }
+                                else {
+                                    if(response!!.model!!.clientRefNum!!.isNotEmpty()){
+                                        hitApiForRequestPennyDropCheckStatus(response!!.model!!.clientRefNum!!)
+                                    }
+                                }
 
-                                }
-                                else{
-                                    isBankVerified = false
-                                    binding.nextlayout.isEnabled = true
-                                    Toast.makeText(this@PaymentInformation,response.message,Toast.LENGTH_LONG).show()
-                                }
                             }
-
+                            else{
+                                isBankVerified = false
+                                binding.nextlayout.isEnabled = true
+                                Toast.makeText(this@PaymentInformation,response.message,Toast.LENGTH_LONG).show()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@PaymentInformation, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
                         binding.nextlayout.isEnabled = true
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@PaymentInformation, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -699,6 +700,7 @@ class PaymentInformation : BaseActivity() {
         var request = PennyDropCheckStatusRequest(
             registrationID = ConstantClass.PENNYDROP_REGISTRATION_ID,
             refID = refID,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("PennyDropCheckStatusReq",Gson().toJson(request))
@@ -707,33 +709,33 @@ class PaymentInformation : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                Log.d("PennyDropCheckStatusRes",Gson().toJson(response))
-                                ConstantClass.dialog.dismiss()
-                                if(response!!.model?.status.equals(ConstantClass.SUCCESS)){
-                                    AccountNumber = binding.accountnumber.text.toString().trim()
-                                    BankIFSCCode = binding.ifsccode.text.toString().trim()
-                                    BankName =  binding.bankname.text.toString().trim()
-                                    AccountType = binding.acounttype.selectedItem.toString().trim()
-                                    BranchName = binding.branchname.text.toString().trim()
-                                    AccountHolderName= binding.banificeryName.text.toString().trim()
-                                    BranchAddress= binding.branchaddress.text.toString().trim()
-                                    BankID = bankList.find { it.first == BankName }?.second!!
-                                    Log.d("BankID", "${BankID}")
-                                    setselectionForSecondCard()
-                                }
-                                else{
-                                    Toast.makeText(this@PaymentInformation,response.message,Toast.LENGTH_SHORT).show()
-                                }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("PennyDropCheckStatusRes",Gson().toJson(response))
+                            ConstantClass.dialog.dismiss()
+                            if(response!!.model?.status.equals(ConstantClass.SUCCESS)){
+                                AccountNumber = binding.accountnumber.text.toString().trim()
+                                BankIFSCCode = binding.ifsccode.text.toString().trim()
+                                BankName =  binding.bankname.text.toString().trim()
+                                AccountType = binding.acounttype.selectedItem.toString().trim()
+                                BranchName = binding.branchname.text.toString().trim()
+                                AccountHolderName= binding.banificeryName.text.toString().trim()
+                                BranchAddress= binding.branchaddress.text.toString().trim()
+                                BankID = bankList.find { it.first == BankName }?.second!!
+                                Log.d("BankID", "${BankID}")
+                                setselectionForSecondCard()
                             }
-
+                            else{
+                                Toast.makeText(this@PaymentInformation,response.message,Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@PaymentInformation, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@PaymentInformation, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -751,7 +753,8 @@ class PaymentInformation : BaseActivity() {
     fun hitApiForSendOTP(mailidormobile: String, type: String) {
         var sendOtpReq = SendOtpReq(
             mobileoremailId = mailidormobile,
-            otpType = type
+            otpType = type,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("SendOTPREQ", Gson().toJson(sendOtpReq))
 
@@ -759,27 +762,28 @@ class PaymentInformation : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SendRes", response.message)
-                                var otp = response.value
-                                Log.d("OTP", otp)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SendRes", response.message)
+                            var otp = response.value
+                            Log.d("OTP", otp)
 
-                                if (response.statuss.equals("True")) {
-                                        var firstName = binding.refername.text.toString()
-                                        var customerName = firstName
-                                        hitApiForMobVerify(mailidormobile, customerName, otp)
-                                }
-                                else{
-                                    Toast.makeText(this@PaymentInformation,response.message,Toast.LENGTH_SHORT).show()
-                                    ConstantClass.dialog.dismiss()
-                                }
+                            if (response.statuss.equals("True")) {
+                                    var firstName = binding.refername.text.toString()
+                                    var customerName = firstName
+                                    hitApiForMobVerify(mailidormobile, customerName, otp)
                             }
+                            else{
+                                Toast.makeText(this@PaymentInformation,response.message,Toast.LENGTH_SHORT).show()
+                                ConstantClass.dialog.dismiss()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@PaymentInformation, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@PaymentInformation, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -905,38 +909,40 @@ class PaymentInformation : BaseActivity() {
         var verifyotpreq = VerifyOTPReq(
             mobileormailid = mobileOrEmailID,
             otp = otp,
-            logintype = message
+            logintype = message,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("VerifyOTPReq", Gson().toJson(verifyotpreq))
         viewModel.verifyOTPReq(verifyotpreq).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                ConstantClass.dialog.dismiss()
-                                Log.d("VerifyOTPRes", response.message)
-                                if (response.statuss.equals("True")) {
-                                        binding.refmobno.isEnabled = false
-                                        isRefMobVerified = true
-                                        binding.verifyiconphonenumber.visibility = View.VISIBLE
-                                        binding.verifymobilenumber.visibility = View.GONE
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
+                            Log.d("VerifyOTPRes", response.message)
+                            if (response.statuss.equals("True")) {
+                                    binding.refmobno.isEnabled = false
+                                    isRefMobVerified = true
+                                    binding.verifyiconphonenumber.visibility = View.VISIBLE
+                                    binding.verifymobilenumber.visibility = View.GONE
 
-                                    if (dialog != null && dialog.isShowing) {
-                                        dialog.dismiss()
-                                    }
-                                }else{
-                                    isRefMobVerified = false
-
+                                if (dialog != null && dialog.isShowing) {
+                                    dialog.dismiss()
                                 }
-                                Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                            }else{
+                                isRefMobVerified = false
+
                             }
+                            Toast.makeText(this@PaymentInformation, response.message, Toast.LENGTH_SHORT).show()
+                        } else {
+                            ConstantClass.handleApiError(this@PaymentInformation, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@PaymentInformation, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -953,36 +959,37 @@ class PaymentInformation : BaseActivity() {
     fun hitApiForReSendOTP(mailidormobile: String, type: String) {
         var sendOtpReq = SendOtpReq(
             mobileoremailId = mailidormobile,
-            otpType = type
+            otpType = type,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("SendOTPREQ", Gson().toJson(sendOtpReq))
         viewModel.sendOTPReq(sendOtpReq).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                ConstantClass.dialog.dismiss()
-                                Log.d("SendRes", response.message)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
+                            Log.d("SendRes", response.message)
 
-                                if(response.statuss.equals("True")){
-                                    var otp = response.value
-                                    var firstName = binding.refername.text.toString()
-                                    var customerName = firstName
-                                    hitApiForResendMobVerify(mailidormobile, customerName, otp)
-                                }
-                                else{
-                                    Toast.makeText(this@PaymentInformation,response.message,Toast.LENGTH_SHORT).show()
-                                    ConstantClass.dialog.dismiss()
-                                }
-
+                            if(response.statuss.equals("True")){
+                                var otp = response.value
+                                var firstName = binding.refername.text.toString()
+                                var customerName = firstName
+                                hitApiForResendMobVerify(mailidormobile, customerName, otp)
                             }
+                            else{
+                                Toast.makeText(this@PaymentInformation,response.message,Toast.LENGTH_SHORT).show()
+                                ConstantClass.dialog.dismiss()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@PaymentInformation, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@PaymentInformation, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1264,6 +1271,7 @@ class PaymentInformation : BaseActivity() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
@@ -1272,19 +1280,20 @@ class PaymentInformation : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SessionOutResponse", Gson().toJson(response))
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
-                                }
-                                ConstantClass.checkActiveStatusAndLogout(this@PaymentInformation, response.status, preference)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SessionOutResponse", Gson().toJson(response))
+                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                ConstantClass.dialog.dismiss()
                             }
+                            ConstantClass.checkActiveStatusAndLogout(this@PaymentInformation, response.status, preference)
+                        } else {
+                            ConstantClass.handleApiError(this@PaymentInformation, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@PaymentInformation, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1305,18 +1314,19 @@ class PaymentInformation : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("validateresp", Gson().toJson(response))
-                                if(response.status==0){
-                                    hitApiForRetailerLogout()
-                                }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("validateresp", Gson().toJson(response))
+                            if(response.status==0){
+                                hitApiForRetailerLogout()
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@PaymentInformation, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@PaymentInformation, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1341,22 +1351,23 @@ class PaymentInformation : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LogoutResponse", Gson().toJson(response))
-                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
-                                preference.setStringValue(ConstantClass.LoginType, "")
-                                ConstantClass.ClickOnCardDashboard = ""
-                                val intent = Intent(this@PaymentInformation, ChooseYourRolePage::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                finish()
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LogoutResponse", Gson().toJson(response))
+                            preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                            preference.setStringValue(ConstantClass.LoginType, "")
+                            ConstantClass.ClickOnCardDashboard = ""
+                            val intent = Intent(this@PaymentInformation, ChooseYourRolePage::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            ConstantClass.handleApiError(this@PaymentInformation, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@PaymentInformation, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1460,6 +1471,7 @@ class PaymentInformation : BaseActivity() {
             mobileNumber = mob,
             emailId = emailId,
             registrationId = ConstantClass.PAN_VERIFICATION_REGISTRATION_ID,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("AadharVerificationreq", Gson().toJson(aadharverificationreq))
@@ -1468,29 +1480,30 @@ class PaymentInformation : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                ConstantClass.dialog.dismiss()
-                                Log.d("AadharVerificationResp", Gson().toJson(response))
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
+                            Log.d("AadharVerificationResp", Gson().toJson(response))
 
-                                if (response!!.code == null) {
-                                    Toast.makeText(this@PaymentInformation, response.message, Toast.LENGTH_SHORT).show()
-                                }
-                                if (response!!.code.equals("200")) {
-                                    AadharCardReferenceWebViewDIGILockerPage.digilockerLink = response!!.model.kycUrl
-                                    RefAadharTransactionIdNo = response.model.transactionId
-                                    Log.d("Referencedigilockeurl",  AadharCardReferenceWebViewDIGILockerPage.digilockerLink)
-                                    startActivity(Intent(this@PaymentInformation, AadharCardReferenceWebViewDIGILockerPage::class.java))
-                                }
-                                else {
-                                    Toast.makeText(this@PaymentInformation, response.message, Toast.LENGTH_SHORT).show()
-                                }
+                            if (response!!.code == null) {
+                                Toast.makeText(this@PaymentInformation, response.message, Toast.LENGTH_SHORT).show()
                             }
+                            if (response!!.code.equals("200")) {
+                                AadharCardReferenceWebViewDIGILockerPage.digilockerLink = response!!.model.kycUrl
+                                RefAadharTransactionIdNo = response.model.transactionId
+                                Log.d("Referencedigilockeurl",  AadharCardReferenceWebViewDIGILockerPage.digilockerLink)
+                                startActivity(Intent(this@PaymentInformation, AadharCardReferenceWebViewDIGILockerPage::class.java))
+                            }
+                            else {
+                                Toast.makeText(this@PaymentInformation, response.message, Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@PaymentInformation, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@PaymentInformation, it.message)
                     }
 
                     ApiStatus.LOADING -> {

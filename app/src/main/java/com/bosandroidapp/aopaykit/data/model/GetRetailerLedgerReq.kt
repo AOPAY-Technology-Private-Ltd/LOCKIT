@@ -11,5 +11,8 @@ data class GetRetailerLedgerReq(
 	val fromDate: String? = null,
 
 	@field:SerializedName("toDate")
-	val toDate: String? = null
+	val toDate: String? = null,
+
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null
 )

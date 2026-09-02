@@ -29,5 +29,8 @@ data class EnachDateUploadReq(
 	val emBankName: String? = null,
 
 	@field:SerializedName("emIfscCode")
-	val emIfscCode: String? = null
+	val emIfscCode: String? = null,
+
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null
 )

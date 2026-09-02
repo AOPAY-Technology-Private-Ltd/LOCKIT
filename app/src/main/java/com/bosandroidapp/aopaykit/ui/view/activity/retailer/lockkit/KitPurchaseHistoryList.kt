@@ -75,9 +75,9 @@ class KitPurchaseHistoryList : BaseActivity() {
         var retailerCode = preference.getStringValue(ConstantClass.RetailerCode,"")
 
         var reportreq = KitPurchaseHistoryRequest(
-            companyCode = preference.getStringValue(ConstantClass.ClientCode,""),
+            companyCode = preference.getStringValue(ConstantClass.ClientCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, ""),
             retailerCode = retailerCode,
-
         )
         Log.d("kitHistoryReq", Gson().toJson(reportreq))
 
@@ -128,6 +128,7 @@ class KitPurchaseHistoryList : BaseActivity() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))

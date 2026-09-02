@@ -57,7 +57,8 @@ class SettlementLoanReport : BaseActivity(){
         var retailerCode = preference.getStringValue(ConstantClass.RetailerCode,"")
 
         var reportreq = LoanSettlementReportReq(
-            retailerCode = retailerCode
+            retailerCode = retailerCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("ReportReq", Gson().toJson(reportreq))

@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class LogoutReq (
     @SerializedName("retailerCode")
-    var retailerCode:String
+    var retailerCode:String,
+    @SerializedName("clientCode")
+    var clientCode:String? = null
 
 )

@@ -57,6 +57,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+
 class IDVerificationPage : BaseActivity() {
     lateinit var binding: ActivityIdverificationPageBinding
     lateinit var viewModel: AuthenticationViewModel
@@ -184,6 +185,7 @@ class IDVerificationPage : BaseActivity() {
 
         }
 
+
         binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
 
             val radioButton = group.findViewById<RadioButton>(checkedId)
@@ -239,8 +241,9 @@ class IDVerificationPage : BaseActivity() {
         }
 
         binding.cibilcardlayout.setOnClickListener {
-            startActivity(Intent(this@IDVerificationPage, CivilReportForm::class.java))
+           // startActivity(Intent(this@IDVerificationPage, CivilReportForm::class.java))
         }
+
 
     }
 
@@ -251,7 +254,6 @@ class IDVerificationPage : BaseActivity() {
         hitApiForLogin()
         hitApiForKitOption()
     }
-
 
     fun updateUIVisibility() {
         if (PanNumber.isBlank()) {
@@ -269,6 +271,7 @@ class IDVerificationPage : BaseActivity() {
         }
     }
 
+
     fun hitApiForAadharVerification() {
         val firstName = preference.getStringValue(ConstantClass.FirstName, "").orEmpty()
         val lastName = preference.getStringValue(ConstantClass.LastName, "").orEmpty()
@@ -281,6 +284,7 @@ class IDVerificationPage : BaseActivity() {
             mobileNumber = mob,
             emailId = emailId,
             registrationId = ConstantClass.PAN_VERIFICATION_REGISTRATION_ID,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("AadharVerificationreq", Gson().toJson(aadharverificationreq))
@@ -289,39 +293,40 @@ class IDVerificationPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                ConstantClass.dialog.dismiss()
-                                Log.d("AadharVerificationResp", Gson().toJson(response))
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
+                            Log.d("AadharVerificationResp", Gson().toJson(response))
 
-                                if (response!!.code == null) {
-                                    Toast.makeText(this@IDVerificationPage, response.message, Toast.LENGTH_SHORT).show()
-                                }
-                                if (response!!.code.equals("200")) {
-                                    digilockerLink = response!!.model.kycUrl
-                                    AadharTransactionIdNo = response.model.transactionId
-                                    Log.d("Customerdigilockeurl", digilockerLink)
-
-                                   /* val url = digilockerLink
-
-                                    val customTabsIntent = CustomTabsIntent.Builder()
-                                        .setShowTitle(true)
-                                        .build()
-
-                                    customTabsIntent.launchUrl(this, Uri.parse(url))*/
-
-                                    startActivity(Intent(this@IDVerificationPage, AadharCardWebViewDIGILockerPage::class.java))
-                                    finish()
-                                }
-                                else {
-                                    Toast.makeText(this@IDVerificationPage, response.message, Toast.LENGTH_SHORT).show()
-                                }
+                            if (response!!.code == null) {
+                                Toast.makeText(this@IDVerificationPage, response.message, Toast.LENGTH_SHORT).show()
                             }
+                            if (response!!.code.equals("200")) {
+                                digilockerLink = response!!.model.kycUrl
+                                AadharTransactionIdNo = response.model.transactionId
+                                Log.d("Customerdigilockeurl", digilockerLink)
+
+                               /* val url = digilockerLink
+
+                                val customTabsIntent = CustomTabsIntent.Builder()
+                                    .setShowTitle(true)
+                                    .build()
+
+                                customTabsIntent.launchUrl(this, Uri.parse(url))*/
+
+                                startActivity(Intent(this@IDVerificationPage, AadharCardWebViewDIGILockerPage::class.java))
+                                finish()
+                            }
+                            else {
+                                Toast.makeText(this@IDVerificationPage, response.message, Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@IDVerificationPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@IDVerificationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -382,6 +387,7 @@ class IDVerificationPage : BaseActivity() {
         dialog.show()
 
     }
+
 
     private fun showDatePicker(dob: TextView, done: TextView) {
         val calendar = Calendar.getInstance()
@@ -450,6 +456,7 @@ class IDVerificationPage : BaseActivity() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
@@ -458,19 +465,20 @@ class IDVerificationPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SessionOutResponse", Gson().toJson(response))
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
-                                }
-                                ConstantClass.checkActiveStatusAndLogout(this@IDVerificationPage, response.status, preference)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SessionOutResponse", Gson().toJson(response))
+                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                ConstantClass.dialog.dismiss()
                             }
+                            ConstantClass.checkActiveStatusAndLogout(this@IDVerificationPage, response.status, preference)
+                        } else {
+                            ConstantClass.handleApiError(this@IDVerificationPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@IDVerificationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -491,18 +499,19 @@ class IDVerificationPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("validateresp", Gson().toJson(response))
-                                if(response.status==0){
-                                    hitApiForRetailerLogout()
-                                }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("validateresp", Gson().toJson(response))
+                            if(response.status==0){
+                                hitApiForRetailerLogout()
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@IDVerificationPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@IDVerificationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -527,22 +536,23 @@ class IDVerificationPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LogoutResponse", Gson().toJson(response))
-                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
-                                preference.setStringValue(ConstantClass.LoginType, "")
-                                ConstantClass.ClickOnCardDashboard = ""
-                                val intent = Intent(this@IDVerificationPage, ChooseYourRolePage::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                finish()
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LogoutResponse", Gson().toJson(response))
+                            preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                            preference.setStringValue(ConstantClass.LoginType, "")
+                            ConstantClass.ClickOnCardDashboard = ""
+                            val intent = Intent(this@IDVerificationPage, ChooseYourRolePage::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            ConstantClass.handleApiError(this@IDVerificationPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@IDVerificationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -558,54 +568,54 @@ class IDVerificationPage : BaseActivity() {
     fun hitApiForKitOption(){
         binding.radiolayout.visibility=View.GONE
         var request = KitOptionRequest(
-            retailerCode = preference.getStringValue(ConstantClass.RetailerCode,"")
+            retailerCode = preference.getStringValue(ConstantClass.RetailerCode,""),
+            clientcode = preference.getStringValue(ConstantClass.ClientCode,"")
         )
 
         viewModel.getRequestKitOption(request).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("ktResponse", Gson().toJson(response))
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("ktResponse", Gson().toJson(response))
 
-                                 if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
-                                 }
+                             if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                ConstantClass.dialog.dismiss()
+                             }
 
-                                 var getdata = response.data
+                             var getdata = response.data
 
-                                 getdata.let {
-                                     isOnline = it?.get(0)!!.isOnline!!
-                                     isOffline = it?.get(0)!!.isOffline!!
-                                     isKit = it?.get(0)!!.isKit!!
+                             getdata.let {
+                                 isOnline = it?.get(0)!!.isOnline!!
+                                 isOffline = it?.get(0)!!.isOffline!!
+                                 isKit = it?.get(0)!!.isKit!!
 
-                                     onlineMaxLoanLimit = it?.get(0)!!.onlineMaxLoanLimit!!
-                                     availableOnlineBalance = it?.get(0)!!.availableOnlineBalance!!
+                                 onlineMaxLoanLimit = it?.get(0)!!.onlineMaxLoanLimit!!
+                                 availableOnlineBalance = it?.get(0)!!.availableOnlineBalance!!
 
-                                     offlineMaxLoanLimit = it?.get(0)!!.offlineMaxLoanLimit!!
-                                     availableOfflineBalance = it?.get(0)!!.availableOfflineBalance!!
+                                 offlineMaxLoanLimit = it?.get(0)!!.offlineMaxLoanLimit!!
+                                 availableOfflineBalance = it?.get(0)!!.availableOfflineBalance!!
 
-                                     kitMaxLoanLimit = it?.get(0)!!.kitMaxLoanLimit!!
-                                     availableKitBalance = it?.get(0)!!.availableKitBalance!!
+                                 kitMaxLoanLimit = it?.get(0)!!.kitMaxLoanLimit!!
+                                 availableKitBalance = it?.get(0)!!.availableKitBalance!!
 
-                                     // view of ui option
-                                     binding.radioButton1.visibility = if (isOnline) View.VISIBLE else View.GONE
-                                     binding.radioButton2.visibility = if (isOffline) View.VISIBLE else View.GONE
-                                     binding.radioButton3.visibility = if (isKit) View.VISIBLE else View.GONE
-                                     binding.radiolayout.visibility=View.VISIBLE
+                                 // view of ui option
+                                 binding.radioButton1.visibility = if (isOnline) View.VISIBLE else View.GONE
+                                 binding.radioButton2.visibility = if (isOffline) View.VISIBLE else View.GONE
+                                 binding.radioButton3.visibility = if (isKit) View.VISIBLE else View.GONE
+                                 binding.radiolayout.visibility=View.VISIBLE
 
-                                     binding.swiperefresh.isRefreshing = false
+                                 binding.swiperefresh.isRefreshing = false
 
-                                 }
-                            }
+                             }
+                        } else {
+                            ConstantClass.handleApiError(this@IDVerificationPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                            ConstantClass.dialog.dismiss()
-                        }
+                        ConstantClass.handleApiFailure(this@IDVerificationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {

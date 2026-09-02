@@ -89,6 +89,7 @@ class PackageReceiver : BroadcastReceiver() {
         if (loginType != ConstantClass.Customer) return
 
         val sendInstalledAppOnServerRequest = SendInstalledAppOnServerRequest(
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, ""),
             createdBy = preference.getStringValue(ConstantClass.CustomerCode, ""),
             categories = ConstantClass.getInstalledApps(context.packageManager, context)
         )

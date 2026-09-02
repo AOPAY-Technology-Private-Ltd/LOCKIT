@@ -196,7 +196,8 @@ class EmiLoanDetailPage : BaseActivity() {
 
         var request = RetailerWalletAmountReq(
             retailerID = registrationID,
-            amountType = "CreditBalance"
+            amountType = "CreditBalance",
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("walletAmountReq", Gson().toJson(request))
@@ -576,7 +577,8 @@ class EmiLoanDetailPage : BaseActivity() {
                                 eMINumbers = "EMI${emiNumbers}",
                                 customerCode = preference.getStringValue(ConstantClass.CustomerCode, ""),
                                 payCustomerName = "${preference.getStringValue(ConstantClass.FirstName, "")} ${preference.getStringValue(ConstantClass.LastName, "")}",
-                                loanCode = loanCode
+                                loanCode = loanCode,
+                                clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
                             )
 
                             hitApiForRequestPG(req)
@@ -682,7 +684,9 @@ class EmiLoanDetailPage : BaseActivity() {
     fun HitApiForEmiList(){
         var loanemireq = GetCustomerLoanDetailsReq(
             loancode = LoanId,
-            customercode = "")
+            customercode = "",
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
+        )
         Log.d("customerloanEmireq", Gson().toJson(loanemireq))
 
         viewModel.getCustomerLoanEmiDetailsReq(loanemireq).observe(this) { resources ->
@@ -975,7 +979,8 @@ class EmiLoanDetailPage : BaseActivity() {
             tdsAmount = 0,
             serviceschargeGSTAmount = 0,
             transactionStatus = "Approved",
-            loanCode = loanCode
+            loanCode = loanCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("payoutrequest", Gson().toJson(request))
@@ -1109,7 +1114,8 @@ class EmiLoanDetailPage : BaseActivity() {
     fun hitApiForSendOTP(mailidormobile: String, type: String) {
         var sendOtpReq = SendOtpReq(
             mobileoremailId = mailidormobile,
-            otpType = type
+            otpType = type,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("SendOTPREQ", Gson().toJson(sendOtpReq))
 
@@ -1280,7 +1286,8 @@ class EmiLoanDetailPage : BaseActivity() {
     fun hitApiForReSendOTP(mailidormobile: String, type: String) {
         var sendOtpReq = SendOtpReq(
             mobileoremailId = mailidormobile,
-            otpType = type
+            otpType = type,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("SendOTPREQ", Gson().toJson(sendOtpReq))
         viewModel.sendOTPReq(sendOtpReq).observe(this) { resources ->

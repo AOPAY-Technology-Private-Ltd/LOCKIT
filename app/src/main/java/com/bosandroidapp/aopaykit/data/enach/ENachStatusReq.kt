@@ -8,5 +8,8 @@ data class ENachStatusReq(
 	val registrationID: String? = null,
 
 	@field:SerializedName("EMandateID")
-	val eMandateID: String? = null
+	val eMandateID: String? = null,
+
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null
 )

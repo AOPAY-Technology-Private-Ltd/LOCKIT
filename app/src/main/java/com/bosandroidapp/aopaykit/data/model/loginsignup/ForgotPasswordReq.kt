@@ -6,5 +6,7 @@ data class ForgotPasswordReq(
     @SerializedName("mobileOrEmailID")
     var mobileormailid:String,
     @SerializedName("password")
-    var password:String
+    var password:String,
+    @SerializedName("clientCode")
+    var clientCode: String? = null
 )

@@ -7,6 +7,7 @@ data class GetIsEligibleLoanReq(
     var panNumber:String,
 
     @SerializedName("aadharNumber")
-    var aadharNumber : String
-
+    var aadharNumber : String,
+    @SerializedName("clientCode")
+    var clientCode: String? = null
 )

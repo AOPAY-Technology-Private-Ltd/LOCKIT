@@ -89,14 +89,17 @@ import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 import javax.crypto.SecretKey
 
+
+
 object ConstantClass {
 
      // Procustion  API
-    /*  const val BASE_URL = "https://api.aopay.finance/"
+
+     /* const val BASE_URL = "https://api.aopay.finance/"
         const val BASE_URL_IMAGE = "https://api.aopay.finance"
 
         const val PAN_VERIFICATION_REGISTRATION_ID = "AOP-5054"
-        const val PENNYDROP_REGISTRATION_ID = "AOP-5054"*/
+        const val PENNYDROP_REGISTRATION_ID ="AOP-5054"*/
 
 
     // UAT API
@@ -107,7 +110,7 @@ object ConstantClass {
       const val PENNYDROP_REGISTRATION_ID = "AOP-554"
 
 
-     const val RETAILER_CODE_BIASS_OTP = "AFD0064"
+     const val RETAILER_CODE_BIASS_OTP = "AFD0064" // UAT Common retailer code
      const val SMS_BASE_URL = "http://web.adcruxmedia.in/"
      const val PAN_BASE_URL = "https://api.aopay.in/"
      const val SMS_API_KEY = "KBSxc26XqjoiR7SA"
@@ -1010,6 +1013,7 @@ object ConstantClass {
                 e.printStackTrace()
             }
         }
+
     }
 
 
@@ -1113,6 +1117,7 @@ object ConstantClass {
 
         Log.d("LocationWorker", "Periodic worker scheduled")
     }
+
 
 
     fun decodeBase64(base64Value: String): String {
@@ -1269,6 +1274,27 @@ object ConstantClass {
         } catch (e: Exception) {
             "₹0"
         }
+    }
+
+
+    fun handleApiError(context: Context, code: Int) {
+        if (dialog != null && dialog.isShowing) {
+            dialog.dismiss()
+        }
+        val message = when (code) {
+            404 -> "Resource not found (404)"
+            500 -> "Internal Server Error (500)"
+            else -> "Server Error: $code"
+        }
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+
+    fun handleApiFailure(context: Context, message: String?) {
+        if (dialog != null && dialog.isShowing) {
+            dialog.dismiss()
+        }
+        Toast.makeText(context, message ?: "Something went wrong", Toast.LENGTH_SHORT).show()
     }
 
 

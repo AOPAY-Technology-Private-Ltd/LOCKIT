@@ -319,31 +319,28 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("customerLoanemiresp", Gson().toJson(response))
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("customerLoanemiresp", Gson().toJson(response))
 
-                                if(ConstantClass.dialog!=null && ConstantClass.dialog.isShowing){
-                                    ConstantClass.dialog.dismiss()
-                                }
-
-                                if(response.status==true){
-                                    hitApiForSendNotificationToCustomer(action,subApp)
-                                }
-                                else {
-                                    Toast.makeText(this,response.message,Toast.LENGTH_SHORT).show()
-                                }
-
+                            if(ConstantClass.dialog!=null && ConstantClass.dialog.isShowing){
+                                ConstantClass.dialog.dismiss()
                             }
+
+                            if(response.status==true){
+                                hitApiForSendNotificationToCustomer(action,subApp)
+                            }
+                            else {
+                                Toast.makeText(this@LockKitCustomerDetailsInfoPage,response.message,Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitCustomerDetailsInfoPage, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        if(ConstantClass.dialog!=null && ConstantClass.dialog.isShowing){
-                            ConstantClass.dialog.dismiss()
-                        }
-
+                        ConstantClass.handleApiFailure(this@LockKitCustomerDetailsInfoPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -374,38 +371,37 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                Log.d("notificationResponse",Gson().toJson(response))
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("notificationResponse",Gson().toJson(response))
 
-                                if (response!!.status == true) {
-                                    if(notificationCode.equals(ConstantClass.DevicePin)){
-                                         ConstantClass.dialog.dismiss()
-                                         hitApiForDoActionNotification(ConstantClass.Lock,true)
-                                         return@observe
-                                    }
-                                    lifecycleScope.launch {
-                                        delay(3000)
-                                        ConstantClass.dialog.dismiss()
-                                        hitApiForUpdateActionStatus()
-                                        AuthRepository.notifyCustomerListChanged()
-                                    }
-
-                                   // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show()
+                            if (response!!.status == true) {
+                                if(notificationCode.equals(ConstantClass.DevicePin)){
+                                     ConstantClass.dialog.dismiss()
+                                     hitApiForDoActionNotification(ConstantClass.Lock,true)
+                                     return@observe
                                 }
-                                else {
+                                lifecycleScope.launch {
+                                    delay(3000)
                                     ConstantClass.dialog.dismiss()
-                                    Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show()
+                                    hitApiForUpdateActionStatus()
+                                    AuthRepository.notifyCustomerListChanged()
                                 }
 
+                               // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show()
                             }
-
+                            else {
+                                ConstantClass.dialog.dismiss()
+                                Toast.makeText(this@LockKitCustomerDetailsInfoPage, response!!.message, Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitCustomerDetailsInfoPage, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@LockKitCustomerDetailsInfoPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -419,54 +415,60 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
     }
 
     fun hitApiForUpdateActionStatus() {
-        val request = GetPendingDeviceActionReq(customerCode = kitcustomerData.customerCodes.toString().trim())
+        val request = GetPendingDeviceActionReq(
+            customerCode = kitcustomerData.customerCodes.toString().trim(),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
+        )
 
         viewModel.getActiveDeviceActionRequest(request).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
 
-                                Log.d("notificationResponse", Gson().toJson(response))
-                                if (response.status == true && response.data != null) {
+                            Log.d("notificationResponse", Gson().toJson(response))
+                            if (response.status == true && response.data != null) {
 
-                                response.data.let { it->
+                            response.data.let { it->
 
-                                    it.forEach { item ->
+                                it.forEach { item ->
 
-                                        var notificationCode = item!!.notificationCode
-                                        var actionStatus = item!!.actionStatus
-                                        var selectedapps = item!!.selectedApps
+                                    var notificationCode = item!!.notificationCode
+                                    var actionStatus = item!!.actionStatus
+                                    var selectedapps = item!!.selectedApps
 
-                                        if(notificationCode==ConstantClass.Lock){
-                                            selectedapps!!.forEach { item->
-                                                if(item!!.action.equals("disable", ignoreCase = true)){
-                                                    binding.locklayout.setBackgroundDrawable(null)
-                                                    binding.unlocklayout.setBackgroundResource(R.drawable.bg_lock_button)
-                                                }else{
-                                                    binding.locklayout.setBackgroundResource(R.drawable.bg_lock_button)
-                                                    binding.unlocklayout.setBackgroundDrawable(null)
-                                                }
+                                    if(notificationCode==ConstantClass.Lock){
+                                        selectedapps!!.forEach { item->
+                                            if(item!!.action.equals("disable", ignoreCase = true)){
+                                                binding.locklayout.setBackgroundDrawable(null)
+                                                binding.unlocklayout.setBackgroundResource(R.drawable.bg_lock_button)
+                                            }else{
+                                                binding.locklayout.setBackgroundResource(R.drawable.bg_lock_button)
+                                                binding.unlocklayout.setBackgroundDrawable(null)
                                             }
+                                        }
 
-                                         }
+                                     }
 
-                                        Log.d("notificationCodeCheck","${notificationCode}  ${ConstantClass.GETLOCATION}  ${clickLocation}")
+                                    Log.d("notificationCodeCheck","${notificationCode}  ${ConstantClass.GETLOCATION}  ${clickLocation}")
 
-                                        if(notificationCode==ConstantClass.GETLOCATION && clickLocation){
-                                           getKitCustomerLocation()
-                                         }
+                                    if(notificationCode==ConstantClass.GETLOCATION && clickLocation){
+                                       getKitCustomerLocation()
+                                     }
 
 
-                                      }
+                                  }
 
-                                   }
-                                }
+                               }
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitCustomerDetailsInfoPage, it.data?.code() ?: 0)
                         }
                     }
-                    ApiStatus.ERROR -> {}
+                    ApiStatus.ERROR -> {
+                        ConstantClass.handleApiFailure(this@LockKitCustomerDetailsInfoPage, it.message)
+                    }
 
                     ApiStatus.LOADING -> {}
                 }
@@ -485,23 +487,24 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
             resources.let {
                 when(it.apiStatus){
                     ApiStatus.SUCCESS->{
-                        var getData = it.data?.body()
-                        Log.d("getKitCustomerLocation",Gson().toJson(getData))
-                        if(getData!!.status==true && getData.data!=null){
-                            lattitude = getData!!.data?.latitude!!
-                            longitude = getData!!.data?.longitude!!
-                             startActivity(Intent(this,MapActivity::class.java))
-                        }
-                        else{
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("getKitCustomerLocation",Gson().toJson(response))
+                            if(response!!.status==true && response.data!=null){
+                                lattitude = response!!.data?.latitude!!
+                                longitude = response!!.data?.longitude!!
+                                 startActivity(Intent(this@LockKitCustomerDetailsInfoPage,MapActivity::class.java))
+                            }
+                            else{
 
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitCustomerDetailsInfoPage, it.data?.code() ?: 0)
                         }
 
                     }
                     ApiStatus.ERROR->{
-                        // ✅ Print the full error details
-                        Log.e("API_ERROR", "Status: ERROR")
-                        Log.e("API_ERROR_CODE", resources.data?.code().toString())
-                        Log.e("API_ERROR_MSG", resources.message ?: "Unknown Error")
+                        ConstantClass.handleApiFailure(this@LockKitCustomerDetailsInfoPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -567,6 +570,7 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
             createdBy = createdBy,
             membershipfees = "",
             retailercode = retailercode,
+            clientcode = preference.getStringValue(ConstantClass.ClientCode,""),
             cibilScore = "",
             isAggrementVerified = "",
             IsRetailerAggrementVerified = "",
@@ -584,36 +588,37 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                               // ConstantClass.dialog.dismiss()
-                                // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show() // Optional: remove or keep
-                                if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                           // ConstantClass.dialog.dismiss()
+                            // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show() // Optional: remove or keep
+                            if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
 
-                                    if(!response.customerList.isNullOrEmpty()){
-                                        val updatedItem = response.customerList.find { it?.customerCodes == kitcustomerData.customerCodes }
-                                        if (updatedItem != null) {
-                                            kitcustomerData = updatedItem
-                                            CUSTOMERDYNAMICACTIVESTATUS = kitcustomerData.customerActiveStatus!!
+                                if(!response.customerList.isNullOrEmpty()){
+                                    val updatedItem = response.customerList.find { it?.customerCodes == kitcustomerData.customerCodes }
+                                    if (updatedItem != null) {
+                                        kitcustomerData = updatedItem
+                                        CUSTOMERDYNAMICACTIVESTATUS = kitcustomerData.customerActiveStatus!!
 
-                                            val currentFragment = supportFragmentManager
-                                                .findFragmentById(R.id.fragmentContainer)
+                                        val currentFragment = supportFragmentManager
+                                            .findFragmentById(R.id.fragmentContainer)
 
-                                            if (currentFragment is CustomerDeviceFragment) {
-                                                // Current fragment is HomeFragment
-                                                currentFragment.refreshData()
-                                            }
-                                            setDataOnView()
-                                            // Optional: notify current fragment if needed, but since fragments use companion object it might be okay
+                                        if (currentFragment is CustomerDeviceFragment) {
+                                            // Current fragment is HomeFragment
+                                            currentFragment.refreshData()
                                         }
+                                        setDataOnView()
+                                        // Optional: notify current fragment if needed, but since fragments use companion object it might be okay
                                     }
                                 }
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitCustomerDetailsInfoPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                       // ConstantClass.dialog.dismiss()
+                       ConstantClass.handleApiFailure(this@LockKitCustomerDetailsInfoPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -633,6 +638,7 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
@@ -641,19 +647,20 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SessionOutResponse", Gson().toJson(response))
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
-                                }
-                                ConstantClass.checkActiveStatusAndLogout(this@LockKitCustomerDetailsInfoPage, response.status, preference)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SessionOutResponse", Gson().toJson(response))
+                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                ConstantClass.dialog.dismiss()
                             }
+                            ConstantClass.checkActiveStatusAndLogout(this@LockKitCustomerDetailsInfoPage, response.status, preference)
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitCustomerDetailsInfoPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@LockKitCustomerDetailsInfoPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -675,18 +682,19 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("validateresp", Gson().toJson(response))
-                                if(response.status==0){
-                                    hitApiForRetailerLogout()
-                                }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("validateresp", Gson().toJson(response))
+                            if(response.status==0){
+                                hitApiForRetailerLogout()
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitCustomerDetailsInfoPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@LockKitCustomerDetailsInfoPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -709,22 +717,23 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LogoutResponse", Gson().toJson(response))
-                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
-                                preference.setStringValue(ConstantClass.LoginType, "")
-                                ConstantClass.ClickOnCardDashboard = ""
-                                val intent = Intent(this@LockKitCustomerDetailsInfoPage, ChooseYourRolePage::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                finish()
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LogoutResponse", Gson().toJson(response))
+                            preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                            preference.setStringValue(ConstantClass.LoginType, "")
+                            ConstantClass.ClickOnCardDashboard = ""
+                            val intent = Intent(this@LockKitCustomerDetailsInfoPage, ChooseYourRolePage::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitCustomerDetailsInfoPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@LockKitCustomerDetailsInfoPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {

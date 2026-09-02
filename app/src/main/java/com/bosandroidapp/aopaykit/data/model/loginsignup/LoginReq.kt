@@ -14,7 +14,9 @@ data class LoginReq (
  @SerializedName("token")
  var token:String,
  @SerializedName("imeiNumber")
- var imeiNumber:String
+ var imeiNumber:String,
+ @SerializedName("clientCode")
+ var clientCode:String? = null
 )
 
 

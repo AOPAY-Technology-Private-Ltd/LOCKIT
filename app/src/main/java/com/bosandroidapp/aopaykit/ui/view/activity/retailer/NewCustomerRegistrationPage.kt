@@ -962,40 +962,42 @@ class NewCustomerRegistrationPage : BaseActivity() {
     fun hitApiForReSendOTP(mailidormobile: String, type: String) {
         var sendOtpReq = SendOtpReq(
             mobileoremailId = mailidormobile,
-            otpType = type
+            otpType = type,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("SendOTPREQ", Gson().toJson(sendOtpReq))
         viewModel.sendOTPReq(sendOtpReq).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                ConstantClass.dialog.dismiss()
-                                Log.d("SendRes", response.message)
-                                if(response.statuss.equals("True")){
-                                    if (clickemailId) {
-                                        Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        if (clickmobile || clickalternatemobile) {
-                                            var otp = response.value
-                                            var firstName = binding.firstName.text.toString()
-                                            var lastName = binding.lastName.text.toString()
-                                            var customerName = firstName.plus(" ").plus(lastName)
-                                            hitApiForResendMobVerify(mailidormobile, customerName, otp)
-                                        }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
+                            Log.d("SendRes", response.message)
+                            if(response.statuss.equals("True")){
+                                if (clickemailId) {
+                                    Toast.makeText(this@NewCustomerRegistrationPage, response.message, Toast.LENGTH_SHORT).show()
+                                } else {
+                                    if (clickmobile || clickalternatemobile) {
+                                        var otp = response.value
+                                        var firstName = binding.firstName.text.toString()
+                                        var lastName = binding.lastName.text.toString()
+                                        var customerName = firstName.plus(" ").plus(lastName)
+                                        hitApiForResendMobVerify(mailidormobile, customerName, otp)
                                     }
                                 }
-                                else{
+                            }
+                            else{
                                 Toast.makeText(this@NewCustomerRegistrationPage,response.message,Toast.LENGTH_SHORT).show()
                                 ConstantClass.dialog.dismiss()
-                                }
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@NewCustomerRegistrationPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@NewCustomerRegistrationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1012,7 +1014,8 @@ class NewCustomerRegistrationPage : BaseActivity() {
     fun hitApiForSendOTP(mailidormobile: String, type: String) {
         var sendOtpReq = SendOtpReq(
             mobileoremailId = mailidormobile,
-            otpType = type
+            otpType = type,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("SendOTPREQ", Gson().toJson(sendOtpReq))
 
@@ -1020,36 +1023,37 @@ class NewCustomerRegistrationPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SendRes", response.message)
-                                var otp = response.value
-                                Log.d("OTP", otp)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SendRes", response.message)
+                            var otp = response.value
+                            Log.d("OTP", otp)
 
-                                if (response.statuss.equals("True")) {
-                                    if (clickmobile || clickalternatemobile) {
-                                        var firstName = binding.firstName.text.toString()
-                                        var lastName = binding.lastName.text.toString()
-                                        var customerName = firstName.plus(" ").plus(lastName)
-                                        hitApiForMobVerify(mailidormobile, customerName, otp)
-                                    }
-
-                                    if (clickemailId) {
-                                        ConstantClass.dialog.dismiss()
-                                        Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
-                                        OpenLoader(mailidormobile, "")
-                                    }
+                            if (response.statuss.equals("True")) {
+                                if (clickmobile || clickalternatemobile) {
+                                    var firstName = binding.firstName.text.toString()
+                                    var lastName = binding.lastName.text.toString()
+                                    var customerName = firstName.plus(" ").plus(lastName)
+                                    hitApiForMobVerify(mailidormobile, customerName, otp)
                                 }
-                                else{
-                                    Toast.makeText(this@NewCustomerRegistrationPage,response.message,Toast.LENGTH_SHORT).show()
+
+                                if (clickemailId) {
                                     ConstantClass.dialog.dismiss()
+                                    Toast.makeText(this@NewCustomerRegistrationPage, response.message, Toast.LENGTH_SHORT).show()
+                                    OpenLoader(mailidormobile, "")
                                 }
                             }
+                            else{
+                                Toast.makeText(this@NewCustomerRegistrationPage,response.message,Toast.LENGTH_SHORT).show()
+                                ConstantClass.dialog.dismiss()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@NewCustomerRegistrationPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@NewCustomerRegistrationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1067,60 +1071,62 @@ class NewCustomerRegistrationPage : BaseActivity() {
         var verifyotpreq = VerifyOTPReq(
             mobileormailid = mobileOrEmailID,
             otp = otp,
-            logintype = message
+            logintype = message,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("VerifyOTPReq", Gson().toJson(verifyotpreq))
         viewModel.verifyOTPReq(verifyotpreq).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                ConstantClass.dialog.dismiss()
-                                Log.d("VerifyOTPRes", response.message)
-                                if (response.statuss.equals("True")) {
-                                    if (clickemailId) {
-                                        EmailId = mobileOrEmailID
-                                        emailIdveryfied = true
-                                        binding.emailId.isEnabled = false
-                                        binding.verifyiconemailId.visibility = View.VISIBLE
-                                        binding.verifyEmailId.visibility = View.GONE
-                                    }
-
-                                    if (clickmobile) {
-                                        CustPrimaryOTP = otp
-                                        CustPrimaryMobileVerified = "yes"
-                                        mobileveryfied = true
-                                        binding.mobileNumber.isEnabled = false
-                                        binding.verifyiconphonenumber.visibility = View.VISIBLE
-                                        binding.verifymobilenumber.visibility = View.GONE
-                                    }
-
-                                    if (clickalternatemobile) {
-                                        CustAlternateMobileOTP = otp
-                                        CustAlternateMobileVerified = "yes"
-                                        alternatemobileveryfied = true
-                                        binding.alternatemobileNumber.isEnabled = false
-                                        binding.alternateverifyiconphonenumber.visibility = View.VISIBLE
-                                        binding.alternateverifymobilenumber.visibility = View.GONE
-                                    }
-
-                                    if (dialog != null && dialog.isShowing) {
-                                        dialog.dismiss()
-                                    }
-                                } else {
-                                    binding.emailId.isEnabled = true
-                                    binding.verifyiconemailId.visibility = View.GONE
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
+                            Log.d("VerifyOTPRes", response.message)
+                            if (response.statuss.equals("True")) {
+                                if (clickemailId) {
+                                    EmailId = mobileOrEmailID
+                                    emailIdveryfied = true
+                                    binding.emailId.isEnabled = false
+                                    binding.verifyiconemailId.visibility = View.VISIBLE
+                                    binding.verifyEmailId.visibility = View.GONE
                                 }
 
-                                Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                                if (clickmobile) {
+                                    CustPrimaryOTP = otp
+                                    CustPrimaryMobileVerified = "yes"
+                                    mobileveryfied = true
+                                    binding.mobileNumber.isEnabled = false
+                                    binding.verifyiconphonenumber.visibility = View.VISIBLE
+                                    binding.verifymobilenumber.visibility = View.GONE
+                                }
+
+                                if (clickalternatemobile) {
+                                    CustAlternateMobileOTP = otp
+                                    CustAlternateMobileVerified = "yes"
+                                    alternatemobileveryfied = true
+                                    binding.alternatemobileNumber.isEnabled = false
+                                    binding.alternateverifyiconphonenumber.visibility = View.VISIBLE
+                                    binding.alternateverifymobilenumber.visibility = View.GONE
+                                }
+
+                                if (dialog != null && dialog.isShowing) {
+                                    dialog.dismiss()
+                                }
+                            } else {
+                                binding.emailId.isEnabled = true
+                                binding.verifyiconemailId.visibility = View.GONE
                             }
+
+                            Toast.makeText(this@NewCustomerRegistrationPage, response.message, Toast.LENGTH_SHORT).show()
+                        } else {
+                            ConstantClass.handleApiError(this@NewCustomerRegistrationPage, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@NewCustomerRegistrationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1696,6 +1702,7 @@ class NewCustomerRegistrationPage : BaseActivity() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
@@ -1704,19 +1711,20 @@ class NewCustomerRegistrationPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SessionOutResponse", Gson().toJson(response))
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
-                                }
-                                ConstantClass.checkActiveStatusAndLogout(this@NewCustomerRegistrationPage, response.status, preference)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SessionOutResponse", Gson().toJson(response))
+                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                ConstantClass.dialog.dismiss()
                             }
+                            ConstantClass.checkActiveStatusAndLogout(this@NewCustomerRegistrationPage, response.status, preference)
+                        } else {
+                            ConstantClass.handleApiError(this@NewCustomerRegistrationPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@NewCustomerRegistrationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1737,18 +1745,19 @@ class NewCustomerRegistrationPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("validateresp", Gson().toJson(response))
-                                if(response.status==0){
-                                    hitApiForRetailerLogout()
-                                }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("validateresp", Gson().toJson(response))
+                            if(response.status==0){
+                                hitApiForRetailerLogout()
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@NewCustomerRegistrationPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@NewCustomerRegistrationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1764,6 +1773,7 @@ class NewCustomerRegistrationPage : BaseActivity() {
     fun hitApiForRetailerLogout() {
         var loginRequest = LogoutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("LogoutReq", Gson().toJson(loginRequest))
@@ -1772,22 +1782,23 @@ class NewCustomerRegistrationPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LogoutResponse", Gson().toJson(response))
-                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
-                                preference.setStringValue(ConstantClass.LoginType, "")
-                                ConstantClass.ClickOnCardDashboard = ""
-                                val intent = Intent(this@NewCustomerRegistrationPage, ChooseYourRolePage::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                finish()
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LogoutResponse", Gson().toJson(response))
+                            preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                            preference.setStringValue(ConstantClass.LoginType, "")
+                            ConstantClass.ClickOnCardDashboard = ""
+                            val intent = Intent(this@NewCustomerRegistrationPage, ChooseYourRolePage::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            ConstantClass.handleApiError(this@NewCustomerRegistrationPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@NewCustomerRegistrationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1815,7 +1826,8 @@ class NewCustomerRegistrationPage : BaseActivity() {
     fun hitApiForSendOTPCibileCheck(mailidormobile: String, type: String) {
         var sendOtpReq = SendOtpReq(
             mobileoremailId = mailidormobile,
-            otpType = type
+            otpType = type,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SendOTPREQ", Gson().toJson(sendOtpReq))
@@ -1824,27 +1836,28 @@ class NewCustomerRegistrationPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SendRes", response.message)
-                                var otp = response.value
-                                Log.d("OTP", otp)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SendRes", response.message)
+                            var otp = response.value
+                            Log.d("OTP", otp)
 
-                                if (response.statuss.equals("True")) {
-                                    var firstName = "Customer"
-                                    var customerName = firstName
-                                    hitApiForCibilScore(otp)
-                                }
-                                else {
-                                    Toast.makeText(this@NewCustomerRegistrationPage, response.message, Toast.LENGTH_SHORT).show()
-                                    ConstantClass.dialog.dismiss()
-                                }
+                            if (response.statuss.equals("True")) {
+                                var firstName = "Customer"
+                                var customerName = firstName
+                                hitApiForCibilScore(otp)
                             }
+                            else {
+                                Toast.makeText(this@NewCustomerRegistrationPage, response.message, Toast.LENGTH_SHORT).show()
+                                ConstantClass.dialog.dismiss()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@NewCustomerRegistrationPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@NewCustomerRegistrationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1886,70 +1899,72 @@ class NewCustomerRegistrationPage : BaseActivity() {
             otp = otp,
             consentmessage = "I agree to share my data for verification purposes",
             consentacceptence = "yes",
-            registrationID = ConstantClass.PENNYDROP_REGISTRATION_ID
+            registrationID = ConstantClass.PENNYDROP_REGISTRATION_ID,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("CibilReq", Gson().toJson(cibilReq))
+
         viewCibilModel.getCibilReq(cibilReq).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                ConstantClass.dialog.dismiss()
-                                var otp = response.value
-                                Log.d("cibilresp", Gson().toJson(response))
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
+                            var otp = response.value
+                            Log.d("cibilresp", Gson().toJson(response))
 
-                                if(response.status.toLowerCase().equals("false")&& !response.resultCode.equals("101")){
-                                    PopOpForCibileScoreRequestToAdmin(response.message.toString(), "Mismatch Details",false)
-                                }
+                            if(response.status.toLowerCase().equals("false")&& !response.resultCode.equals("101")){
+                                PopOpForCibileScoreRequestToAdmin(response.message.toString(), "Mismatch Details",false)
+                            }
 
-                                if (!response.httpResponseCode.isNullOrBlank() && response.httpResponseCode.equals("200")) {
-                                    if(response.result!=null){
-                                        var data = response.result.resultJson.inProfileResponse
-                                        userScore = data.score.bureauScore.toFloat()
-                                        CibilResponse = Gson().toJson(response)
-                                        var AdminSetCibilScore = AdminCibilScore.toFloatOrNull() ?: 0.0f
+                            if (!response.httpResponseCode.isNullOrBlank() && response.httpResponseCode.equals("200")) {
+                                if(response.result!=null){
+                                    var data = response.result.resultJson.inProfileResponse
+                                    userScore = data.score.bureauScore.toFloat()
+                                    CibilResponse = Gson().toJson(response)
+                                    var AdminSetCibilScore = AdminCibilScore.toFloatOrNull() ?: 0.0f
 
-                                        if(userScore>=AdminSetCibilScore){
-                                            if(AdminLoanApprovedStatus.toLowerCase().equals("yes",ignoreCase = true)){
-                                                CustomerLoanStatus = CustomerLoanStatusApproved
-                                            }else{
-                                                CustomerLoanStatus = CustomerLoanStatusPending
-                                            }
-                                            if(!CustAlternateMobileNumber.isNullOrBlank()){
-                                                startActivity(Intent(this@NewCustomerRegistrationPage, MobileSelectionActivity::class.java))
-                                            }
-                                            else {
-                                                Toast.makeText(this@NewCustomerRegistrationPage,"Please enter alternate mobile number !!", Toast.LENGTH_SHORT).show()
-                                            }
+                                    if(userScore>=AdminSetCibilScore){
+                                        if(AdminLoanApprovedStatus.toLowerCase().equals("yes",ignoreCase = true)){
+                                            CustomerLoanStatus = CustomerLoanStatusApproved
+                                        }else{
+                                            CustomerLoanStatus = CustomerLoanStatusPending
                                         }
-                                        else{
-                                            if(!CustAlternateMobileNumber.isNullOrBlank()){
-                                                GlobalScope.launch(Dispatchers.Main) {
-                                                    hitApiForCustomerRegister("Your CIBIL score is below ${AdminCibilScore}. Please contact your Admin for approval before applying for a loan.","Low CIBIL Score")
-                                                }
-
-                                            }
-                                            else {
-                                                Toast.makeText(this@NewCustomerRegistrationPage,"Please enter alternate mobile number !!", Toast.LENGTH_SHORT).show()
-                                            }
+                                        if(!CustAlternateMobileNumber.isNullOrBlank()){
+                                            startActivity(Intent(this@NewCustomerRegistrationPage, MobileSelectionActivity::class.java))
+                                        }
+                                        else {
+                                            Toast.makeText(this@NewCustomerRegistrationPage,"Please enter alternate mobile number !!", Toast.LENGTH_SHORT).show()
                                         }
                                     }
                                     else{
-                                        PopOpForCibileScoreRequestToAdmin(response.message.toString(), "Mismatch Details",false)
+                                        if(!CustAlternateMobileNumber.isNullOrBlank()){
+                                            GlobalScope.launch(Dispatchers.Main) {
+                                                hitApiForCustomerRegister("Your CIBIL score is below ${AdminCibilScore}. Please contact your Admin for approval before applying for a loan.","Low CIBIL Score")
+                                            }
+
+                                        }
+                                        else {
+                                            Toast.makeText(this@NewCustomerRegistrationPage,"Please enter alternate mobile number !!", Toast.LENGTH_SHORT).show()
+                                        }
                                     }
                                 }
-                                else {
-                                    Toast.makeText(this@NewCustomerRegistrationPage, response.message, Toast.LENGTH_LONG).show()
+                                else{
+                                    PopOpForCibileScoreRequestToAdmin(response.message.toString(), "Mismatch Details",false)
                                 }
-
                             }
+                            else {
+                                Toast.makeText(this@NewCustomerRegistrationPage, response.message, Toast.LENGTH_LONG).show()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@NewCustomerRegistrationPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@NewCustomerRegistrationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -2200,7 +2215,8 @@ class NewCustomerRegistrationPage : BaseActivity() {
 
     fun hitApiForVerifyCustomer(){
         var sendOtpReq = VerifyCustomerReq(
-            primaryMobileNumber = binding.mobileNumber.text.toString().trim()
+            primaryMobileNumber = binding.mobileNumber.text.toString().trim(),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("verifycustomerreq", Gson().toJson(sendOtpReq))
@@ -2210,24 +2226,25 @@ class NewCustomerRegistrationPage : BaseActivity() {
                 resources.let {
                     when (it.apiStatus) {
                         ApiStatus.SUCCESS -> {
-                            it.data?.let { users ->
-                                users.body()?.let { response ->
-                                    Log.d("verifycustomerresp", Gson().toJson(response))
-                                    ConstantClass.dialog.dismiss()
+                            val response = it.data?.body()
+                            if (it.data?.isSuccessful == true && response != null) {
+                                Log.d("verifycustomerresp", Gson().toJson(response))
+                                ConstantClass.dialog.dismiss()
 
-                                    if(response.statuss!!.toLowerCase().equals("true", ignoreCase = true)){
-                                        hitApiForSendOTP(binding.mobileNumber.text.toString().trim(), OTPTYPE) //"Mobile"
-                                    }
-                                    else{
-                                        // if customer exist
-                                        Toast.makeText(this@NewCustomerRegistrationPage,response.message,Toast.LENGTH_SHORT).show()
-                                    }
+                                if(response.statuss!!.toLowerCase().equals("true", ignoreCase = true)){
+                                    hitApiForSendOTP(binding.mobileNumber.text.toString().trim(), OTPTYPE) //"Mobile"
                                 }
+                                else{
+                                    // if customer exist
+                                    Toast.makeText(this@NewCustomerRegistrationPage,response.message,Toast.LENGTH_SHORT).show()
+                                }
+                            } else {
+                                ConstantClass.handleApiError(this@NewCustomerRegistrationPage, it.data?.code() ?: 0)
                             }
                         }
 
                         ApiStatus.ERROR -> {
-                            ConstantClass.dialog.dismiss()
+                            ConstantClass.handleApiFailure(this@NewCustomerRegistrationPage, it.message)
                         }
 
                         ApiStatus.LOADING -> {
@@ -2243,24 +2260,25 @@ class NewCustomerRegistrationPage : BaseActivity() {
                 resources.let {
                     when (it.apiStatus) {
                         ApiStatus.SUCCESS -> {
-                            it.data?.let { users ->
-                                users.body()?.let { response ->
-                                    Log.d("verifycustomerresp", Gson().toJson(response))
-                                    ConstantClass.dialog.dismiss()
+                            val response = it.data?.body()
+                            if (it.data?.isSuccessful == true && response != null) {
+                                Log.d("verifycustomerresp", Gson().toJson(response))
+                                ConstantClass.dialog.dismiss()
 
-                                    if(response.statuss!!.toLowerCase().equals("true", ignoreCase = true)){
-                                        hitApiForSendOTP(binding.mobileNumber.text.toString().trim(), OTPTYPE) //"Mobile"
-                                    }
-                                    else{
-                                        // if customer exist
-                                        Toast.makeText(this@NewCustomerRegistrationPage,response.message,Toast.LENGTH_SHORT).show()
-                                    }
+                                if(response.statuss!!.toLowerCase().equals("true", ignoreCase = true)){
+                                    hitApiForSendOTP(binding.mobileNumber.text.toString().trim(), OTPTYPE) //"Mobile"
                                 }
+                                else{
+                                    // if customer exist
+                                    Toast.makeText(this@NewCustomerRegistrationPage,response.message,Toast.LENGTH_SHORT).show()
+                                }
+                            } else {
+                                ConstantClass.handleApiError(this@NewCustomerRegistrationPage, it.data?.code() ?: 0)
                             }
                         }
 
                         ApiStatus.ERROR -> {
-                            ConstantClass.dialog.dismiss()
+                            ConstantClass.handleApiFailure(this@NewCustomerRegistrationPage, it.message)
                         }
 
                         ApiStatus.LOADING -> {
@@ -2281,7 +2299,8 @@ class NewCustomerRegistrationPage : BaseActivity() {
 
         var request = RetailerWalletAmountReq(
             retailerID = registrationID,
-            amountType = "CreditBalance"
+            amountType = "CreditBalance",
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("walletAmountReq", Gson().toJson(request))
 
@@ -2289,53 +2308,35 @@ class NewCustomerRegistrationPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
 
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
+                            Log.d("Walletamount", response.walletBalance!!)
 
-                                Log.d("Walletamount", response.walletBalance!!)
+                            val walletAmount = response.walletBalance!!.toDoubleOrNull() ?: 0.0
+                            val holdAmount = response.holdAmount!!.toDoubleOrNull() ?: 0.0
+                            val maxholdAmount = response.maxholdAmount!!.toDoubleOrNull() ?: 0.0
+                            val minholdAmount = response.miniholdamountrequest!!.toDoubleOrNull() ?: 0.0
 
-                                val walletAmount = response.walletBalance!!.toDoubleOrNull() ?: 0.0
-                                val holdAmount = response.holdAmount!!.toDoubleOrNull() ?: 0.0
-                                val maxholdAmount = response.maxholdAmount!!.toDoubleOrNull() ?: 0.0
-                                val minholdAmount = response.miniholdamountrequest!!.toDoubleOrNull() ?: 0.0
+                            AdminLoanApprovedStatus = response.loanApprovalStatus!!
+                            AdminCibilScore = response.cibilScore!!
 
-                                AdminLoanApprovedStatus = response.loanApprovalStatus!!
-                                AdminCibilScore = response.cibilScore!!
+                            val myWalletAmount = walletAmount
+                            val myWalletAmountStr = String.format("%.2f", myWalletAmount)
 
-                                val myWalletAmount = walletAmount
-                                val myWalletAmountStr = String.format("%.2f", myWalletAmount)
+                            WalletBalance = myWalletAmountStr
+                            HoldAmount = String.format("%.2f", holdAmount)
+                            MaxHoldingAmount = String.format("%.2f", maxholdAmount)
+                            MinHoldingAmount = String.format("%.2f", minholdAmount)
 
-                                WalletBalance = myWalletAmountStr
-                                HoldAmount = String.format("%.2f", holdAmount)
-                                MaxHoldingAmount = String.format("%.2f", maxholdAmount)
-                                MinHoldingAmount = String.format("%.2f", minholdAmount)
-
-                                Log.d("AdminLoanApprovedStatus", "${response.loanApprovalStatus!!} ${response.cibilScore!!}")
-
-                            }
+                            Log.d("AdminLoanApprovedStatus", "${response.loanApprovalStatus!!} ${response.cibilScore!!}")
+                        } else {
+                            ConstantClass.handleApiError(this@NewCustomerRegistrationPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                            ConstantClass.dialog.dismiss()
-                        }
-
-                        // ✅ Print the full error details
-                        Log.e("API_ERROR", "Status: ERROR")
-                        Log.e("API_ERROR_CODE", resources.data?.code().toString())
-                        Log.e("API_ERROR_MSG", resources.message ?: "Unknown Error")
-
-                        hitApiForRetailerWalletAmount()
-
-                        //Toast.makeText(this, "Server error occurred (Code: ${resources.data?.code() ?: "Unknown"})", Toast.LENGTH_LONG).show()
-
-                        // Optional: Handle specific 500 error
-                        if (resources.data?.code() == 500) {
-                            Log.e("API_ERROR", "Internal Server Error from backend.")
-                        }
-
+                        ConstantClass.handleApiFailure(this@NewCustomerRegistrationPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {

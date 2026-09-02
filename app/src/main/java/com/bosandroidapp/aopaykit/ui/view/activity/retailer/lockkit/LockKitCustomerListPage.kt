@@ -72,6 +72,7 @@ class LockKitCustomerListPage : BaseActivity() {
                 updateKitCustomer()
             }
         }
+
     }
 
     fun updateKitCustomer(){
@@ -128,6 +129,7 @@ class LockKitCustomerListPage : BaseActivity() {
             createdBy = createdBy,
             membershipfees = "",
             retailercode = retailercode,
+            clientcode = preference.getStringValue(ConstantClass.ClientCode,""),
             cibilScore = "",
             isAggrementVerified = "",
             IsRetailerAggrementVerified = "",
@@ -147,24 +149,17 @@ class LockKitCustomerListPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
 
-
-                                // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show()
-                                if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
-                                    Log.d("RegistationResponse", Gson().toJson(response.customerList))
-                                    if(!response.customerList.isNullOrEmpty()){
-                                        kitCustomerList = response.customerList
-                                        setDataInList(kitCustomerList)
-                                        binding.lockkitcustomerlist.visibility=View.VISIBLE
-                                        binding.notfoundimage.visibility=View.GONE
-                                    }
-                                    else {
-                                        binding.lockkitcustomerlist.visibility=View.GONE
-                                        binding.notfoundimage.visibility=View.VISIBLE
-                                    }
-
+                            // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show()
+                            if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
+                                Log.d("RegistationResponse", Gson().toJson(response.customerList))
+                                if(!response.customerList.isNullOrEmpty()){
+                                    kitCustomerList = response.customerList
+                                    setDataInList(kitCustomerList)
+                                    binding.lockkitcustomerlist.visibility=View.VISIBLE
+                                    binding.notfoundimage.visibility=View.GONE
                                 }
                                 else {
                                     binding.lockkitcustomerlist.visibility=View.GONE
@@ -172,13 +167,18 @@ class LockKitCustomerListPage : BaseActivity() {
                                 }
 
                             }
-
+                            else {
+                                binding.lockkitcustomerlist.visibility=View.GONE
+                                binding.notfoundimage.visibility=View.VISIBLE
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitCustomerListPage, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@LockKitCustomerListPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -296,6 +296,7 @@ class LockKitCustomerListPage : BaseActivity() {
             createdBy = createdBy,
             membershipfees = "",
             retailercode = retailercode,
+            clientcode = preference.getStringValue(ConstantClass.ClientCode,""),
             cibilScore = "",
             isAggrementVerified = "",
             IsRetailerAggrementVerified = "",
@@ -315,38 +316,37 @@ class LockKitCustomerListPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                ConstantClass.dialog.dismiss()
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
 
-                               // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show()
-                                if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
-                                    Log.d("RegistationResponse", Gson().toJson(response.customerList))
-                                   if(!response.customerList.isNullOrEmpty()){
-                                       kitCustomerList = response.customerList
-                                       setDataInList(kitCustomerList)
-                                       binding.lockkitcustomerlist.visibility=View.VISIBLE
-                                       binding.notfoundimage.visibility=View.GONE
-                                   }
-                                    else {
-                                       binding.lockkitcustomerlist.visibility=View.GONE
-                                       binding.notfoundimage.visibility=View.VISIBLE
-                                   }
-
-                                }
+                           // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show()
+                            if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
+                                Log.d("RegistationResponse", Gson().toJson(response.customerList))
+                               if(!response.customerList.isNullOrEmpty()){
+                                   kitCustomerList = response.customerList
+                                   setDataInList(kitCustomerList)
+                                   binding.lockkitcustomerlist.visibility=View.VISIBLE
+                                   binding.notfoundimage.visibility=View.GONE
+                               }
                                 else {
-                                    binding.lockkitcustomerlist.visibility=View.GONE
-                                    binding.notfoundimage.visibility=View.VISIBLE
-                                }
+                                   binding.lockkitcustomerlist.visibility=View.GONE
+                                   binding.notfoundimage.visibility=View.VISIBLE
+                               }
 
                             }
-
+                            else {
+                                binding.lockkitcustomerlist.visibility=View.GONE
+                                binding.notfoundimage.visibility=View.VISIBLE
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitCustomerListPage, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@LockKitCustomerListPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -367,6 +367,7 @@ class LockKitCustomerListPage : BaseActivity() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
@@ -375,19 +376,20 @@ class LockKitCustomerListPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SessionOutResponse", Gson().toJson(response))
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
-                                }
-                                ConstantClass.checkActiveStatusAndLogout(this@LockKitCustomerListPage, response.status, preference)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SessionOutResponse", Gson().toJson(response))
+                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                ConstantClass.dialog.dismiss()
                             }
+                            ConstantClass.checkActiveStatusAndLogout(this@LockKitCustomerListPage, response.status, preference)
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitCustomerListPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@LockKitCustomerListPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -409,18 +411,19 @@ class LockKitCustomerListPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("validateresp", Gson().toJson(response))
-                                if(response.status==0){
-                                    hitApiForRetailerLogout()
-                                }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("validateresp", Gson().toJson(response))
+                            if(response.status==0){
+                                hitApiForRetailerLogout()
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitCustomerListPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@LockKitCustomerListPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -443,22 +446,23 @@ class LockKitCustomerListPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LogoutResponse", Gson().toJson(response))
-                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
-                                preference.setStringValue(ConstantClass.LoginType, "")
-                                ConstantClass.ClickOnCardDashboard = ""
-                                val intent = Intent(this@LockKitCustomerListPage, ChooseYourRolePage::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                finish()
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LogoutResponse", Gson().toJson(response))
+                            preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                            preference.setStringValue(ConstantClass.LoginType, "")
+                            ConstantClass.ClickOnCardDashboard = ""
+                            val intent = Intent(this@LockKitCustomerListPage, ChooseYourRolePage::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitCustomerListPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@LockKitCustomerListPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {

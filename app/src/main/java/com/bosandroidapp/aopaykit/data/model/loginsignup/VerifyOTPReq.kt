@@ -8,6 +8,7 @@ data class VerifyOTPReq(
     @SerializedName("enteredOTP")
     var otp:String,
     @SerializedName("login_Type")
-    var logintype:String
-
+    var logintype:String,
+    @SerializedName("clientCode")
+    var clientCode: String? = null
 )

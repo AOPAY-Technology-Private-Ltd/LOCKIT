@@ -247,7 +247,10 @@ class CustomerDeviceFragment : Fragment() {
     }
 
     fun hitApiForUpdateActionStatus() {
-        val request = GetPendingDeviceActionReq(customerCode = kitcustomerData.customerCodes.toString().trim())
+        val request = GetPendingDeviceActionReq(
+            customerCode = kitcustomerData.customerCodes.toString().trim(),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
+        )
         viewModel.getPendingDeviceActionRequest(request).observe(requireActivity()) { resources ->
             resources.let {
                 when (it.apiStatus) {
@@ -282,6 +285,7 @@ class CustomerDeviceFragment : Fragment() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))

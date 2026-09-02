@@ -49,6 +49,7 @@ data class CustomerKitRequest(
     val createdBy: String,
     val membershipfees: String,
     val retailercode: String,
+    val clientcode: String,
     val cibilScore: String,
     val isAggrementVerified: String,
     val IsRetailerAggrementVerified: String,

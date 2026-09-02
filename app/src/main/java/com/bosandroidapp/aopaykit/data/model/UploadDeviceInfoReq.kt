@@ -50,6 +50,8 @@ data class UploadDeviceInfoReq(
 	val mnc: String? = null,
 
 	@field:SerializedName("slotIndex")
-	val slotIndex: Int? = null
+	val slotIndex: Int? = null,
 
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null
 )

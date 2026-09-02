@@ -165,6 +165,7 @@ class AadharCardReferenceWebViewDIGILockerPage : BaseActivity() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
@@ -276,6 +277,7 @@ class AadharCardReferenceWebViewDIGILockerPage : BaseActivity() {
         var aadharverificationreq = AAdhaarDetailesReq(
             transactionID = transactionId,
             registrationID = ConstantClass.PAN_VERIFICATION_REGISTRATION_ID,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("AadharDetailsreq", Gson().toJson(aadharverificationreq))

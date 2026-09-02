@@ -288,7 +288,8 @@ class QRCodePage : BaseActivity() {
                         teleNumber = "",
                         authType = "",
                         bankID = BankID,
-                        bankAccountNumber = AccountNumber
+                        bankAccountNumber = AccountNumber,
+                        clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
                     )
                     hitApiForEnach(request,true)
                 }
@@ -640,7 +641,8 @@ class QRCodePage : BaseActivity() {
                                                 validateKey = binding.accesstoken.text.toString(),
                                                 defaultEmidebit = DefaulterEmiDebitPending,
                                                 sellingPrice = ConstantClass.SellingPrice.toDouble(),
-                                                loanMode = ConstantClass.online
+                                                loanMode = ConstantClass.online,
+                                                clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
                                             )
                                             Log.d("LoanCreateReq", Gson().toJson(loancreatedreq))
 
@@ -906,7 +908,8 @@ class QRCodePage : BaseActivity() {
                                             validateKey = binding.accesstoken.text.toString(),
                                             defaultEmidebit = DefaulterEmiDebitAutoApproved,
                                             sellingPrice = ConstantClass.SellingPrice.toDouble(),
-                                            loanMode = ConstantClass.online
+                                            loanMode = ConstantClass.online,
+                                            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
                                         )
                                         Log.d("LoanCreateReq", Gson().toJson(loancreatedreq))
 
@@ -1132,7 +1135,8 @@ class QRCodePage : BaseActivity() {
                                                 validateKey = binding.accesstoken.text.toString(),
                                                 defaultEmidebit = DefaulterEmiDebitPending,
                                                 sellingPrice = ConstantClass.SellingPrice.toDouble(),
-                                                loanMode = ConstantClass.CheckOnlineOrOffline
+                                                loanMode = ConstantClass.CheckOnlineOrOffline,
+                                                clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
                                             )
                                             Log.d("LoanCreateReq", Gson().toJson(loancreatedreq))
 
@@ -1187,32 +1191,34 @@ class QRCodePage : BaseActivity() {
 
     fun VeryfyKitCustomer(){
         var sendOtpReq = VerifyCustomerReq(
-            primaryMobileNumber = CustPrimaryMobileNumber.toString().trim()
+            primaryMobileNumber = CustPrimaryMobileNumber.toString().trim(),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("verifyKitcustomerreq", Gson().toJson(sendOtpReq))
         viewModel.verifyKitcustomerReq(sendOtpReq).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("verifycustomerresp", Gson().toJson(response))
-                                ConstantClass.dialog.dismiss()
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("verifycustomerresp", Gson().toJson(response))
+                            ConstantClass.dialog.dismiss()
 
-                                if(response.statuss!!.toLowerCase().equals("true", ignoreCase = true)){
-                                    hitApiForKitCustomerRegister()
-                                }
-                                else{
-                                    // if customer exist
-                                    haskitCustomerRegisterPopUp()
-
-                                }
+                            if(response.statuss!!.toLowerCase().equals("true", ignoreCase = true)){
+                                hitApiForKitCustomerRegister()
                             }
+                            else{
+                                // if customer exist
+                                haskitCustomerRegisterPopUp()
+
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@QRCodePage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@QRCodePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1348,6 +1354,7 @@ class QRCodePage : BaseActivity() {
             createdBy = createdBy,
             membershipfees = membershipAmt,
             retailercode = retailercode,
+            clientcode = preference.getStringValue(ConstantClass.ClientCode,""),
             cibilScore = userScore.toString(),
             isAggrementVerified = isAggrementVerified,
             IsRetailerAggrementVerified = IsRetailerAggrementVerified,
@@ -1366,29 +1373,28 @@ class QRCodePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                ConstantClass.dialog.dismiss()
-                                if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
-                                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
-                                    customerCode = response.customerCode!!
-                                    binding.validateKeyLayout.visibility = View.VISIBLE
-                                    binding.nextlayout.visibility = View.GONE
-                                }
-                                else {
-                                    binding.validateKeyLayout.visibility = View.VISIBLE
-                                    binding.nextlayout.visibility = View.GONE
-                                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
-                                }
-
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
+                            if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
+                                Toast.makeText(this@QRCodePage, response.message, Toast.LENGTH_SHORT).show()
+                                customerCode = response.customerCode!!
+                                binding.validateKeyLayout.visibility = View.VISIBLE
+                                binding.nextlayout.visibility = View.GONE
                             }
-
+                            else {
+                                binding.validateKeyLayout.visibility = View.VISIBLE
+                                binding.nextlayout.visibility = View.GONE
+                                Toast.makeText(this@QRCodePage, response.message, Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@QRCodePage, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@QRCodePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1431,83 +1437,69 @@ class QRCodePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("customerres", Gson().toJson(response))
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("customerres", Gson().toJson(response))
 
-                                if (response.status?.toLowerCase().equals(ConstantClass.LoanSuccessStatus)) {
-                                    loaneCode = response.data!!.loanCode!!
-                                    FirstName = CustFirstName
-                                    MiddleName = CustMiddleName
-                                    LastName = CustLastName
-                                    CustomerCodeForEnach = response.data!!.customerCode!!
-                                    LoanCodeForEnach = response.data!!.loanCode!!
-                                    RetailerCodeForEnach = response.data!!.retailerCode!!
+                            if (response.status?.toLowerCase().equals(ConstantClass.LoanSuccessStatus)) {
+                                loaneCode = response.data!!.loanCode!!
+                                FirstName = CustFirstName
+                                MiddleName = CustMiddleName
+                                LastName = CustLastName
+                                CustomerCodeForEnach = response.data!!.customerCode!!
+                                LoanCodeForEnach = response.data!!.loanCode!!
+                                RetailerCodeForEnach = response.data!!.retailerCode!!
 
-                                    LoanStartDate = response.data.startDate!!
-                                    LoanEndDate = response.data.endDate!!
-                                    val emiAmount = EmiAmount.toDouble().roundToInt()
+                                LoanStartDate = response.data.startDate!!
+                                LoanEndDate = response.data.endDate!!
+                                val emiAmount = EmiAmount.toDouble().roundToInt()
 
-                                    if(BankIFSCCode.trim().isNotEmpty() &&ConstantClass.AccountHolderName.trim().isNotEmpty() && AccountType.trim().isNotEmpty()){
-                                        val request = EMandateRequest(
-                                            categoryID = 7,
-                                            collectionAmount = emiAmount,
-                                            collectCollectionUntilCancle = false,
-                                            seqType = "RCUR",
-                                            iFSCCode = BankIFSCCode,
-                                            frequncy = "MNTH",
-                                            registrationID = ConstantClass.PAN_VERIFICATION_REGISTRATION_ID,
-                                            accountHolderName = ConstantClass.AccountHolderName,
-                                            finalCollectionDate = LoanEndDate,
-                                            loanNo = loaneCode,
-                                            accountType = AccountType,
-                                            emailAddress = CusteMailID,
-                                            firstCollectionDate = LoanStartDate,
-                                            mobileNumber = CustPrimaryMobileNumber,
-                                            bankAccountNumberConfirmation = AccountNumber,
-                                            addIn2 = BranchAddress,
-                                            addIn3 = "",
-                                            debitType = true,
-                                            teleNumber = "",
-                                            authType = "",
-                                            bankID = BankID,
-                                            bankAccountNumber = AccountNumber
-                                        )
-                                        hitApiForEnach(request,false)
-                                    }
-                                    else{
-                                        startActivity(Intent(this@QRCodePage, CongratulationPage::class.java))
-                                        clearData()
-                                        finish()
-                                    }
-
-                                } else {
-                                    if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                        ConstantClass.dialog.dismiss()
-                                    }
+                                if(BankIFSCCode.trim().isNotEmpty() &&ConstantClass.AccountHolderName.trim().isNotEmpty() && AccountType.trim().isNotEmpty()){
+                                    val request = EMandateRequest(
+                                        categoryID = 7,
+                                        collectionAmount = emiAmount,
+                                        collectCollectionUntilCancle = false,
+                                        seqType = "RCUR",
+                                        iFSCCode = BankIFSCCode,
+                                        frequncy = "MNTH",
+                                        registrationID = ConstantClass.PAN_VERIFICATION_REGISTRATION_ID,
+                                        accountHolderName = ConstantClass.AccountHolderName,
+                                        finalCollectionDate = LoanEndDate,
+                                        loanNo = loaneCode,
+                                        accountType = AccountType,
+                                        emailAddress = CusteMailID,
+                                        firstCollectionDate = LoanStartDate,
+                                        mobileNumber = CustPrimaryMobileNumber,
+                                        bankAccountNumberConfirmation = AccountNumber,
+                                        addIn2 = BranchAddress,
+                                        addIn3 = "",
+                                        debitType = true,
+                                        teleNumber = "",
+                                        authType = "",
+                                        bankID = BankID,
+                                        bankAccountNumber = AccountNumber,
+                                        clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
+                                    )
+                                    hitApiForEnach(request,false)
+                                }
+                                else{
+                                    startActivity(Intent(this@QRCodePage, CongratulationPage::class.java))
+                                    clearData()
+                                    finish()
                                 }
 
+                            } else {
+                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                    ConstantClass.dialog.dismiss()
+                                }
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@QRCodePage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                            ConstantClass.dialog.dismiss()
-                        }
-
-                        // ✅ Print the full error details
-                        Log.e("API_ERROR", "Status: ERROR")
-                        Log.e("API_ERROR_CODE", resources.data?.code().toString())
-                        Log.e("API_ERROR_MSG", resources.message ?: "Unknown Error")
-
-                        Toast.makeText(this, "Server error occurred (Code: ${resources.data?.code() ?: "Unknown"})", Toast.LENGTH_LONG).show()
-
-                        // Optional: Handle specific 500 error
-                        if (resources.data?.code() == 500) {
-                            Log.e("API_ERROR", "Internal Server Error from backend.")
-                        }
-
+                        ConstantClass.handleApiFailure(this@QRCodePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1596,7 +1588,8 @@ class QRCodePage : BaseActivity() {
         val startTime = System.currentTimeMillis()
         var req = GetIsEligibleLoanReq(
             panNumber = PanNumber,
-            aadharNumber = ""
+            aadharNumber = "",
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("checkMemberShipReq", Gson().toJson(req))
@@ -1605,52 +1598,50 @@ class QRCodePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                Log.d("API_TIME", "Response Time: ${System.currentTimeMillis() - startTime} ms")
-                                val response = users?.body()
-                                if (response != null) {
-                                    Log.d("PanVerificationResp", Gson().toJson(response))
-                                    if (response!!.statuss.equals("True")) {
-                                        ConstantClass.dialog.dismiss()
-                                        binding.membershipfee.text = "₹ ".plus(response.membershipFee?.toDouble())
-                                        Log.d("membership", ":".plus(response.membershipFee))
-                                        binding.username.text = CustFirstName.plus(" ").plus(CustLastName)
-                                        binding.customerimage.setImageURI(CustPhotoPath)
-                                        binding.downpayment.text = "₹ ".plus(DownPayment)
-                                        val processingFee = (ToBePaidAmount.toDoubleOrNull() ?: 0.0) - (DownPayment.toDoubleOrNull() ?: 0.0)
-                                        binding.processingfee.text = "₹ ${String.format("%.2f", processingFee)}"
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("API_TIME", "Response Time: ${System.currentTimeMillis() - startTime} ms")
+                            if (response != null) {
+                                Log.d("PanVerificationResp", Gson().toJson(response))
+                                if (response!!.statuss.equals("True")) {
+                                    ConstantClass.dialog.dismiss()
+                                    binding.membershipfee.text = "₹ ".plus(response.membershipFee?.toDouble())
+                                    Log.d("membership", ":".plus(response.membershipFee))
+                                    binding.username.text = CustFirstName.plus(" ").plus(CustLastName)
+                                    binding.customerimage.setImageURI(CustPhotoPath)
+                                    binding.downpayment.text = "₹ ".plus(DownPayment)
+                                    val processingFee = (ToBePaidAmount.toDoubleOrNull() ?: 0.0) - (DownPayment.toDoubleOrNull() ?: 0.0)
+                                    binding.processingfee.text = "₹ ${String.format("%.2f", processingFee)}"
 
-                                        val amount = ToBePaidAmount.toDoubleOrNull() ?: 0.0
-                                        Log.d("ToBePaidAmount", ":".plus(amount))
-                                        val membership = response.membershipFee?.toDouble() ?: 0.0
+                                    val amount = ToBePaidAmount.toDoubleOrNull() ?: 0.0
+                                    Log.d("ToBePaidAmount", ":".plus(amount))
+                                    val membership = response.membershipFee?.toDouble() ?: 0.0
 
-                                        val totalamount = amount + membership
+                                    val totalamount = amount + membership
 
-                                        binding.clientcode.text = "₹ ${String.format("%.2f", totalamount)}"
-                                        Log.d("totalamt", ":".plus(totalamount))
-                                        downPayment = DownPayment // downpayment+processing
-                                        membershipAmt = "$membership"
-                                    }
-                                    else {
-                                        ConstantClass.dialog.dismiss()
-                                        Log.d("API_TIME", "Failed after: ${System.currentTimeMillis() - startTime} ms")
-                                        finish()
-                                    }
+                                    binding.clientcode.text = "₹ ${String.format("%.2f", totalamount)}"
+                                    Log.d("totalamt", ":".plus(totalamount))
+                                    downPayment = DownPayment // downpayment+processing
+                                    membershipAmt = "$membership"
                                 }
                                 else {
                                     ConstantClass.dialog.dismiss()
-                                    hitApiForMemberShipFee()
+                                    Log.d("API_TIME", "Failed after: ${System.currentTimeMillis() - startTime} ms")
+                                    finish()
                                 }
-
                             }
-
+                            else {
+                                ConstantClass.dialog.dismiss()
+                                hitApiForMemberShipFee()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@QRCodePage, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@QRCodePage, it.message)
                         Log.d("API_TIME", "Failed after: ${System.currentTimeMillis() - startTime} ms")
                     }
 
@@ -1752,6 +1743,7 @@ class QRCodePage : BaseActivity() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
@@ -1759,23 +1751,24 @@ class QRCodePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SessionOutResponse", Gson().toJson(response))
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
-                                }
-                                ConstantClass.checkActiveStatusAndLogout(
-                                    this@QRCodePage,
-                                    response.status,
-                                    preference
-                                )
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SessionOutResponse", Gson().toJson(response))
+                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                ConstantClass.dialog.dismiss()
                             }
+                            ConstantClass.checkActiveStatusAndLogout(
+                                this@QRCodePage,
+                                response.status,
+                                preference
+                            )
+                        } else {
+                            ConstantClass.handleApiError(this@QRCodePage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@QRCodePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1797,18 +1790,19 @@ class QRCodePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("validateresp", Gson().toJson(response))
-                                if (response.status == 0) {
-                                    hitApiForRetailerLogout()
-                                }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("validateresp", Gson().toJson(response))
+                            if (response.status == 0) {
+                                hitApiForRetailerLogout()
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@QRCodePage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@QRCodePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1824,6 +1818,7 @@ class QRCodePage : BaseActivity() {
     fun hitApiForRetailerLogout() {
         var loginRequest = LogoutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("LogoutReq", Gson().toJson(loginRequest))
@@ -1832,22 +1827,23 @@ class QRCodePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LogoutResponse", Gson().toJson(response))
-                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
-                                preference.setStringValue(ConstantClass.LoginType, "")
-                                ConstantClass.ClickOnCardDashboard = ""
-                                val intent = Intent(this@QRCodePage, ChooseYourRolePage::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                finish()
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LogoutResponse", Gson().toJson(response))
+                            preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                            preference.setStringValue(ConstantClass.LoginType, "")
+                            ConstantClass.ClickOnCardDashboard = ""
+                            val intent = Intent(this@QRCodePage, ChooseYourRolePage::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            ConstantClass.handleApiError(this@QRCodePage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@QRCodePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1862,7 +1858,8 @@ class QRCodePage : BaseActivity() {
 
     fun hitApiForValidateKey() {
         var keyvalidatereq = ValidateAccessKeyReq(
-            apiacessKey = binding.accesstoken.text.toString().trim()
+            apiacessKey = binding.accesstoken.text.toString().trim(),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("keyvalidatereq", Gson().toJson(keyvalidatereq))
@@ -1871,45 +1868,45 @@ class QRCodePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LoginResponse", Gson().toJson(response))
+                            ConstantClass.dialog.dismiss()
 
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LoginResponse", Gson().toJson(response))
-                                ConstantClass.dialog.dismiss()
+                            if (response.success!! && response.statusCode == 200) {
+                                binding.accesstoken.isEnabled= false
+                                binding.verifykeyicon.visibility= View.VISIBLE
+                                binding.validatekeylayout.visibility = View.GONE
 
-                                if (response.success!! && response.statusCode == 200) {
-                                    binding.accesstoken.isEnabled= false
-                                    binding.verifykeyicon.visibility= View.VISIBLE
-                                    binding.validatekeylayout.visibility = View.GONE
-
-                                    if(!CheckOnlineOrOffline.equals(ConstantClass.kit)){
-                                        binding.LoanCreatelayout.visibility = View.VISIBLE
-                                    }
-                                    else{
-                                        FirstName = CustFirstName
-                                        MiddleName = CustMiddleName
-                                        LastName = CustLastName
-                                        CongratulationPage.customerCode =  customerCode
-                                        startActivity(Intent(this@QRCodePage, CongratulationPage::class.java))
-                                        clearData()
-                                        finish()
-                                    }
-
+                                if(!CheckOnlineOrOffline.equals(ConstantClass.kit)){
+                                    binding.LoanCreatelayout.visibility = View.VISIBLE
                                 }
-                                else {
-                                    binding.accesstoken.isEnabled= true
-                                    binding.verifykeyicon.visibility= View.GONE
-                                    binding.validateKeyLayout.visibility = View.VISIBLE
-                                    binding.LoanCreatelayout.visibility = View.GONE
+                                else{
+                                    FirstName = CustFirstName
+                                    MiddleName = CustMiddleName
+                                    LastName = CustLastName
+                                    CongratulationPage.customerCode =  customerCode
+                                    startActivity(Intent(this@QRCodePage, CongratulationPage::class.java))
+                                    clearData()
+                                    finish()
                                 }
 
-                                Toast.makeText(this@QRCodePage, response.message, Toast.LENGTH_SHORT).show()
                             }
+                            else {
+                                binding.accesstoken.isEnabled= true
+                                binding.verifykeyicon.visibility= View.GONE
+                                binding.validateKeyLayout.visibility = View.VISIBLE
+                                binding.LoanCreatelayout.visibility = View.GONE
+                            }
+
+                            Toast.makeText(this@QRCodePage, response.message, Toast.LENGTH_SHORT).show()
+                        } else {
+                            ConstantClass.handleApiError(this@QRCodePage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@QRCodePage, it.message)
                         binding.validatekeylayout.visibility = View.VISIBLE
                         binding.accesstoken.isEnabled = true
                         binding.nextlayout.visibility = View.GONE
@@ -1934,55 +1931,53 @@ class QRCodePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                Log.d("eMandateRes", Gson().toJson(response))
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("eMandateRes", Gson().toJson(response))
 
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
-                                }
-
-                                if (response!!.data?.customer != null) {
-                                    webUrl = response!!.data!!.url
-                                    startActivity(Intent(this@QRCodePage, RetailerEMandateVerifyPage::class.java))
-                                }
-                                else {
-                                    ConstantClass.dialog.dismiss()
-                                    isEmandateVerified= "No"
-                                    isEnachCancelled = true
-                                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
-                                }
-
-                                if(!isEmandateVerified.isNullOrBlank()){
-                                    var request = EnachDateUploadReq(
-                                        isEmandateVerified = isEmandateVerified,
-                                        emAccountType = AccountType,
-                                        isPannydropVerified = isPannydropVerified,
-                                        emAccountNumber = AccountNumber,
-                                        customerCode = CustomerCodeForEnach,
-                                        retailerCode= RetailerCodeForEnach,
-                                        loanCode= loaneCode,
-                                        emBankName=BankName,
-                                        emIfscCode =BankIFSCCode
-                                    )
-
-                                    hitApiForUploadEnachMandateDataResponse(request)
-                                }
-
+                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                ConstantClass.dialog.dismiss()
                             }
 
+                            if (response!!.data?.customer != null) {
+                                webUrl = response!!.data!!.url
+                                startActivity(Intent(this@QRCodePage, RetailerEMandateVerifyPage::class.java))
+                            }
+                            else {
+                                ConstantClass.dialog.dismiss()
+                                isEmandateVerified= "No"
+                                isEnachCancelled = true
+                                Toast.makeText(this@QRCodePage, response.message, Toast.LENGTH_SHORT).show()
+                            }
+
+                            if(!isEmandateVerified.isNullOrBlank()){
+                                var request = EnachDateUploadReq(
+                                    isEmandateVerified = isEmandateVerified,
+                                    emAccountType = AccountType,
+                                    isPannydropVerified = isPannydropVerified,
+                                    emAccountNumber = AccountNumber,
+                                    customerCode = CustomerCodeForEnach,
+                                    retailerCode= RetailerCodeForEnach,
+                                    loanCode= loaneCode,
+                                    emBankName=BankName,
+                                    emIfscCode =BankIFSCCode,
+                                    clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
+                                )
+
+                                hitApiForUploadEnachMandateDataResponse(request)
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@QRCodePage, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@QRCodePage, it.message)
                         // ✅ Print the full error details
                         Log.e("API_ERROR", "Status: ERROR")
                         Log.e("API_ERROR_CODE", resources.data?.code().toString())
                         Log.e("API_ERROR_MSG", resources.message ?: "Unknown Error")
-
-                        Toast.makeText(this, "Server error occurred (Code: ${resources.data?.code() ?: "Unknown"})", Toast.LENGTH_LONG).show()
 
                         // Optional: Handle specific 500 error
                         if (resources.data?.code() == 500) {
@@ -2009,37 +2004,36 @@ class QRCodePage : BaseActivity() {
 
         var request = LoanChargeReq(
             registrationID = PENNYDROP_REGISTRATION_ID,
-            retailerCode = preference.getStringValue(ConstantClass.RetailerCode, "")
+            retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         panViewModel.loanApplyChargesReq(request).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                Log.d("LoanChargeRes", Gson().toJson(response))
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LoanChargeRes", Gson().toJson(response))
 
-                                if(response!!.status!!.lowercase().equals("true")){
-                                    hitApiForRetailerCreatedLoan(loancreatedreq)
-                                }
-                                else {
-                                    if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                        ConstantClass.dialog.dismiss()
-                                    }
-                                    Toast.makeText(this,response!!.message.toString(), Toast.LENGTH_SHORT).show()
-                                }
-
+                            if(response!!.status!!.lowercase().equals("true")){
+                                hitApiForRetailerCreatedLoan(loancreatedreq)
                             }
+                            else {
+                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                    ConstantClass.dialog.dismiss()
+                                }
+                                Toast.makeText(this@QRCodePage,response!!.message.toString(), Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@QRCodePage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
+                        ConstantClass.handleApiFailure(this@QRCodePage, it.message)
                         // ✅ Print the full error details
                         Log.e("API_ERROR", "Status: ERROR")
-                        if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                            ConstantClass.dialog.dismiss()
-                        }
                     }
 
                     ApiStatus.LOADING -> {
@@ -2063,20 +2057,20 @@ class QRCodePage : BaseActivity() {
 
                 when(it.apiStatus){
                     ApiStatus.SUCCESS ->{
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                Log.d("EmandateUploadRes", Gson().toJson(response))
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("EmandateUploadRes", Gson().toJson(response))
+                        } else {
+                            ConstantClass.handleApiError(this@QRCodePage, it.data?.code() ?: 0)
                         }
 
                     }
                     ApiStatus.ERROR ->{
+                        ConstantClass.handleApiFailure(this@QRCodePage, it.message)
                         // ✅ Print the full error details
                         Log.e("API_ERROR", "Status: ERROR")
                         Log.e("API_ERROR_CODE", resources.data?.code().toString())
                         Log.e("API_ERROR_MSG", resources.message ?: "Unknown Error")
-
-                        Toast.makeText(this, "Server error occurred (Code: ${resources.data?.code() ?: "Unknown"})", Toast.LENGTH_LONG).show()
 
                         // Optional: Handle specific 500 error
                         if (resources.data?.code() == 500) {

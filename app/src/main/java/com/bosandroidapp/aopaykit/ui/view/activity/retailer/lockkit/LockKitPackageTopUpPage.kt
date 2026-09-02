@@ -120,31 +120,30 @@ class LockKitPackageTopUpPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                Log.d("PanVerificationResp", Gson().toJson(response))
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("PanVerificationResp", Gson().toJson(response))
 
-                                if (response!!.status?.toLowerCase().equals("true",ignoreCase = true) && !response.preparePOSTForm.isNullOrEmpty()) {
-                                    // Open WebView with the provided URL
-                                    ConstantClass.dialog.dismiss()
-                                    val intent = Intent(this@LockKitPackageTopUpPage, PGWebViewActivity::class.java)
-                                    intent.putExtra("kittopup", ConstantClass.KitPlan)
-                                    intent.putExtra("pgurl", response.preparePOSTForm)
-                                    startActivity(intent)
-                                }
-                                else {
-                                    ConstantClass.dialog.dismiss()
-                                    Toast.makeText(this@LockKitPackageTopUpPage, response.message, Toast.LENGTH_SHORT).show()
-                                }
-
+                            if (response!!.status?.toLowerCase().equals("true",ignoreCase = true) && !response.preparePOSTForm.isNullOrEmpty()) {
+                                // Open WebView with the provided URL
+                                ConstantClass.dialog.dismiss()
+                                val intent = Intent(this@LockKitPackageTopUpPage, PGWebViewActivity::class.java)
+                                intent.putExtra("kittopup", ConstantClass.KitPlan)
+                                intent.putExtra("pgurl", response.preparePOSTForm)
+                                startActivity(intent)
                             }
-
+                            else {
+                                ConstantClass.dialog.dismiss()
+                                Toast.makeText(this@LockKitPackageTopUpPage, response.message, Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitPackageTopUpPage, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@LockKitPackageTopUpPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -174,36 +173,37 @@ class LockKitPackageTopUpPage : BaseActivity() {
                     }
 
                     ApiStatus.SUCCESS -> {
-                        ConstantClass.dialog.dismiss()
                         val response = it.data?.body()
-                        Log.d("ResponseKit", Gson().toJson(response))
+                        if (it.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
+                            Log.d("ResponseKit", Gson().toJson(response))
 
-                        if (response != null && response!!.status == true) {
-                            packagedataLits = response.data!!
-                            if(packagedataLits!!.size>0){
-                                binding.notfoundimage.visibility= View.GONE
-                                binding.btnPayNow.visibility=View.VISIBLE
-                                binding.packageDataList.visibility = View.VISIBLE
-                                setupAdapter(packagedataLits)
+                            if (response != null && response!!.status == true) {
+                                packagedataLits = response.data!!
+                                if(packagedataLits!!.size>0){
+                                    binding.notfoundimage.visibility= View.GONE
+                                    binding.btnPayNow.visibility=View.VISIBLE
+                                    binding.packageDataList.visibility = View.VISIBLE
+                                    setupAdapter(packagedataLits)
 
-                            }else{
+                                }else{
+                                    binding.notfoundimage.visibility= View.VISIBLE
+                                    binding.packageDataList.visibility = View.GONE
+                                    binding.btnPayNow.visibility=View.GONE
+                                }
+
+                            } else {
                                 binding.notfoundimage.visibility= View.VISIBLE
                                 binding.packageDataList.visibility = View.GONE
                                 binding.btnPayNow.visibility=View.GONE
                             }
-
                         } else {
-                            binding.notfoundimage.visibility= View.VISIBLE
-                            binding.packageDataList.visibility = View.GONE
-                            binding.btnPayNow.visibility=View.GONE
+                            ConstantClass.handleApiError(this@LockKitPackageTopUpPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
-                        // 👇 Show proper error from ViewModel (404, 500 etc.)
-                        val errorMessage = it.message ?: "Something went wrong"
-                        Log.e("LoginError", errorMessage)
+                        ConstantClass.handleApiFailure(this@LockKitPackageTopUpPage, it.message)
                     }
 
                 }
@@ -263,6 +263,7 @@ class LockKitPackageTopUpPage : BaseActivity() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
@@ -271,19 +272,20 @@ class LockKitPackageTopUpPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SessionOutResponse", Gson().toJson(response))
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
-                                }
-                                ConstantClass.checkActiveStatusAndLogout(this@LockKitPackageTopUpPage, response.status, preference)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SessionOutResponse", Gson().toJson(response))
+                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                ConstantClass.dialog.dismiss()
                             }
+                            ConstantClass.checkActiveStatusAndLogout(this@LockKitPackageTopUpPage, response.status, preference)
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitPackageTopUpPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@LockKitPackageTopUpPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -305,18 +307,19 @@ class LockKitPackageTopUpPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("validateresp", Gson().toJson(response))
-                                if(response.status==0){
-                                    hitApiForRetailerLogout()
-                                }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("validateresp", Gson().toJson(response))
+                            if(response.status==0){
+                                hitApiForRetailerLogout()
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitPackageTopUpPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@LockKitPackageTopUpPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -340,22 +343,23 @@ class LockKitPackageTopUpPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LogoutResponse", Gson().toJson(response))
-                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
-                                preference.setStringValue(ConstantClass.LoginType, "")
-                                ConstantClass.ClickOnCardDashboard = ""
-                                val intent = Intent(this@LockKitPackageTopUpPage, ChooseYourRolePage::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                finish()
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LogoutResponse", Gson().toJson(response))
+                            preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                            preference.setStringValue(ConstantClass.LoginType, "")
+                            ConstantClass.ClickOnCardDashboard = ""
+                            val intent = Intent(this@LockKitPackageTopUpPage, ChooseYourRolePage::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            ConstantClass.handleApiError(this@LockKitPackageTopUpPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@LockKitPackageTopUpPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {

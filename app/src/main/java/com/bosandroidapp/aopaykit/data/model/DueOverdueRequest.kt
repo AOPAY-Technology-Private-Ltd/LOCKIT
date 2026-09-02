@@ -8,6 +8,8 @@ data class DueOverdueRequest(
 	val retailerCode: String? = null,
 
 	@field:SerializedName("reportType")
-	val reportType: String? = null
+	val reportType: String? = null,
 
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null
 )

@@ -185,7 +185,8 @@ class LowCibilScoreCustomerReports : BaseActivity(){
             reportType = "CustByCredit",
             fromDate = FromDate,
             toDate = ToDate,
-            retailerCode = retailercode
+            retailerCode = retailercode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("cibilreportsreq", Gson().toJson(gettingreportsreq))

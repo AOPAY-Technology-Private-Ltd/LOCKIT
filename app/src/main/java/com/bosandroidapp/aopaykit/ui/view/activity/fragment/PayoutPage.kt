@@ -410,7 +410,8 @@ class PayoutPage : Fragment() {
         var req = HoldAmountWithdrawReq(
             retailerID = preference.getStringValue(ConstantClass.RetailerCode,""),
             amount = binding.holdamountetx.text.toString().trim(),
-            remarks = binding.holdamountremarks.text.toString()
+            remarks = binding.holdamountremarks.text.toString(),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("HoldAmountReq", Gson().toJson(req))
@@ -597,7 +598,8 @@ class PayoutPage : Fragment() {
        accountHolder = binding.accountholdername.text.toString(),
        ifscCode = binding.ifsccode.text.toString().trim(),
        branchName = binding.branchname.text.toString(),
-       remarks = binding.remarks.text.toString()
+       remarks = binding.remarks.text.toString(),
+       clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
    )
 
    Log.d("WalletpayoutReq", Gson().toJson(req))
@@ -667,7 +669,8 @@ class PayoutPage : Fragment() {
         var registrationID = preference.getStringValue(ConstantClass.RetailerCode, "")
         var request = RetailerWalletAmountReq(
             retailerID = registrationID ,
-            amountType = "CreditBalance"
+            amountType = "CreditBalance",
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("walletAmountReq", Gson().toJson(request))
@@ -760,7 +763,8 @@ class PayoutPage : Fragment() {
             branchName = "",
             branchAddress = "",
             mobilenumber = "",
-            emailID = ""
+            emailID = "",
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("GetBankListReq", Gson().toJson(req))

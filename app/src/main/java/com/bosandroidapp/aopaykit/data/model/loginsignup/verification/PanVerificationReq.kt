@@ -6,7 +6,9 @@ data class PanVerificationReq(
     @SerializedName("PanNumber")
     var panNumber:String ,
     @SerializedName("RegistrationID")
-    var registrationId:String
+    var registrationId:String,
+    @SerializedName("clientCode")
+    var clientCode: String? = null
 )
 
 

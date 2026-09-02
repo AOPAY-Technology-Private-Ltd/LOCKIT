@@ -14,5 +14,8 @@ data class LowCibilCustomerReportReq(
 	val toDate: String? = null,
 
 	@field:SerializedName("retailerCode")
-	val retailerCode: String? = null
+	val retailerCode: String? = null,
+
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null
 )

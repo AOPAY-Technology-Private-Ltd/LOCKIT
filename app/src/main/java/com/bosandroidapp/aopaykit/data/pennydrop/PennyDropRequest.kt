@@ -26,5 +26,8 @@ data class PennyDropRequest(
 	val refID: String? = null,
 
 	@field:SerializedName("AccountNumber")
-	val accountNumber: String? = null
+	val accountNumber: String? = null,
+
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null
 )

@@ -32,7 +32,7 @@ data class CibilScoreReq(
     var consentacceptence: String,
 
     @SerializedName("RegistrationID")
-    var registrationID: String
-
-
+    var registrationID: String,
+    @SerializedName("clientCode")
+    var clientCode: String? = null
 )

@@ -6,5 +6,7 @@ data class SendOtpReq (
     @SerializedName("mobileOrEmailID")
     var mobileoremailId:String,
     @SerializedName("otP_Type")
-    var otpType:String
+    var otpType:String,
+    @SerializedName("clientCode")
+    var clientCode: String? = null
 )

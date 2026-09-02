@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class SendInstalledAppOnServerRequest(
 
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null,
+
 	@field:SerializedName("createdBy")
 	val createdBy: String? = null,
 

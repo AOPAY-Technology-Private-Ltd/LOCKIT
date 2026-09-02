@@ -68,5 +68,8 @@ data class EMandateRequest(
 	val bankID: Int? = null,
 
 	@field:SerializedName("BankAccountNumber")
-	val bankAccountNumber: String? = null
+	val bankAccountNumber: String? = null,
+
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null
 )

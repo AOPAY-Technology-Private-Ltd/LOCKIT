@@ -6,5 +6,7 @@ data class GetCustomerLoanDetailsReq(
     @SerializedName("loanCode")
     var loancode:String,
     @SerializedName("customerCode")
-    var customercode:String
+    var customercode:String,
+    @SerializedName("clientCode")
+    var clientCode: String? = null
 )

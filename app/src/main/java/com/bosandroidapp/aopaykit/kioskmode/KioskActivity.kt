@@ -212,7 +212,8 @@ class KioskActivity : AppCompatActivity() {
                                     eMINumbers = "EMI${emiNumbers}",
                                     customerCode = preference.getStringValue(ConstantClass.CustomerCode, ""),
                                     payCustomerName = "${preference.getStringValue(ConstantClass.FirstName, "")} ${preference.getStringValue(ConstantClass.LastName, "")}",
-                                    loanCode = loanCode
+                                    loanCode = loanCode,
+                                    clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
                                 )
                                 hitApiForRequestPG(req)
                             }
@@ -267,7 +268,8 @@ class KioskActivity : AppCompatActivity() {
             address="",
             aadharNumber="",
             panNumber="",
-            activeStatus=""
+            activeStatus="",
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("retailergetprofileReq", Gson().toJson(req))
@@ -320,7 +322,9 @@ class KioskActivity : AppCompatActivity() {
         isApiRunning = true
         var loanemireq = GetCustomerLoanDetailsReq(
             loancode = "",
-            customercode = preference.getStringValue(ConstantClass.CustomerCode,""))
+            customercode = preference.getStringValue(ConstantClass.CustomerCode,""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
+        )
         Log.d("customerloanEmireq", Gson().toJson(loanemireq))
 
         viewModel.getCustomerLoanEmiDetailsReq(loanemireq).observe(this) { resources ->

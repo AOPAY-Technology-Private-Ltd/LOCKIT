@@ -49,6 +49,7 @@ class LocationUploadWorker(context: Context, workerParams: WorkerParameters) : C
 
             //  Upload Dynamic Installed Apps as well
             val sendInstalledAppRequest = SendInstalledAppOnServerRequest(
+                clientCode = preference.getStringValue(ConstantClass.ClientCode, ""),
                 createdBy = preference.getStringValue(ConstantClass.CustomerCode, ""),
                 categories = ConstantClass.getInstalledApps(applicationContext.packageManager, applicationContext)
             )

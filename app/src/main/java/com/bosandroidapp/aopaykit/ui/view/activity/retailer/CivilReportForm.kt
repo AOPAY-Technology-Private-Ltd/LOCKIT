@@ -152,34 +152,37 @@ class CivilReportForm : BaseActivity() {
     fun hitApiForSendOTP(mailidormobile: String,type : String) {
         var sendOtpReq = SendOtpReq(
             mobileoremailId = mailidormobile,
-            otpType = type)
+            otpType = type,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
+        )
         Log.d("SendOTPREQ", Gson().toJson(sendOtpReq))
 
         viewModel.sendOTPReq(sendOtpReq).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SendRes", response.message)
-                                var otp = response.value
-                                Log.d("OTP", otp)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SendRes", response.message)
+                            var otp = response.value
+                            Log.d("OTP", otp)
 
-                                if (response.statuss.equals("True")) {
-                                    var firstName = "Customer"
-                                    var customerName = firstName
-                                    hitApiForCibilScore(otp)
-                                }
-                                else{
-                                    Toast.makeText(this@CivilReportForm,response.message,Toast.LENGTH_SHORT).show()
-                                    ConstantClass.dialog.dismiss()
-                                }
+                            if (response.statuss.equals("True")) {
+                                var firstName = "Customer"
+                                var customerName = firstName
+                                hitApiForCibilScore(otp)
                             }
+                            else{
+                                Toast.makeText(this@CivilReportForm,response.message,Toast.LENGTH_SHORT).show()
+                                ConstantClass.dialog.dismiss()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@CivilReportForm, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@CivilReportForm, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -211,7 +214,8 @@ class CivilReportForm : BaseActivity() {
             otp = otp,
             consentmessage = "I agree to share my data for verification purposes",
             consentacceptence = "yes",
-            registrationID = ConstantClass.PENNYDROP_REGISTRATION_ID
+            registrationID = ConstantClass.PENNYDROP_REGISTRATION_ID,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("CibilReq",Gson().toJson(cibilReq))
@@ -219,86 +223,86 @@ class CivilReportForm : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                ConstantClass.dialog.dismiss()
-                                var otp = response.value
-                                Log.d("cibilresp", response.message)
-                                if (!response.httpResponseCode.isNullOrBlank() && response.httpResponseCode.equals("200")) {
-                                    var data = response.result.resultJson.inProfileResponse
-                                    // for personal details
-                                    var applicantDetails = data.currentApplication.currentApplicationDetails.currentApplicantDetails
-                                    firstname = applicantDetails.firstName
-                                    panNumber = applicantDetails.incomeTaxPan
-                                    mobNumber = applicantDetails.mobilePhoneNumber
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
+                            var otp = response.value
+                            Log.d("cibilresp", response.message)
+                            if (!response.httpResponseCode.isNullOrBlank() && response.httpResponseCode.equals("200")) {
+                                var data = response.result.resultJson.inProfileResponse
+                                // for personal details
+                                var applicantDetails = data.currentApplication.currentApplicationDetails.currentApplicantDetails
+                                firstname = applicantDetails.firstName
+                                panNumber = applicantDetails.incomeTaxPan
+                                mobNumber = applicantDetails.mobilePhoneNumber
 
-                                    //for dob and mailid
-                                    val emailList = mutableListOf<String>()
-                                    var caisHolderDetails = data.caisAccount.caisAccountDETAILS
+                                //for dob and mailid
+                                val emailList = mutableListOf<String>()
+                                var caisHolderDetails = data.caisAccount.caisAccountDETAILS
 
-                                    var creditAccount =  data.caisAccount.caisSummary.creditAccount
-                                    var totaloutstandingbalance =  data.caisAccount.caisSummary.totalOutstandingBalance
+                                var creditAccount =  data.caisAccount.caisSummary.creditAccount
+                                var totaloutstandingbalance =  data.caisAccount.caisSummary.totalOutstandingBalance
 
 
-                                    caisHolderDetails.forEach { account ->
-                                        account.caisHolderPhoneDetails.forEach { phoneDetails ->
-                                            val email = phoneDetails.eMailId
-                                            if (!email.isNullOrBlank()) {
-                                                emailList.add(email)
+                                caisHolderDetails.forEach { account ->
+                                    account.caisHolderPhoneDetails.forEach { phoneDetails ->
+                                        val email = phoneDetails.eMailId
+                                        if (!email.isNullOrBlank()) {
+                                            emailList.add(email)
+                                        }
+                                    }
+                                }
+
+                                val dobList = mutableListOf<String>()
+
+                                caisHolderDetails.forEach { account ->
+                                    account.caisHolderDetails.forEach { holderdetails ->
+                                        holderdetails.dateOfBirth.let { dob ->
+                                            if (dob.isNotBlank()) {
+                                                dobList.add(dob)
                                             }
                                         }
                                     }
-
-                                    val dobList = mutableListOf<String>()
-
-                                    caisHolderDetails.forEach { account ->
-                                        account.caisHolderDetails.forEach { holderdetails ->
-                                            holderdetails.dateOfBirth.let { dob ->
-                                                if (dob.isNotBlank()) {
-                                                    dobList.add(dob)
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    val emailsInSingleLine = emailList
-                                    val dobInSingleLine = dobList
-
-                                    // Example: show in Log or TextView
-                                    Log.d("Emails", emailsInSingleLine[0])
-                                    Log.d("dob",dobInSingleLine[0])
-
-                                    DOB = dobInSingleLine[0]
-                                    EMAILID = emailsInSingleLine[0]
-
-                                    Last7Days = data.caps.capsSummary.capsLast7Days
-                                    Last30Days = data.caps.capsSummary.capsLast30Days
-                                    Last90Days = data.caps.capsSummary.capsLast90Days
-                                    Last180Days = data.caps.capsSummary.capsLast180Days
-
-                                    totalCreditAccount =creditAccount.creditAccountTotal
-                                    ActiveAccount = creditAccount.creditAccountActive
-                                    DefaultAccount = creditAccount.creditAccountDefault
-                                    ClosedAccount = creditAccount.creditAccountClosed
-                                    outstandingBalance = totaloutstandingbalance.outstandingBalanceAll
-
-                                    userScore = data.score.bureauScore.toFloat()
-
-                                    AccountList = caisHolderDetails
-
-                                   startActivity(Intent(this@CivilReportForm,CibilReportsDetailsPage::class.java))
-
                                 }
-                                else{
-                                    Toast.makeText(this@CivilReportForm,response.message,Toast.LENGTH_LONG).show()
-                                }
+
+                                val emailsInSingleLine = emailList
+                                val dobInSingleLine = dobList
+
+                                // Example: show in Log or TextView
+                                Log.d("Emails", emailsInSingleLine[0])
+                                Log.d("dob",dobInSingleLine[0])
+
+                                DOB = dobInSingleLine[0]
+                                EMAILID = emailsInSingleLine[0]
+
+                                Last7Days = data.caps.capsSummary.capsLast7Days
+                                Last30Days = data.caps.capsSummary.capsLast30Days
+                                Last90Days = data.caps.capsSummary.capsLast90Days
+                                Last180Days = data.caps.capsSummary.capsLast180Days
+
+                                totalCreditAccount =creditAccount.creditAccountTotal
+                                ActiveAccount = creditAccount.creditAccountActive
+                                DefaultAccount = creditAccount.creditAccountDefault
+                                ClosedAccount = creditAccount.creditAccountClosed
+                                outstandingBalance = totaloutstandingbalance.outstandingBalanceAll
+
+                                userScore = data.score.bureauScore.toFloat()
+
+                                AccountList = caisHolderDetails
+
+                               startActivity(Intent(this@CivilReportForm,CibilReportsDetailsPage::class.java))
 
                             }
+                            else{
+                                Toast.makeText(this@CivilReportForm,response.message,Toast.LENGTH_LONG).show()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@CivilReportForm, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@CivilReportForm, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -403,6 +407,7 @@ class CivilReportForm : BaseActivity() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
@@ -411,19 +416,20 @@ class CivilReportForm : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SessionOutResponse", Gson().toJson(response))
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
-                                }
-                                ConstantClass.checkActiveStatusAndLogout(this@CivilReportForm, response.status, preference)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SessionOutResponse", Gson().toJson(response))
+                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                ConstantClass.dialog.dismiss()
                             }
+                            ConstantClass.checkActiveStatusAndLogout(this@CivilReportForm, response.status, preference)
+                        } else {
+                            ConstantClass.handleApiError(this@CivilReportForm, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@CivilReportForm, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -444,18 +450,19 @@ class CivilReportForm : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("validateresp", Gson().toJson(response))
-                                if(response.status==0){
-                                    hitApiForRetailerLogout()
-                                }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("validateresp", Gson().toJson(response))
+                            if(response.status==0){
+                                hitApiForRetailerLogout()
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@CivilReportForm, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@CivilReportForm, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -479,22 +486,23 @@ class CivilReportForm : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LogoutResponse", Gson().toJson(response))
-                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
-                                preference.setStringValue(ConstantClass.LoginType, "")
-                                ConstantClass.ClickOnCardDashboard = ""
-                                val intent = Intent(this@CivilReportForm, ChooseYourRolePage::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                finish()
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LogoutResponse", Gson().toJson(response))
+                            preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                            preference.setStringValue(ConstantClass.LoginType, "")
+                            ConstantClass.ClickOnCardDashboard = ""
+                            val intent = Intent(this@CivilReportForm, ChooseYourRolePage::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            ConstantClass.handleApiError(this@CivilReportForm, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@CivilReportForm, it.message)
                     }
 
                     ApiStatus.LOADING -> {

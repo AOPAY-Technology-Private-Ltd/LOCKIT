@@ -12,5 +12,6 @@ data class HoldAmountWithdrawReq(
 
     @SerializedName("remarks")
     var remarks: String,
-
+    @SerializedName("clientCode")
+    var clientCode: String? = null
 )

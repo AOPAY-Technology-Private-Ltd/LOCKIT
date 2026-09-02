@@ -60,6 +60,7 @@ class KitInventoryReportListPage : BaseActivity() {
     private fun fetchInventoryReport() {
         val retailerCode = preference.getStringValue(ConstantClass.RetailerCode, "")
         val request = GetKitInventoryListRequest(
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, ""),
             retailerCode = retailerCode,
             status = "ALL"
         )

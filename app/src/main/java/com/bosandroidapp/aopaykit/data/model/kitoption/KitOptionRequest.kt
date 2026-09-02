@@ -5,5 +5,9 @@ import com.google.gson.annotations.SerializedName
 data class KitOptionRequest(
 
 	@field:SerializedName("retailerCode")
-	val retailerCode: String? = null
+	val retailerCode: String? = null,
+
+	@field:SerializedName("clientcode")
+	val clientcode: String? = null,
+
 )

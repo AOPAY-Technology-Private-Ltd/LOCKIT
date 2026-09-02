@@ -116,7 +116,6 @@ class LoginPage : BaseActivity() {
                     Log.d("KeyboardCheck", "screenHeight=$screenHeight, rect.bottom=${rect.bottom}, keypadHeight=$keypadHeight")
 
                     if (keypadHeight > screenHeight * 0.20) {
-                        // ✅ Keyboard is open
 
                         binding.scrollview.post {
                             binding.scrollview.smoothScrollTo(0, binding.scrollview.bottom)
@@ -230,6 +229,7 @@ class LoginPage : BaseActivity() {
     }
 
 
+
     fun containsEmoji(text: String): Boolean {
         for (char in text) {
             val type = Character.getType(char)
@@ -243,7 +243,6 @@ class LoginPage : BaseActivity() {
 
 
     fun hitApiForLogin(emailOfMobile:String,password:String, isAfterOTP: Boolean = false){
-
         val deviceId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
         preference.setStringValue("deviceid",deviceId)
 
@@ -267,66 +266,66 @@ class LoginPage : BaseActivity() {
                 }
 
                 ApiStatus.SUCCESS -> {
-                    ConstantClass.dialog.dismiss()
-
                     val response = it.data?.body()
-                    Log.d("LoginResponse", Gson().toJson(response))
+                    if (it.data?.isSuccessful == true && response != null) {
+                        ConstantClass.dialog.dismiss()
+                        Log.d("LoginResponse", Gson().toJson(response))
 
-                    if (response != null && response.statuss) {
+                        if (response.statuss) {
 
-                        if(loginType.equals(ConstantClass.Customer)){
-
-                           if (!isAfterOTP && response.retailerCode != ConstantClass.RETAILER_CODE_BIASS_OTP) {
-                                hitApiForSendOTP(emailOfMobile, "Mobile")
-                                return@observe
+                            if (loginType.equals(ConstantClass.Customer)) {
+                                if (!isAfterOTP && response.retailerCode != ConstantClass.RETAILER_CODE_BIASS_OTP) {
+                                    hitApiForSendOTP(emailOfMobile, "Mobile")
+                                    return@observe
+                                }
                             }
 
+                            val req = NotificationSendTokenRequest(
+                                deviceType = ConstantClass.DeviceType,
+                                clientCode = response.clientCode.toString(),
+                                customerCode = response.customerCode.toString(),
+                                retailerCode = response.retailerCode.toString(),
+                                fcmToken = FireBaseToken
+                            )
+
+                            sendDataOnServerForUploadToken(req)
+
+                            preference.setStringValue(ConstantClass.CustomerCode, response.customerCode.toString())
+                            preference.setStringValue(ConstantClass.RetailerCode, response.retailerCode.toString())
+                            preference.setStringValue(ConstantClass.FirstName, response.firstName.toString())
+                            preference.setStringValue(ConstantClass.LastName, response.lastName.toString())
+                            preference.setStringValue(ConstantClass.CustomerMobileNumber, response.mobileno.toString())
+                            preference.setStringValue(ConstantClass.CustomerEmailID, response.emailID.toString())
+                            preference.setBooleanValue(ConstantClass.LoggedIn, true)
+                            preference.setStringValue(ConstantClass.LoginType, loginType)
+                            preference.setStringValue(ConstantClass.LoginMobileorMailid, emailOfMobile)
+                            preference.setStringValue(ConstantClass.Loginpassword, password)
+                            preference.setStringValue(ConstantClass.ClientCode, response.clientCode.toString())
+
+                            val intent = Intent(this@LoginPage, DashBoard::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+
+                        }
+                        else {
+                            OpenPopUpForVAlert(response.message ?: "Login failed. Please connect with your administrator.")
                         }
 
-                        val req = NotificationSendTokenRequest(
-                            deviceType= ConstantClass.DeviceType,
-                            clientCode = response.clientCode.toString(),
-                            customerCode = response.customerCode.toString(),
-                            retailerCode = response.retailerCode.toString(),
-                            fcmToken = FireBaseToken
-                        )
-
-                        sendDataOnServerForUploadToken(req)
-
-                        preference.setStringValue(ConstantClass.CustomerCode, response.customerCode.toString())
-                        preference.setStringValue(ConstantClass.RetailerCode, response.retailerCode.toString())
-                        preference.setStringValue(ConstantClass.FirstName, response.firstName.toString())
-                        preference.setStringValue(ConstantClass.LastName, response.lastName.toString())
-                        preference.setStringValue(ConstantClass.CustomerMobileNumber, response.mobileno.toString())
-                        preference.setStringValue(ConstantClass.CustomerEmailID, response.emailID.toString())
-                        preference.setBooleanValue(ConstantClass.LoggedIn, true)
-                        preference.setStringValue(ConstantClass.LoginType, loginType)
-                        preference.setStringValue(ConstantClass.LoginMobileorMailid, emailOfMobile)
-                        preference.setStringValue(ConstantClass.Loginpassword, password)
-                        preference.setStringValue(ConstantClass.ClientCode, response.clientCode.toString())
-
-                        val intent = Intent(this@LoginPage, DashBoard::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        finish()
-
                     } else {
-                        OpenPopUpForVAlert(response?.message ?: "Login failed. Please connect with your administrator.")
+                        ConstantClass.handleApiError(this@LoginPage, it.data?.code() ?: 0)
                     }
                 }
 
                 ApiStatus.ERROR -> {
-                    ConstantClass.dialog.dismiss()
-                    // 👇 Show proper error from ViewModel (404, 500 etc.)
-                    val errorMessage = it.message ?: "Something went wrong"
-                    OpenPopUpForVAlert(errorMessage)
-
-                    Log.e("LoginError", errorMessage)
+                    ConstantClass.handleApiFailure(this@LoginPage, it.message)
+                    Log.e("LoginError", it.message ?: "Something went wrong")
                 }
 
             }
 
         }
+
 
     }
 
@@ -461,7 +460,9 @@ class LoginPage : BaseActivity() {
     fun hitApiForSendOTP(mailidormobile: String,type : String) {
         var sendOtpReq = SendOtpReq(
             mobileoremailId = mailidormobile,
-            otpType = type)
+            otpType = type,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
+        )
         Log.d("SendOTPREQ", Gson().toJson(sendOtpReq))
 
         viewModel.sendOTPReq(sendOtpReq).observe(this) { resources ->
@@ -546,7 +547,8 @@ class LoginPage : BaseActivity() {
         var verifyotpreq = VerifyOTPReq(
             mobileormailid = mobileOrEmailID,
             otp = otp,
-            logintype = message
+            logintype = message,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("VerifyOTPReq", Gson().toJson(verifyotpreq))
 
@@ -592,7 +594,8 @@ class LoginPage : BaseActivity() {
     fun hitApiForReSendOTP(mailidormobile: String,type : String) {
         var sendOtpReq = SendOtpReq(
             mobileoremailId = mailidormobile,
-            otpType = type
+            otpType = type,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("SendOTPREQ", Gson().toJson(sendOtpReq))
         viewModel.sendOTPReq(sendOtpReq).observe(this) { resources ->
@@ -748,17 +751,16 @@ class LoginPage : BaseActivity() {
 
                 ApiStatus.SUCCESS ->{
                     val response = it.data?.body()
-                    Log.d("LoginResponse", Gson().toJson(response))
-
+                    if (it.data?.isSuccessful == true && response != null) {
+                        Log.d("LoginResponse", Gson().toJson(response))
+                    } else {
+                        ConstantClass.handleApiError(this@LoginPage, it.data?.code() ?: 0)
+                    }
                 }
 
                 ApiStatus.ERROR -> {
-                    ConstantClass.dialog.dismiss()
-                    // 👇 Show proper error from ViewModel (404, 500 etc.)
-                    val errorMessage = it.message ?: "Something went wrong"
-                    OpenPopUpForVAlert(errorMessage)
-
-                    Log.e("LoginError", errorMessage)
+                    ConstantClass.handleApiFailure(this@LoginPage, it.message)
+                    Log.e("LoginError", it.message ?: "Something went wrong")
                 }
             }
 

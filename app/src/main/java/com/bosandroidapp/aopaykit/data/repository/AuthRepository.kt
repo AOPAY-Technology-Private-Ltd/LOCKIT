@@ -245,11 +245,13 @@ class AuthRepository(private val apiInterface: ApiInterface) {
 
   suspend fun getLowCibilReports(req: LowCibilCustomerReportReq) = apiInterface.getLowCibilReports(req)
 
+
   suspend fun uploadcustomerlocation(req: CustomerlocationUploadReq) = apiInterface.uploadcustomerlocation(req)
 
   suspend fun getAccessKeyForValidateAPKReq(req: GenerateAccessTokenRequest) = apiInterface.getAccessKeyForValidateAPKReq(req)
 
   suspend fun validateTokenFromRetailerReq(req: ValidateAccessKeyReq) = apiInterface.validateTokenFromRetailerReq(req)
+
 
   suspend fun sessionOutReq(req: SessionOutReq) = apiInterface.sessionOutReq(req)
 
@@ -373,6 +375,7 @@ class AuthRepository(private val apiInterface: ApiInterface) {
     val createdBy = req.createdBy.toRequestBody("text/plain".toMediaTypeOrNull())
     val membershipfees = req.membershipfees.toRequestBody("text/plain".toMediaTypeOrNull())
     val retailercode = req.retailercode.toRequestBody("text/plain".toMediaTypeOrNull())
+    val clientcode = req.clientcode.toRequestBody("text/plain".toMediaTypeOrNull())
     val cibilScore = req.cibilScore.toRequestBody("text/plain".toMediaTypeOrNull())
     val isAggrementVerified = req.isAggrementVerified.toRequestBody("text/plain".toMediaTypeOrNull())
     val IsRetailerAggrementVerified = req.IsRetailerAggrementVerified.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -425,7 +428,7 @@ class AuthRepository(private val apiInterface: ApiInterface) {
       panNumber, panNumberVerified, brandName, modelName, modelVariant, color, sellingPrice,
       downPayment, tenure, emiAmount, imeiNumber1, imeiNumber2, accountNumber, bankIFSCCode,
       bankName, accountType, branchName, refName, refRelationShip, refmobileNo, refAddress,
-      debitOrCreditCard, upiMandate, createdBy, membershipfees, retailercode, cibilScore,
+      debitOrCreditCard, upiMandate, createdBy, membershipfees, retailercode, clientcode,cibilScore,
       isAggrementVerified, IsRetailerAggrementVerified, custPhoto_File,
       imeiNumber1_SealPhotoPath, imeiNumber2_SealPhotoPath, imeiNumber_PhotoPath, invoive_Path,
       aadharFront_Path, aadharBack_Path, panFront_Path

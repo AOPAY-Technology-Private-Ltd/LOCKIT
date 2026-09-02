@@ -408,7 +408,8 @@ class RetailerProfilePage : BaseActivity() {
             address = "",
             aadharNumber = "",
             panNumber = "",
-            activeStatus = ""
+            activeStatus = "",
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("retailergetprofileReq", Gson().toJson(req))
@@ -417,53 +418,51 @@ class RetailerProfilePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
 
-                                if(response!=null){
-                                if (response!!.statuss.equals("True")) {
-                                    Log.d("RetailerDetailsResponse", Gson().toJson(response))
-                                    ConstantClass.dialog.dismiss()
-                                    Address = response.address.toString()
-                                    EmailId = response.emailid.toString()
-                                    MobileNumber = response.mobileNo.toString()
-                                    FName = response.firstName.toString()
-                                    LName = response.lastName.toString()
-                                    binding.retailerFName.setText(response.firstName)
-                                    binding.retailerLName.setText(response.lastName)
-                                    binding.customerCode.setText(response.customerCode)
-                                    binding.aadharNumber.setText(response.aadharNumber)
-                                    binding.address.setText(response.address)
-                                    binding.mobileNumber.setText(response.mobileNo)
-                                    binding.emailId.setText(response.emailid)
-                                    binding.pannumber.setText(response.panNumber)
-                                    binding.verifybuttonlayout.visibility = View.GONE
-                                    binding.edittext.text = ConstantClass.editprofile
-                                    preference.setStringValue(ConstantClass.FirstName, response.firstName.toString())
-                                    preference.setStringValue(ConstantClass.LastName, response.lastName.toString())
-                                    preference.setStringValue(ConstantClass.CustomerMobileNumber, response.mobileNo.toString())
-                                    preference.setStringValue(ConstantClass.CustomerEmailID, response.emailid.toString())
-                                    setDisableField()
-                                }
-                                else {
-                                    ConstantClass.dialog.dismiss()
-                                    finish()
-                                }
-                                 }
-
-                                else{
-                                    ConstantClass.dialog.dismiss()
-                                    hitapiforGetUpdateProfile()
-                                }
+                            if(response!=null){
+                            if (response!!.statuss.equals("True")) {
+                                Log.d("RetailerDetailsResponse", Gson().toJson(response))
+                                ConstantClass.dialog.dismiss()
+                                Address = response.address.toString()
+                                EmailId = response.emailid.toString()
+                                MobileNumber = response.mobileNo.toString()
+                                FName = response.firstName.toString()
+                                LName = response.lastName.toString()
+                                binding.retailerFName.setText(response.firstName)
+                                binding.retailerLName.setText(response.lastName)
+                                binding.customerCode.setText(response.customerCode)
+                                binding.aadharNumber.setText(response.aadharNumber)
+                                binding.address.setText(response.address)
+                                binding.mobileNumber.setText(response.mobileNo)
+                                binding.emailId.setText(response.emailid)
+                                binding.pannumber.setText(response.panNumber)
+                                binding.verifybuttonlayout.visibility = View.GONE
+                                binding.edittext.text = ConstantClass.editprofile
+                                preference.setStringValue(ConstantClass.FirstName, response.firstName.toString())
+                                preference.setStringValue(ConstantClass.LastName, response.lastName.toString())
+                                preference.setStringValue(ConstantClass.CustomerMobileNumber, response.mobileNo.toString())
+                                preference.setStringValue(ConstantClass.CustomerEmailID, response.emailid.toString())
+                                setDisableField()
                             }
+                            else {
+                                ConstantClass.dialog.dismiss()
+                                finish()
+                            }
+                             }
 
+                            else{
+                                ConstantClass.dialog.dismiss()
+                                hitapiforGetUpdateProfile()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@RetailerProfilePage, it.data?.code() ?: 0)
                         }
-
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
-                        hitapiforGetUpdateProfile()
+                        ConstantClass.handleApiFailure(this@RetailerProfilePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -488,7 +487,8 @@ class RetailerProfilePage : BaseActivity() {
             address = binding.address.text.toString(),
             aadharNumber = binding.aadharNumber.text.toString(),
             panNumber = binding.pannumber.text.toString(),
-            activeStatus = "True"
+            activeStatus = "True",
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("retailerUpdateprofileReq", Gson().toJson(req))
@@ -497,44 +497,43 @@ class RetailerProfilePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                if (response!!.statuss.equals("True")) {
-                                    Log.d("ProfileUpdateResp", Gson().toJson(response))
-                                    ConstantClass.dialog.dismiss()
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            if (response!!.statuss.equals("True")) {
+                                Log.d("ProfileUpdateResp", Gson().toJson(response))
+                                ConstantClass.dialog.dismiss()
 
-                                    var mob = binding.mobileNumber.text.toString().trim()
-                                    var emailId = binding.emailId.text.toString().trim()
+                                var mob = binding.mobileNumber.text.toString().trim()
+                                var emailId = binding.emailId.text.toString().trim()
 
-                                    if (!mob.equals(MobileNumber) || !emailId.equals(EmailId)) {
-                                        preference.setBooleanValue(ConstantClass.LoggedIn, false)
-                                        preference.setStringValue(ConstantClass.LoginType, "")
-                                        ConstantClass.ClickOnCardDashboard = ""
-                                        val intent = Intent(this@RetailerProfilePage, ChooseYourRolePage::class.java)
-                                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                        startActivity(intent)
-                                        finish()
-                                    } else {
-                                        binding.edittext.text = this.resources.getString(R.string.edit)
-                                        binding.verifybuttonlayout.visibility = View.GONE
-                                        setDisableField()
-                                        hitapiforGetUpdateProfile()
-                                        Toast.makeText(this, "Profile update successfully !!", Toast.LENGTH_SHORT).show()
-                                    }
-
-                                } else {
-                                    ConstantClass.dialog.dismiss()
+                                if (!mob.equals(MobileNumber) || !emailId.equals(EmailId)) {
+                                    preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                                    preference.setStringValue(ConstantClass.LoginType, "")
+                                    ConstantClass.ClickOnCardDashboard = ""
+                                    val intent = Intent(this@RetailerProfilePage, ChooseYourRolePage::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    startActivity(intent)
                                     finish()
+                                } else {
+                                    binding.edittext.text = this.resources.getString(R.string.edit)
+                                    binding.verifybuttonlayout.visibility = View.GONE
+                                    setDisableField()
+                                    hitapiforGetUpdateProfile()
+                                    Toast.makeText(this@RetailerProfilePage, "Profile update successfully !!", Toast.LENGTH_SHORT).show()
                                 }
 
+                            } else {
+                                ConstantClass.dialog.dismiss()
+                                finish()
                             }
-
+                        } else {
+                            ConstantClass.handleApiError(this@RetailerProfilePage, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@RetailerProfilePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -601,6 +600,7 @@ class RetailerProfilePage : BaseActivity() {
             createdBy = createdBy,
             membershipfees = "",
             retailercode = retailercode,
+            clientcode = preference.getStringValue(ConstantClass.ClientCode,""),
             cibilScore = "",
             isAggrementVerified = "",
             IsRetailerAggrementVerified = "",
@@ -619,48 +619,49 @@ class RetailerProfilePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                // ConstantClass.dialog.dismiss()
-                                // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show() // Optional: remove or keep
-                                if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            // ConstantClass.dialog.dismiss()
+                            // Toast.makeText(this, response!!.message, Toast.LENGTH_SHORT).show() // Optional: remove or keep
+                            if (response!!.statuss!!.toLowerCase().equals("success", ignoreCase = true)) {
 
-                                    if(!response.customerList.isNullOrEmpty()){
-                                        if (response.customerList != null) {
-                                             response.customerList[0].let {
-                                                 Address = it!!.currentAddress.toString()
-                                                 EmailId = it!!.eMailID.toString()
-                                                 MobileNumber = it!!.primaryMobileNumber.toString()
-                                                 FName = it!!.firstName.toString()
-                                                 LName = it!!.lastName.toString()
-                                                 binding.retailerFName.setText(it!!.firstName)
-                                                 binding.retailerLName.setText(it!!.lastName)
-                                                 binding.customerCode.setText(it!!.customerCodes)
-                                                 binding.aadharNumber.setText(it!!.aadharNumber)
-                                                 binding.address.setText(it!!.currentAddress)
-                                                 binding.mobileNumber.setText(it!!.primaryMobileNumber)
-                                                 binding.emailId.setText(it!!.eMailID)
-                                                 binding.pannumber.setText(it!!.panNumber)
-                                                 binding.verifybuttonlayout.visibility = View.GONE
-                                                 binding.edittext.text = ConstantClass.editprofile
-                                                 preference.setStringValue(ConstantClass.FirstName, it!!.firstName.toString())
-                                                 preference.setStringValue(ConstantClass.LastName, it!!.lastName.toString())
-                                                 preference.setStringValue(ConstantClass.CustomerMobileNumber, it!!.primaryMobileNumber.toString())
-                                                 preference.setStringValue(ConstantClass.CustomerEmailID, it!!.eMailID.toString())
+                                if(!response.customerList.isNullOrEmpty()){
+                                    if (response.customerList != null) {
+                                         response.customerList[0].let {
+                                             Address = it!!.currentAddress.toString()
+                                             EmailId = it!!.eMailID.toString()
+                                             MobileNumber = it!!.primaryMobileNumber.toString()
+                                             FName = it!!.firstName.toString()
+                                             LName = it!!.lastName.toString()
+                                             binding.retailerFName.setText(it!!.firstName)
+                                             binding.retailerLName.setText(it!!.lastName)
+                                             binding.customerCode.setText(it!!.customerCodes)
+                                             binding.aadharNumber.setText(it!!.aadharNumber)
+                                             binding.address.setText(it!!.currentAddress)
+                                             binding.mobileNumber.setText(it!!.primaryMobileNumber)
+                                             binding.emailId.setText(it!!.eMailID)
+                                             binding.pannumber.setText(it!!.panNumber)
+                                             binding.verifybuttonlayout.visibility = View.GONE
+                                             binding.edittext.text = ConstantClass.editprofile
+                                             preference.setStringValue(ConstantClass.FirstName, it!!.firstName.toString())
+                                             preference.setStringValue(ConstantClass.LastName, it!!.lastName.toString())
+                                             preference.setStringValue(ConstantClass.CustomerMobileNumber, it!!.primaryMobileNumber.toString())
+                                             preference.setStringValue(ConstantClass.CustomerEmailID, it!!.eMailID.toString())
 
-                                             }
+                                         }
 
 
-                                            // Optional: notify current fragment if needed, but since fragments use companion object it might be okay
-                                        }
+                                        // Optional: notify current fragment if needed, but since fragments use companion object it might be okay
                                     }
                                 }
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@RetailerProfilePage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        // ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@RetailerProfilePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -701,7 +702,8 @@ class RetailerProfilePage : BaseActivity() {
     fun hitApiForSendOTP(mailidormobile: String, type: String) {
         var sendOtpReq = SendOtpReq(
             mobileoremailId = mailidormobile,
-            otpType = type
+            otpType = type,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("SendOTPREQ", Gson().toJson(sendOtpReq))
 
@@ -709,37 +711,38 @@ class RetailerProfilePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SendRes", response.message)
-                                var otp = response.value
-                                Log.d("OTP", otp)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SendRes", response.message)
+                            var otp = response.value
+                            Log.d("OTP", otp)
 
-                                if (response.statuss.equals("True")) {
-                                    if (clicMobile) {
-                                        var firstName = binding.retailerFName.text.toString()
-                                        var lastName = binding.retailerLName.text.toString()
-                                        var customerName = firstName.plus(" ").plus(lastName)
-                                        hitApiForMobVerify(mailidormobile, customerName, otp)
-                                    }
-
-                                    if (clickEmailId) {
-                                        ConstantClass.dialog.dismiss()
-                                        Toast.makeText(this, response.message, Toast.LENGTH_SHORT)
-                                            .show()
-                                        OpenLoader(mailidormobile, "")
-                                    }
+                            if (response.statuss.equals("True")) {
+                                if (clicMobile) {
+                                    var firstName = binding.retailerFName.text.toString()
+                                    var lastName = binding.retailerLName.text.toString()
+                                    var customerName = firstName.plus(" ").plus(lastName)
+                                    hitApiForMobVerify(mailidormobile, customerName, otp)
                                 }
-                                else{
-                                    Toast.makeText(this@RetailerProfilePage,response.message,Toast.LENGTH_SHORT).show()
+
+                                if (clickEmailId) {
                                     ConstantClass.dialog.dismiss()
+                                    Toast.makeText(this@RetailerProfilePage, response.message, Toast.LENGTH_SHORT)
+                                        .show()
+                                    OpenLoader(mailidormobile, "")
                                 }
                             }
+                            else{
+                                Toast.makeText(this@RetailerProfilePage,response.message,Toast.LENGTH_SHORT).show()
+                                ConstantClass.dialog.dismiss()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@RetailerProfilePage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@RetailerProfilePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -930,49 +933,51 @@ class RetailerProfilePage : BaseActivity() {
         var verifyotpreq = VerifyOTPReq(
             mobileormailid = mobileOrEmailID,
             otp = otp,
-            logintype = message
+            logintype = message,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("VerifyOTPReq", Gson().toJson(verifyotpreq))
         viewModel.verifyOTPReq(verifyotpreq).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                ConstantClass.dialog.dismiss()
-                                Log.d("VerifyOTPRes", response.message)
-                                if (response.statuss.equals("True")) {
-                                    if (clickEmailId) {
-                                        EmailId = mobileOrEmailID
-                                        isEmailVerify = true
-                                        binding.emailId.isEnabled = false
-                                        binding.verifyiconemailId.visibility = View.VISIBLE
-                                        binding.verifyEmailId.visibility = View.GONE
-                                    }
-
-                                    if (clicMobile) {
-                                        isMobileVerify = true
-                                        binding.mobileNumber.isEnabled = false
-                                        binding.verifyiconphonenumber.visibility = View.VISIBLE
-                                        binding.verifymobilenumber.visibility = View.GONE
-                                    }
-
-                                    if (dialog != null && dialog.isShowing) {
-                                        dialog.dismiss()
-                                    }
-                                } else {
-                                    binding.emailId.isEnabled = true
-                                    binding.verifyiconemailId.visibility = View.GONE
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
+                            Log.d("VerifyOTPRes", response.message)
+                            if (response.statuss.equals("True")) {
+                                if (clickEmailId) {
+                                    EmailId = mobileOrEmailID
+                                    isEmailVerify = true
+                                    binding.emailId.isEnabled = false
+                                    binding.verifyiconemailId.visibility = View.VISIBLE
+                                    binding.verifyEmailId.visibility = View.GONE
                                 }
 
-                                Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                                if (clicMobile) {
+                                    isMobileVerify = true
+                                    binding.mobileNumber.isEnabled = false
+                                    binding.verifyiconphonenumber.visibility = View.VISIBLE
+                                    binding.verifymobilenumber.visibility = View.GONE
+                                }
+
+                                if (dialog != null && dialog.isShowing) {
+                                    dialog.dismiss()
+                                }
+                            } else {
+                                binding.emailId.isEnabled = true
+                                binding.verifyiconemailId.visibility = View.GONE
                             }
+
+                            Toast.makeText(this@RetailerProfilePage, response.message, Toast.LENGTH_SHORT).show()
+                        } else {
+                            ConstantClass.handleApiError(this@RetailerProfilePage, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@RetailerProfilePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -990,43 +995,44 @@ class RetailerProfilePage : BaseActivity() {
     fun hitApiForReSendOTP(mailidormobile: String, type: String) {
         var sendOtpReq = SendOtpReq(
             mobileoremailId = mailidormobile,
-            otpType = type
+            otpType = type,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("SendOTPREQ", Gson().toJson(sendOtpReq))
         viewModel.sendOTPReq(sendOtpReq).observe(this) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                ConstantClass.dialog.dismiss()
-                                Log.d("SendRes", response.message)
-                                if(response.statuss.equals("True")){
-                                    if (clickEmailId) {
-                                        Toast.makeText(this, response.message, Toast.LENGTH_SHORT)
-                                            .show()
-                                    } else {
-                                        if (clicMobile) {
-                                            var otp = response.value
-                                            var firstName = binding.retailerFName.text.toString()
-                                            var lastName = binding.retailerLName.text.toString()
-                                            var customerName = firstName.plus(" ").plus(lastName)
-                                            hitApiForResendMobVerify(mailidormobile, customerName, otp)
-                                        }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
+                            Log.d("SendRes", response.message)
+                            if(response.statuss.equals("True")){
+                                if (clickEmailId) {
+                                    Toast.makeText(this@RetailerProfilePage, response.message, Toast.LENGTH_SHORT)
+                                        .show()
+                                } else {
+                                    if (clicMobile) {
+                                        var otp = response.value
+                                        var firstName = binding.retailerFName.text.toString()
+                                        var lastName = binding.retailerLName.text.toString()
+                                        var customerName = firstName.plus(" ").plus(lastName)
+                                        hitApiForResendMobVerify(mailidormobile, customerName, otp)
                                     }
                                 }
-                                else{
-                                    Toast.makeText(this@RetailerProfilePage,response.message,Toast.LENGTH_SHORT).show()
-                                    ConstantClass.dialog.dismiss()
-                                }
-                                
                             }
+                            else{
+                                Toast.makeText(this@RetailerProfilePage,response.message,Toast.LENGTH_SHORT).show()
+                                ConstantClass.dialog.dismiss()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(this@RetailerProfilePage, it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@RetailerProfilePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1151,6 +1157,7 @@ class RetailerProfilePage : BaseActivity() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
@@ -1159,19 +1166,20 @@ class RetailerProfilePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SessionOutResponse", Gson().toJson(response))
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
-                                }
-                                ConstantClass.checkActiveStatusAndLogout(this@RetailerProfilePage, response.status, preference)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SessionOutResponse", Gson().toJson(response))
+                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                ConstantClass.dialog.dismiss()
                             }
+                            ConstantClass.checkActiveStatusAndLogout(this@RetailerProfilePage, response.status, preference)
+                        } else {
+                            ConstantClass.handleApiError(this@RetailerProfilePage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@RetailerProfilePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1192,18 +1200,19 @@ class RetailerProfilePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("validateresp", Gson().toJson(response))
-                                if(response.status==0){
-                                    hitApiForRetailerLogout()
-                                }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("validateresp", Gson().toJson(response))
+                            if(response.status==0){
+                                hitApiForRetailerLogout()
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@RetailerProfilePage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@RetailerProfilePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -1227,22 +1236,23 @@ class RetailerProfilePage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LogoutResponse", Gson().toJson(response))
-                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
-                                preference.setStringValue(ConstantClass.LoginType, "")
-                                ConstantClass.ClickOnCardDashboard = ""
-                                val intent = Intent(this@RetailerProfilePage, ChooseYourRolePage::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                finish()
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LogoutResponse", Gson().toJson(response))
+                            preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                            preference.setStringValue(ConstantClass.LoginType, "")
+                            ConstantClass.ClickOnCardDashboard = ""
+                            val intent = Intent(this@RetailerProfilePage, ChooseYourRolePage::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            ConstantClass.handleApiError(this@RetailerProfilePage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@RetailerProfilePage, it.message)
                     }
 
                     ApiStatus.LOADING -> {

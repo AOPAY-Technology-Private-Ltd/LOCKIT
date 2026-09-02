@@ -7,8 +7,9 @@ data class GetEMISplitDetlailsReq (
     var brandName:String,
 
     @SerializedName("modelName")
-    var modelName:String
-
+    var modelName:String,
+    @SerializedName("clientCode")
+    var clientCode: String? = null
 )
 
 

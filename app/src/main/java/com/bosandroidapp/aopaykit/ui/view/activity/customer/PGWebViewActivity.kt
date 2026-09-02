@@ -380,6 +380,7 @@ class PGWebViewActivity : BaseActivity() {
 
                 var request = KitPurchasePlanSaveRequest(
                     companyCode= preference.getStringValue(ConstantClass.ClientCode,"") ,
+                    clientCode = preference.getStringValue(ConstantClass.ClientCode, ""),
                     gstAmount= kitPlanListDataItem.gstAmount,
                     purchaseCode= purchaseCode,
                     purchaseDate = currentDateTime,

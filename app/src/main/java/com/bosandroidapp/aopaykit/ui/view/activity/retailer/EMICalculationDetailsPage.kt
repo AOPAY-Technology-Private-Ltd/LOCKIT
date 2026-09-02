@@ -153,7 +153,8 @@ class EMICalculationDetailsPage : BaseActivity() {
         isApiRunning = true
         var emisplitReq = GetEMISplitDetlailsReq(
             brandName = brandName,
-            modelName = modelName
+            modelName = modelName,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
         Log.d("EmiPercentReq", Gson().toJson(emisplitReq))
 
@@ -165,73 +166,74 @@ class EMICalculationDetailsPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
 
-                                Log.d("EmiPercentRes", Gson().toJson(response.data))
-                                isApiRunning = false
-                                if (response.status.equals("True", true) && !response.data.isNullOrEmpty()){
+                            Log.d("EmiPercentRes", Gson().toJson(response.data))
+                            isApiRunning = false
+                            if (response.status.equals("True", true) && !response.data.isNullOrEmpty()){
+                                emiRetryCount = 0
+                                if (ConstantClass.dialog.isShowing) {
+                                    ConstantClass.dialog.dismiss()
+                                }
+                                EmiSplitDataModel = response.data
+
+                                variantList = EmiSplitDataModel
+                                    .map { it.variantName.trim() }
+                                    .distinct()
+
+                                val variantAdapter = ArrayAdapter(this, R.layout.mobilenamelayout, variantList)
+                                variantAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                                binding.stroage.adapter = variantAdapter
+
+
+                            }else{
+                                if (emiRetryCount < MAX_RETRY_COUNT){
+                                    emiRetryCount++
+                                    Log.d("EMI_API", "Retrying API call : $emiRetryCount")
+                                    Handler(Looper.getMainLooper()).postDelayed({
+
+                                        hitApiForGetEmiPercent(
+                                            brandName,
+                                            modelName
+                                        )
+
+                                    }, 2000)
+                                }
+                                else{
                                     emiRetryCount = 0
+
                                     if (ConstantClass.dialog.isShowing) {
                                         ConstantClass.dialog.dismiss()
                                     }
-                                    EmiSplitDataModel = response.data
 
-                                    variantList = EmiSplitDataModel
-                                        .map { it.variantName.trim() }
-                                        .distinct()
-
-                                    val variantAdapter = ArrayAdapter(this, R.layout.mobilenamelayout, variantList)
-                                    variantAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                                    binding.stroage.adapter = variantAdapter
-
-
-                                }else{
-                                    if (emiRetryCount < MAX_RETRY_COUNT){
-                                        emiRetryCount++
-                                        Log.d("EMI_API", "Retrying API call : $emiRetryCount")
-                                        Handler(Looper.getMainLooper()).postDelayed({
-
-                                            hitApiForGetEmiPercent(
-                                                brandName,
-                                                modelName
-                                            )
-
-                                        }, 2000)
-                                    }
-                                    else{
-                                        emiRetryCount = 0
-
-                                        if (ConstantClass.dialog.isShowing) {
-                                            ConstantClass.dialog.dismiss()
-                                        }
-
-                                        Toast.makeText(this, response.message ?: "No data found", Toast.LENGTH_SHORT).show()
-                                    }
+                                    Toast.makeText(this, response.message ?: "No data found", Toast.LENGTH_SHORT).show()
                                 }
-
-                                /* if (response.status.equals("True")) {
-                                     ConstantClass.dialog.dismiss()
-                                     var EmiDataList = response.data
-                                     if (EmiDataList!!.size > 0) {
-                                         EmiSplitDataModel = EmiDataList
-                                         variantList = EmiSplitDataModel.map { it.variantName.trim() }.distinct()
-                                         val variantAdapter = ArrayAdapter(this, R.layout.mobilenamelayout, variantList)
-                                         variantAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                                         binding.stroage.adapter = variantAdapter
-
-                                     }
-                                 }
-                                 else {
-                                     ConstantClass.dialog.dismiss()
-                                     Toast.makeText(this@EMICalculationDetailsPage, response.message, Toast.LENGTH_SHORT).show()
-                                 }*/
                             }
+
+                            /* if (response.status.equals("True")) {
+                                 ConstantClass.dialog.dismiss()
+                                 var EmiDataList = response.data
+                                 if (EmiDataList!!.size > 0) {
+                                     EmiSplitDataModel = EmiDataList
+                                     variantList = EmiSplitDataModel.map { it.variantName.trim() }.distinct()
+                                     val variantAdapter = ArrayAdapter(this, R.layout.mobilenamelayout, variantList)
+                                     variantAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                                     binding.stroage.adapter = variantAdapter
+
+                                 }
+                             }
+                             else {
+                                 ConstantClass.dialog.dismiss()
+                                 Toast.makeText(this@EMICalculationDetailsPage, response.message, Toast.LENGTH_SHORT).show()
+                             }*/
+                        } else {
+                            ConstantClass.handleApiError(this@EMICalculationDetailsPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(this@EMICalculationDetailsPage, it.message)
                         isApiRunning = false
                         if (emiRetryCount < MAX_RETRY_COUNT) {
                             emiRetryCount++
@@ -665,6 +667,7 @@ class EMICalculationDetailsPage : BaseActivity() {
 
         var sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
@@ -673,19 +676,20 @@ class EMICalculationDetailsPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("SessionOutResponse", Gson().toJson(response))
-                                if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
-                                    ConstantClass.dialog.dismiss()
-                                }
-                                ConstantClass.checkActiveStatusAndLogout(this@EMICalculationDetailsPage, response.status, preference)
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("SessionOutResponse", Gson().toJson(response))
+                            if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
+                                ConstantClass.dialog.dismiss()
                             }
+                            ConstantClass.checkActiveStatusAndLogout(this@EMICalculationDetailsPage, response.status, preference)
+                        } else {
+                            ConstantClass.handleApiError(this@EMICalculationDetailsPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@EMICalculationDetailsPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -706,18 +710,19 @@ class EMICalculationDetailsPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("validateresp", Gson().toJson(response))
-                                if(response.status==0){
-                                    hitApiForRetailerLogout()
-                                }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("validateresp", Gson().toJson(response))
+                            if(response.status==0){
+                                hitApiForRetailerLogout()
                             }
+                        } else {
+                            ConstantClass.handleApiError(this@EMICalculationDetailsPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@EMICalculationDetailsPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -741,22 +746,23 @@ class EMICalculationDetailsPage : BaseActivity() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LogoutResponse", Gson().toJson(response))
-                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
-                                preference.setStringValue(ConstantClass.LoginType, "")
-                                ConstantClass.ClickOnCardDashboard = ""
-                                val intent = Intent(this@EMICalculationDetailsPage, ChooseYourRolePage::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                finish()
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LogoutResponse", Gson().toJson(response))
+                            preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                            preference.setStringValue(ConstantClass.LoginType, "")
+                            ConstantClass.ClickOnCardDashboard = ""
+                            val intent = Intent(this@EMICalculationDetailsPage, ChooseYourRolePage::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            ConstantClass.handleApiError(this@EMICalculationDetailsPage, it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(this@EMICalculationDetailsPage, it.message)
                     }
 
                     ApiStatus.LOADING -> {

@@ -453,8 +453,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
 
     fun hitApiForGetActionStatus(notificationCode: String) {
-        val request = GetPendingDeviceActionReq(customerCode = preference.getStringValue(ConstantClass.CustomerCode, ""
-        ))
+        val request = GetPendingDeviceActionReq(
+            customerCode = preference.getStringValue(ConstantClass.CustomerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
+        )
         Log.d("request", Gson().toJson(request))
 
         runBlocking {
@@ -509,6 +511,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         else{
             val updaterequest = UpdateCustomerDeviceActionRequest(
                 rid = rid,
+                clientCode = preference.getStringValue(ConstantClass.ClientCode, ""),
                 updatedBy = preference.getStringValue(ConstantClass.CustomerCode, ""),
                 executionStatus = "Success",
                 failureReason = "",
@@ -554,6 +557,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val updaterequest = UpdateCustomerDeviceActionRequest(
             rid = rid,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, ""),
             updatedBy = preference.getStringValue(ConstantClass.CustomerCode, ""),
             executionStatus = "Success",
             failureReason = "",

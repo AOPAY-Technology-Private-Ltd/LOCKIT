@@ -7,6 +7,7 @@ data class RetailerWalletAmountReq(
     var retailerID: String,
 
     @SerializedName("amountType")
-    var amountType: String
-
+    var amountType: String,
+    @SerializedName("clientCode")
+    var clientCode: String? = null
 )

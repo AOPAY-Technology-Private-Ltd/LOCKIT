@@ -442,31 +442,28 @@ class CustomerActionFragment : Fragment() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("customerLoanemiresp", Gson().toJson(response))
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("customerLoanemiresp", Gson().toJson(response))
 
-                                if(ConstantClass.dialog!=null && ConstantClass.dialog.isShowing){
-                                    ConstantClass.dialog.dismiss()
-                                }
-
-                                if(response.status==true){
-                                    hitApiForSendNotificationToCustomer(action.notificationCode!!,subApp)
-                                }
-                                else {
-                                    Toast.makeText(requireContext(),response.message,Toast.LENGTH_SHORT).show()
-                                }
-
+                            if(ConstantClass.dialog!=null && ConstantClass.dialog.isShowing){
+                                ConstantClass.dialog.dismiss()
                             }
-                        }
 
+                            if(response.status==true){
+                                hitApiForSendNotificationToCustomer(action.notificationCode!!,subApp)
+                            }
+                            else {
+                                Toast.makeText(requireContext(),response.message,Toast.LENGTH_SHORT).show()
+                            }
+
+                        } else {
+                            ConstantClass.handleApiError(requireContext(), it.data?.code() ?: 0)
+                        }
                     }
 
                     ApiStatus.ERROR -> {
-                        if(ConstantClass.dialog!=null && ConstantClass.dialog.isShowing){
-                            ConstantClass.dialog.dismiss()
-                        }
-
+                        ConstantClass.handleApiFailure(requireContext(), it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -498,34 +495,33 @@ class CustomerActionFragment : Fragment() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                Log.d("notificationResponse",Gson().toJson(response))
-                                if (response!!.status == true) {
-                                   // Toast.makeText(requireContext(), response!!.message, Toast.LENGTH_SHORT).show()
-                                }
-                                else {
-                                    Toast.makeText(requireContext(), response!!.message, Toast.LENGTH_SHORT).show()
-                                }
-
-                                lifecycleScope.launch {
-                                    delay(3000)
-                                    ConstantClass.dialog.dismiss()
-                                    hitApiForGettingActionList()
-                                    if(notificationCode.equals(ConstantClass.UNINSTALL)){
-                                        requireActivity().onBackPressedDispatcher.onBackPressed()
-                                    }
-                                    //hitApiForUpdateActionStatus()
-                                }
-
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("notificationResponse",Gson().toJson(response))
+                            if (response!!.status == true) {
+                               // Toast.makeText(requireContext(), response!!.message, Toast.LENGTH_SHORT).show()
+                            }
+                            else {
+                                Toast.makeText(requireContext(), response!!.message, Toast.LENGTH_SHORT).show()
                             }
 
+                            lifecycleScope.launch {
+                                delay(3000)
+                                ConstantClass.dialog.dismiss()
+                                hitApiForGettingActionList()
+                                if(notificationCode.equals(ConstantClass.UNINSTALL)){
+                                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                                }
+                                //hitApiForUpdateActionStatus()
+                            }
+                        } else {
+                            ConstantClass.handleApiError(requireContext(), it.data?.code() ?: 0)
                         }
 
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(requireContext(), it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -540,7 +536,10 @@ class CustomerActionFragment : Fragment() {
 
 
   /*  fun hitApiForUpdateActionStatus() {
-        val request = GetPendingDeviceActionReq(customerCode = CustomerCode)
+        val request = GetPendingDeviceActionReq(
+            customerCode = CustomerCode,
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
+        )
         viewModel.getActiveDeviceActionRequest(request).observe(requireActivity()) { resources ->
             resources.let {
                 when (it.apiStatus) {
@@ -613,13 +612,18 @@ class CustomerActionFragment : Fragment() {
 
         val sessionOutReq = SessionOutReq(
             retailerCode = preference.getStringValue(ConstantClass.RetailerCode, ""),
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
         )
 
         Log.d("SessionOutReq", Gson().toJson(sessionOutReq))
 
         viewModel.getSessionReq(sessionOutReq).observe(viewLifecycleOwner) { resources ->
+
             if (resources.apiStatus == ApiStatus.SUCCESS) {
-                resources.data?.body()?.let { response ->
+
+                val response = resources.data?.body()
+                if (resources.data?.isSuccessful == true && response != null) {
+
                     Log.d("SessionOutResponse", Gson().toJson(response))
                     if (ConstantClass.dialog != null && ConstantClass.dialog.isShowing) {
                         ConstantClass.dialog.dismiss()
@@ -635,22 +639,33 @@ class CustomerActionFragment : Fragment() {
                         Log.d("validaterequest", Gson().toJson(request))
                         viewModel.getSessionExpiredReq(request).observe(viewLifecycleOwner) { validateResources ->
                             if (validateResources.apiStatus == ApiStatus.SUCCESS) {
-                                validateResources.data?.body()?.let { validateResponse ->
+                                val validateResponse = validateResources.data?.body()
+                                if (validateResources.data?.isSuccessful == true && validateResponse != null) {
                                     Log.d("validateresp", Gson().toJson(validateResponse))
                                     if (validateResponse.status == 1) {
                                         onApproved?.invoke()
                                     } else  {
                                         hitApiForRetailerLogout()
                                     }
+                                } else {
+                                    ConstantClass.handleApiError(requireContext(), validateResources.data?.code() ?: 0)
                                 }
+                            } else if (validateResources.apiStatus == ApiStatus.ERROR) {
+                                ConstantClass.handleApiFailure(requireContext(), validateResources.message)
                             }
                         }
                     } else {
                         ConstantClass.checkActiveStatusAndLogout(requireContext(), response.status, preference)
                     }
+                } else {
+                    ConstantClass.handleApiError(requireContext(), resources.data?.code() ?: 0)
                 }
             }
+            else if (resources.apiStatus == ApiStatus.ERROR) {
+                ConstantClass.handleApiFailure(requireContext(), resources.message)
+            }
         }
+
     }
 
 
@@ -663,26 +678,27 @@ class CustomerActionFragment : Fragment() {
 
         Log.d("LogoutReq", Gson().toJson(loginRequest))
 
-        viewModel.getLogout(loginRequest).observe(activity) { resources ->
+        viewModel.getLogout(loginRequest).observe(viewLifecycleOwner) { resources ->
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data?.let { users ->
-                            users.body()?.let { response ->
-                                Log.d("LogoutResponse", Gson().toJson(response))
-                                preference.setBooleanValue(ConstantClass.LoggedIn, false)
-                                preference.setStringValue(ConstantClass.LoginType, "")
-                                ConstantClass.ClickOnCardDashboard = ""
-                                val intent = Intent(requireContext(), ChooseYourRolePage::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                startActivity(intent)
-                                requireActivity().finish()
-                            }
+                        val response = it.data?.body()
+                        if (it.data?.isSuccessful == true && response != null) {
+                            Log.d("LogoutResponse", Gson().toJson(response))
+                            preference.setBooleanValue(ConstantClass.LoggedIn, false)
+                            preference.setStringValue(ConstantClass.LoginType, "")
+                            ConstantClass.ClickOnCardDashboard = ""
+                            val intent = Intent(requireContext(), ChooseYourRolePage::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            requireActivity().finish()
+                        } else {
+                            ConstantClass.handleApiError(requireContext(), it.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-
+                        ConstantClass.handleApiFailure(requireContext(), it.message)
                     }
 
                     ApiStatus.LOADING -> {
@@ -701,21 +717,21 @@ class CustomerActionFragment : Fragment() {
             resources.let {
                 when (it.apiStatus) {
                     ApiStatus.SUCCESS -> {
-                        it.data.let { users ->
-                            users!!.body().let { response ->
-                                ConstantClass.dialog.dismiss()
-                                Log.d("GetActionList", Gson().toJson(response))
-                                if(response!!.categories!!.size>0){
-                                    customerActionList = response.categories
-                                    initAdapter()
-                                }
-
+                        val response = resources.data?.body()
+                        if (resources.data?.isSuccessful == true && response != null) {
+                            ConstantClass.dialog.dismiss()
+                            Log.d("GetActionList", Gson().toJson(response))
+                            if(response!!.categories!!.size>0){
+                                customerActionList = response.categories
+                                initAdapter()
                             }
+                        } else {
+                            ConstantClass.handleApiError(requireContext(), resources.data?.code() ?: 0)
                         }
                     }
 
                     ApiStatus.ERROR -> {
-                        ConstantClass.dialog.dismiss()
+                        ConstantClass.handleApiFailure(requireContext(), resources.message)
                     }
 
                     ApiStatus.LOADING -> {

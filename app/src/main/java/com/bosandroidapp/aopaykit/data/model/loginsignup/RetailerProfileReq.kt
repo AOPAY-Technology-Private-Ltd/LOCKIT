@@ -24,6 +24,7 @@ data class RetailerProfileReq(
     @SerializedName("panNumber")
     var panNumber : String ,
     @SerializedName("activeStatus")
-    var activeStatus : String
-
+    var activeStatus : String,
+    @SerializedName("clientCode")
+    var clientCode: String? = null
 )

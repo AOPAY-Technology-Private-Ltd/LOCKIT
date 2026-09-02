@@ -8,5 +8,8 @@ data class LoanChargeReq(
 	val registrationID: String? = null,
 
 	@field:SerializedName("RetailerCode")
-	val retailerCode: String? = null
+	val retailerCode: String? = null,
+
+	@field:SerializedName("clientCode")
+	val clientCode: String? = null
 )
