@@ -41,6 +41,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/_10sdp"
             android:src="@drawable/homeicon"
+            android:visibility="gone"
             app:tint="@color/darkgrey" />
 
     </RelativeLayout>

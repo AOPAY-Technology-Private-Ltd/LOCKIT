@@ -18,6 +18,7 @@ import com.bosandroidapp.aopaykit.data.model.CustomerKitRequest
 import com.bosandroidapp.aopaykit.data.model.DueOverdueRequest
 import com.bosandroidapp.aopaykit.data.model.GenerateAccessTokenRequest
 import com.bosandroidapp.aopaykit.data.model.GetRetailerLedgerReq
+import com.bosandroidapp.aopaykit.data.model.Getproductclientreq
 import com.bosandroidapp.aopaykit.data.model.HoldAmountWithdrawReq
 import com.bosandroidapp.aopaykit.data.model.LowCibilCustomerReportReq
 import com.bosandroidapp.aopaykit.data.model.MakePaymentAdminReportRequest
@@ -135,10 +136,10 @@ class AuthenticationViewModel (private val repository: AuthRepository):ViewModel
         }
     }
 
-    fun getMobileList() = liveData(Dispatchers.IO) {
+    fun getMobileList(req: Getproductclientreq) = liveData(Dispatchers.IO) {
         emit(ApiResponse.loading(data = null))
         try {
-            emit(ApiResponse.success(data = repository.getMobileList()))
+            emit(ApiResponse.success(data = repository.getMobileList(req)))
         }
         catch (exception: Exception) {
             emit(ApiResponse.error(data = null, message = exception.message?: "Error Occurred!"))

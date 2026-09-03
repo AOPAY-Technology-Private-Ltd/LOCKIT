@@ -146,6 +146,7 @@ class IMEIDetailsPage : BaseActivity() {
     }
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -157,10 +158,7 @@ class IMEIDetailsPage : BaseActivity() {
             WindowInsetsCompat.CONSUMED
         }
       
-        viewModel = ViewModelProvider(
-            this,
-            CommonViewModelFactory(AuthRepository(RetrofitClient.apiInterfacePAN))
-        )[AuthenticationViewModel::class.java]
+        viewModel = ViewModelProvider(this, CommonViewModelFactory(AuthRepository(RetrofitClient.apiInterface)))[AuthenticationViewModel::class.java]
         preference = SharedPreference(this)
         seonClickListner()
 
@@ -485,6 +483,7 @@ class IMEIDetailsPage : BaseActivity() {
     }
 
 
+
     fun hitApiForLogin() {
 
         var sessionOutReq = SessionOutReq(
@@ -505,7 +504,8 @@ class IMEIDetailsPage : BaseActivity() {
                                 ConstantClass.dialog.dismiss()
                             }
                             ConstantClass.checkActiveStatusAndLogout(this@IMEIDetailsPage, response.status, preference)
-                        } else {
+                        }
+                        else {
                             ConstantClass.handleApiError(this@IMEIDetailsPage, it.data?.code() ?: 0)
                         }
                     }
@@ -520,6 +520,7 @@ class IMEIDetailsPage : BaseActivity() {
                 }
             }
         }
+
 
         var request = ValidateSessionRequest(
             preference.getStringValue(ConstantClass.RetailerCode, ""),
@@ -555,6 +556,7 @@ class IMEIDetailsPage : BaseActivity() {
         }
 
     }
+
 
     fun hitApiForRetailerLogout() {
         var loginRequest = LogoutReq(

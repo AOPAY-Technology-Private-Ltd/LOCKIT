@@ -606,7 +606,8 @@ class DashBoard : BaseActivity() {
     fun hitApiForGetAndCheckAccessToken() {
         var generateTokenReq = GenerateAccessTokenRequest(
             fcmToken = preference.getStringValue(ConstantClass.FCMTOKEN, ""),
-            clientCode = preference.getStringValue(ConstantClass.ClientCode, "")
+            clientCode = preference.getStringValue(ConstantClass.ClientCode, ""),
+            customerCode = preference.getStringValue(ConstantClass.CustomerCode,"")
         )
         Log.d("tokenreq", Gson().toJson(generateTokenReq))
 

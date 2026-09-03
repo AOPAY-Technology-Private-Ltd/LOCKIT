@@ -45,6 +45,7 @@ import com.bosandroidapp.aopaykit.constant.ConstantClass.ProcessingFees
 import com.bosandroidapp.aopaykit.constant.ConstantClass.SellingPrice
 import com.bosandroidapp.aopaykit.constant.ConstantClass.Tenure
 import com.bosandroidapp.aopaykit.constant.ConstantClass.ToBePaidAmount
+import com.bosandroidapp.aopaykit.data.model.ProductDataItem
 import com.bosandroidapp.aopaykit.data.model.SessionOutReq
 import com.bosandroidapp.aopaykit.data.model.ValidateSessionRequest
 import com.bosandroidapp.aopaykit.data.model.loginsignup.DataItem
@@ -83,10 +84,12 @@ class EMICalculationDetailsPage : BaseActivity() {
     var sellingPriceValidate = true
     var lastSellingPrice: String? = null
 
+
     companion object {
         var EmiSplitDataModel: MutableList<DataItems> = mutableListOf()
         var FilterDataEmiSplitDataModel: MutableList<DataItems> = mutableListOf()
-        lateinit var MobileData: DataItem
+       // lateinit var MobileData: DataItem
+        lateinit var MobileData: ProductDataItem
     }
 
 
@@ -101,11 +104,11 @@ class EMICalculationDetailsPage : BaseActivity() {
 
             Log.d("ColorList", Gson().toJson(colorList))
 
-            var color = colorList.split(",").map { it.trim() }
+            var color = colorList!!.split(",").map { it.trim() }
         }
 
         if (EmiSplitDataModel.isEmpty()) {
-            hitApiForGetEmiPercent(MobileData!!.brandName, MobileData!!.modelName)
+            hitApiForGetEmiPercent(MobileData!!.brandName!!, MobileData!!.modelName!!)
         }
 
 
@@ -135,7 +138,7 @@ class EMICalculationDetailsPage : BaseActivity() {
             binding.nextbuttonlayout.visibility = View.GONE
         }
 
-        hitApiForGetEmiPercent(MobileData.brandName, MobileData.modelName)
+        hitApiForGetEmiPercent(MobileData.brandName!!, MobileData.modelName!!)
 
         setonClickListner()
 
@@ -304,14 +307,14 @@ class EMICalculationDetailsPage : BaseActivity() {
             isApiRunning = false
             EmiSplitDataModel.clear()
             FilterDataEmiSplitDataModel.clear()
-            hitApiForGetEmiPercent(MobileData!!.brandName, MobileData!!.modelName)
+            hitApiForGetEmiPercent(MobileData!!.brandName!!, MobileData!!.modelName!!)
         }
 
         binding.resetdata.setOnClickListener {
             isApiRunning = false
             EmiSplitDataModel.clear()
             FilterDataEmiSplitDataModel.clear()
-            hitApiForGetEmiPercent(MobileData!!.brandName, MobileData!!.modelName)
+            hitApiForGetEmiPercent(MobileData!!.brandName!!, MobileData!!.modelName!!)
         }
 
         binding.stroage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

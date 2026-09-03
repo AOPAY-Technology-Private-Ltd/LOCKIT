@@ -10,6 +10,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bosandroidapp.aopaykit.R
+import com.bosandroidapp.aopaykit.data.model.ProductDataItem
 import com.bosandroidapp.aopaykit.databinding.MobilelistitemlayoutBinding
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.EMICalculationDetailsPage
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.EMICalculationDetailsPage.Companion.MobileData
@@ -17,7 +18,7 @@ import com.bosandroidapp.aopaykit.data.model.loginsignup.DataItem
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.EMICalculationDetailsPage.Companion.EmiSplitDataModel
 import com.bosandroidapp.aopaykit.ui.view.activity.retailer.EMICalculationDetailsPage.Companion.FilterDataEmiSplitDataModel
 
-class MobileListAdapter(private val  MobileDataList : MutableList<DataItem> = mutableListOf(), var context:Context): RecyclerView.Adapter<MobileListAdapter.ViewHolder>() {
+class MobileListAdapter(private val  MobileDataList : MutableList<ProductDataItem> = mutableListOf(), var context:Context): RecyclerView.Adapter<MobileListAdapter.ViewHolder>() {
     var  selectPosition = -1
     var MobileColorList : MutableList<String> = mutableListOf()
 
@@ -44,6 +45,7 @@ class MobileListAdapter(private val  MobileDataList : MutableList<DataItem> = mu
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Glide.with(context).load(MobileDataList[position].imagePath).placeholder(R.drawable.samsung).error(R.drawable.samsung).into(holder.mobileicon)
         holder.mobilename.setText(MobileDataList[position].brandName+" "+MobileDataList[position].modelName)
+
         if(!MobileDataList[position].mrpPrice.isNullOrBlank() && !MobileDataList[position].variantName.isNullOrBlank()){
             holder.mobileprice.setText("₹ "+MobileDataList[position].mrpPrice+" ("+ MobileDataList[position].variantName +")")
         }
@@ -51,7 +53,7 @@ class MobileListAdapter(private val  MobileDataList : MutableList<DataItem> = mu
             holder.colorlayout.removeAllViews()
             // Step 1: Convert comma-separated colors into list
             val colorList = MobileDataList[position].avlbColors
-            val MobileColorList = colorList.split(",").map { it.trim() }
+            val MobileColorList = colorList!!.split(",").map { it.trim() }
 
             // Step 2: Create one horizontal layout for all colors
             val context = holder.itemView.context
@@ -107,7 +109,7 @@ class MobileListAdapter(private val  MobileDataList : MutableList<DataItem> = mu
         holder.itemView.setOnClickListener{
             selectPosition = position
             notifyDataSetChanged()
-            MobileData=MobileDataList[position]
+            MobileData = MobileDataList[position]
             EmiSplitDataModel.clear()
             FilterDataEmiSplitDataModel.clear()
             context.startActivity(Intent(context, EMICalculationDetailsPage::class.java))
