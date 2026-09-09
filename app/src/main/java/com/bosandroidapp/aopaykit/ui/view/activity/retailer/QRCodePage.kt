@@ -1634,7 +1634,8 @@ class QRCodePage : BaseActivity() {
                                 ConstantClass.dialog.dismiss()
                                 hitApiForMemberShipFee()
                             }
-                        } else {
+                        }
+                        else {
                             ConstantClass.handleApiError(this@QRCodePage, it.data?.code() ?: 0)
                         }
 

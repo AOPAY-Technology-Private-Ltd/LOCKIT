@@ -157,6 +157,7 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
         }
     }
 
+
     private fun setupTabs() {
         val tabList = listOf("Info", "Device", "Action")
         
@@ -413,6 +414,7 @@ class LockKitCustomerDetailsInfoPage : BaseActivity() {
         }
 
     }
+
 
     fun hitApiForUpdateActionStatus() {
         val request = GetPendingDeviceActionReq(

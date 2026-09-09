@@ -753,20 +753,25 @@ interface ApiInterface {
     suspend fun kitCallPG(@Body req : PGRequestCall) : Response<PGRequestResponse>?
 
 
+
     @POST("api/V1/AopayFinance/GetRetailerMakePaymentList")
     suspend fun getMakePaymentReportReq(@Body req : MakePaymentAdminReportRequest) : Response<MakePaymentAdminReportResponse>?
+
 
 
     @POST("api/V1/AopayFinance/GetRetailerKitPlans")
     suspend fun kitPlanTopUpRequest(@Body req : KitPlanRequest) : Response<KitPlanResponse>?
 
 
+
     //retailer kit option
     @POST("api/V1/AopayFinance/GetRetailerLoanModeDetails")
     suspend fun getRequestKitOption(@Body req : KitOptionRequest) : Response<KitOptionResponse>?
 
+
     @POST("api/V1/AopayFinance/GetCustomerLatestLocationKit")
     suspend fun getKitCustomerLocation(@Body req : GetKitCustomerLocation) : Response<GetKitCustomerLocationResponse>?
+
 
 
     // customer action related app via notification
@@ -775,16 +780,20 @@ interface ApiInterface {
     suspend fun getRetailerDeviceActionToCustomerRequest(@Body req : RetailerSaveDeviceActionRequest) : Response<RetailerSaveDeviceActionResponse>?
 
 
+
     @POST("api/notification/SendDeviceNotification")
     suspend fun sendRetailerNotificationToCustomerRequest(@Body req : RetailerSendNotificationToCustomerReq) : Response<RetailerSendNotificationToCustomerResponse>?
+
 
 
     @POST("api/notification/GetSuccessDeviceActions")
     suspend fun getActiveDeviceActionRequest(@Body req : GetPendingDeviceActionReq) : Response<ActiveDeviceActionResponse>?
 
 
+
     @POST("api/notification/GetPendingDeviceActions")
     suspend fun getPendingDeviceActionRequest(@Body req : GetPendingDeviceActionReq) : Response<GetPendingDeviceActionResponse>?
+
 
 
     //hit api for customer
