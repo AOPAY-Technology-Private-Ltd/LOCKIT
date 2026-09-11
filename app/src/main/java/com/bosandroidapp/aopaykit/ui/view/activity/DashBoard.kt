@@ -475,7 +475,7 @@ class DashBoard : BaseActivity() {
 
 
         binding.appBarDashBoard.deskdesign.clicktologin.setOnClickListener {
-            val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+            /*val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
             val loanDetails = sharedPref.getString("LoanData", "")
             if (loanDetails.isNullOrBlank()) {
                 Toast.makeText(
@@ -488,11 +488,11 @@ class DashBoard : BaseActivity() {
                 binding.appBarDashBoard.deskdesign.customerGenerateKeyLayout.visibility = View.GONE
                 binding.appBarDashBoard.deskdesign.customerdashboardItemlayout.visibility =
                     View.VISIBLE
-            }
+            }*/
 
-            /*preference.setBooleanValue(ConstantClass.CustomerAccessKey,true)
+            preference.setBooleanValue(ConstantClass.CustomerAccessKey,true)
             binding.appBarDashBoard.deskdesign.customerGenerateKeyLayout.visibility = View.GONE
-            binding.appBarDashBoard.deskdesign.customerdashboardItemlayout.visibility = View.VISIBLE*/
+            binding.appBarDashBoard.deskdesign.customerdashboardItemlayout.visibility = View.VISIBLE
 
         }
 

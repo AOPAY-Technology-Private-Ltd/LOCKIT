@@ -434,6 +434,13 @@ object ConstantClass {
     const val Reboot ="REBOOT"
     const val Airplane ="AIRPLANE_MODE"
     const val Kisok ="KIOSK_MODE"
+
+    const val IMAGEAPPS ="IMAGE_APPS"
+
+    const val VIDEOAPPS ="VIDEO_APPS"
+
+    const val AUDIOAPPS ="AUDIO_APPS"
+
     const val SIM_REMOVE_LOCK ="SIM_REMOVE_LOCK"
     const val SIM_TRACK_ONLINE ="SIM_TRACK_ONLINE"
     const val SIM_TRACK_OFFLINE ="SIM_TRACK_OFFLINE"

@@ -86,7 +86,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
                 when(NotificationCode){
 
-                    ConstantClass.SocialApps, ConstantClass.GamingApps, ConstantClass.UPIApps -> {
+                    ConstantClass.SocialApps, ConstantClass.GamingApps, ConstantClass.UPIApps, ConstantClass.IMAGEAPPS, ConstantClass.VIDEOAPPS, ConstantClass.AUDIOAPPS -> {
                         handleSocialApps(dpm, admin, json)
                     }
 
@@ -551,6 +551,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
     }
+
 
 
     fun hitApiForUpdateActionStatus( devicePin: String?) {
