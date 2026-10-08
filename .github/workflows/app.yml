@@ -1,0 +1,48 @@
+name:  APK Build
+
+on:
+  push:
+    branches:
+      - DEV
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # 1. Checkout source code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Setup JDK
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      # 3. Give execute permission to Gradle Wrapper
+      - name: Make Gradle Wrapper Executable
+        run: chmod +x ./gradlew
+
+      # 4. Build APK
+      - name: Build APK
+        run: ./gradlew assembleDebug
+
+      # 5. Prepare APK for Artifact
+      - name: Prepare APK
+        run: |
+          mkdir -p artifact
+          cp app/build/outputs/apk/debug/app-debug.apk artifact/LOCKITUAT.apk
+      # 6. Upload APK Artifact
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LOCKITUAT
+          path: artifact/LOCKITUAT.apk
+          retention-days: 7
